@@ -87,7 +87,14 @@ if (! class_exists('HD3Cache')) {
 			}
 			return true;
 		}
-	
+		
+		 /**
+		  * Read the key stored from the cache
+		  *
+		  * @param string $key
+		  *
+		  * @return $data
+		  */
 		function read($key) {
 			$data = apc_fetch($this->prefix.$key);
 	
@@ -105,6 +112,13 @@ if (! class_exists('HD3Cache')) {
 			return $data;
 		}
 	
+		 /**
+		  * Write new key and store inside the cache
+		  *
+		  * @param string $key
+		  *
+		  * @return $data
+		  */
 		function write($key, $data) {
 			if (empty($data))
 				return false;
@@ -118,8 +132,14 @@ if (! class_exists('HD3Cache')) {
 
 			return true;
 		}
-
-		// readSpecs - used by the local functions. Reads the Device specs into one large array.
+		
+		 /**
+		  * Used by the local functions. Reads the Device specs into one large array.
+		  *
+		  * @param null
+		  *
+		  * @return $data
+		  */
 		function readSpecs() {
 			$dir = $this->dirpath . DS . $this->dirname;
 			foreach(glob($this->dirpath . DS . $this->dirname . DS . 'Device*.json') as $file) {
@@ -132,7 +152,13 @@ if (! class_exists('HD3Cache')) {
 			return $data;
 		}
 
-		// Encodes php assoc array to json string
+		/**
+		  * Encodes php assoc array to json string
+		  *
+		  * @param json $data
+		  *
+		  * @return $data
+		  */
 		function __encode($data) {
 			if (function_exists('json_encode')) {
 				$jsondata = json_encode($data);
@@ -142,8 +168,14 @@ if (! class_exists('HD3Cache')) {
 			}
 			return $jsondata;
 		}
-		
-		// Decode turns json string into php assoc array
+				
+		/**
+		  * Decode turns json string into php assoc array
+		  *
+		  * @param json $jsonstr
+		  *
+		  * @return $data
+		  */
 		function __decode($jsonstr) {
 			$data = array();
 			if (function_exists('json_decode')) {
@@ -157,6 +189,11 @@ if (! class_exists('HD3Cache')) {
 	}
 }
 
+/**
+*
+* HD3 class 
+*
+*/
 class HD3 {
 	var $realm = 'APIv3';
 	var $reply = null;
@@ -187,6 +224,15 @@ class HD3 {
 		'retries' => 3
 	);	
 	
+	 /**
+	  * This is the main constructor for the class HD3
+	  *
+	  * setup everything the config
+	  *
+	  * @param array $config
+	  *
+	  * @return void
+	  */
 	function HD3($config = null) {
 		if (! empty($config)) {
 			$this->config = array_merge($this->config, $config);
@@ -214,6 +260,13 @@ class HD3 {
 		$this->setup();
 	}
 	
+	/**
+	  * load the cache
+	  *
+	  * @param 
+	  *
+	  * @return true if it succeed
+	  */
 	function lazyLoadCache() {
 		if ($this->debug) $this->__log('lazyLoading Cache Class ');
 		if (empty($this->Cache)) {
@@ -276,7 +329,13 @@ class HD3 {
 		}
 	}	
 	
-	// Encodes php assoc array to json string
+	/**
+	  *  Encodes php assoc array to json string	  	  
+	  *
+	  * @param string $data
+	  *
+	  * @return $jsondata 
+	  */
 	private function __encode($data) {
 		if (function_exists('json_encode')) {
 			$jsondata = json_encode($data);
@@ -286,8 +345,14 @@ class HD3 {
 		}
 		return $jsondata;
 	}
-
-	// Decode turns json string into php assoc array
+	
+	/**
+	  * Decode turns json string into php assoc array 	  
+	  *
+	  * @param string $jsonstr
+	  *
+	  * @return $data 
+	  */
 	private function __decode($jsonstr) {
 		$data = array();
 		if (function_exists('json_decode')) {
@@ -298,7 +363,14 @@ class HD3 {
 		}
 		return $data;
 	}
-			
+	
+	/**
+	  * Redirect you to the mobile site 
+	  *
+	  * @param 
+	  *
+	  * @return void 
+	  */	
 	function redirectToMobileSite(){
 		if ($this->mobile_site != '') {
 			header('Location: '.$this->mobile_site);
@@ -309,6 +381,14 @@ class HD3 {
 	/** Public Functions **/
 	// Read http headers from the server - likely what you want to send to HD for detection.
 	// You can override or add to these with setDetectVar($key, $value)
+	
+	/**
+	  * Main setup 
+	  *
+	  * @param 
+	  *
+	  * @return void 
+	  */	
 	function setup() {
 		$this->reply = array();
 		$this->rawreply = array();
@@ -316,44 +396,108 @@ class HD3 {
 		$this->detectRequest['ipaddress'] = $_SERVER['REMOTE_ADDR'];
 		unset($this->detectRequest['Cookie']);
 	}
-
-	// Device Functions
+	
+	/**
+	  * Device Vendors
+	  *
+	  * @param 
+	  *
+	  * @return true 
+	  */	
 	function deviceVendors() {
 		return ($this->config['use_local'] ? $this->_localDeviceVendors() : $this->_remote('device/vendors', null));
 	}
-
+	
+	/**
+	  * Device Models
+	  *
+	  * @param string $vendor
+	  *
+	  * @return true 
+	  */	
 	function deviceModels($vendor) {
 		return ($this->config['use_local'] ? $this->_localDeviceModels($vendor) : $this->_remote("device/models/$vendor", null));
 	}
 	
+	/**
+	  * Device View
+	  *
+	  * @param string $vendor
+	  * @param string $model
+	  *
+	  * @return true 
+	  */	
 	function deviceView($vendor, $model) {
 		return ($this->config['use_local'] ? $this->_localDeviceView($vendor, $model) : $this->_remote("device/view/$vendor/$model", null));
 	}
 	
+	/**
+	  * Device WhatHas
+	  *
+	  * @param string $key
+	  * @param string $value
+	  *
+	  * @return true 
+	  */	
 	function deviceWhatHas($key, $value) {
 		return ($this->config['use_local'] ? $this->_localDeviceWhatHas($key, $value) : $this->_remote("device/whathas/$key/$value", null));
 	}
 
-	// Site Functions	
+	
+	/**
+	  * Device Vendors
+	  *
+	  * @param string $data
+	  *
+	  * @return true 
+	  */	
 	function siteAdd($data) {
 		return $this->_remote("site/add", $data);
 	}
 	
+	/**
+	  * Site Edit
+	  *
+	  * @param string $data
+	  *
+	  * @return true 
+	  */	
 	function siteEdit($data) {
 		$id = (int) (empty($data['id']) ? $this->config['site_id'] : $data['id']);
 		return $this->_remote("site/edit/$id", $data);
 	}
 	
+	/**
+	  * Site View
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */	
 	function siteView($id=null) {
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 		return $this->_remote("site/view/$id", null);
 	}
-
+	
+	/**
+	  * Site Delete
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */	
 	function siteDelete($id=null) {
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 		return $this->_remote("site/delete/$id", null);
 	}
-		
+	
+	/**
+	  * Site Detect
+	  *
+	  * @param string $data
+	  *
+	  * @return true 
+	  */		
 	function siteDetect($data=null) {
 		$id = (int) (empty($data['id']) ? $this->config['site_id'] : $data['id']);
 		$requestBody = array_merge($this->detectRequest, (array) $data);
@@ -381,8 +525,14 @@ class HD3 {
 			return false;
 		}
 	}
-	
-	// Convenience Function to download everything
+		
+	/**
+	  * Convenience Function to download everything
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */		
 	function siteFetchAll($id=null) {
 		$status = $this->siteFetchSpecs($id);
 		if (! $status)
@@ -393,6 +543,13 @@ class HD3 {
 		return true;
 	}
 
+	/**
+	  * Fetch from the tree
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */		
 	function siteFetchTrees($id=null) {
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 
@@ -410,6 +567,13 @@ class HD3 {
 		return $this->_setCacheTrees();
 	}
 	
+	/**
+	  * Set the cache tree
+	  *
+	  * @param 
+	  *
+	  * @return true 
+	  */		
 	function _setCacheTrees() {
 		$str = @file_get_contents($this->config['filesdir'] . DS . "hd3trees.json");
 		if ($str === false || empty($str)) {
@@ -427,6 +591,13 @@ class HD3 {
 		return true;
 	}
 	
+	/**
+	  * Fetch the site specs
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */		
 	function siteFetchSpecs($id=null) {		
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 
@@ -442,6 +613,13 @@ class HD3 {
 		return $this->_setCacheSpecs();
 	}
 
+	/**
+	  * Set the cache specs
+	  *
+	  * @param 
+	  *
+	  * @return true 
+	  */		
 	function _setCacheSpecs() {
 		$str = @file_get_contents($this->config['filesdir'] . DS . "hd3specs.json");
 		if ($str === false || empty($str))
@@ -470,7 +648,15 @@ class HD3 {
 					
 		return true;
 	}
-
+	
+	/**
+	  * Fetch the cache specs
+	  *
+	  * @param int $id
+	  * @param string $type
+	  *
+	  * @return $result 
+	  */		
 	function _getCacheSpecs($id, $type) {
 		$this->lazyLoadCache();
 		if (! $result = $this->Cache->read($type.':'.$id)) {
@@ -479,6 +665,13 @@ class HD3 {
 		return $result;
 	}
 	
+	/**
+	  * Fetch the archive list
+	  *
+	  * @param int $id
+	  *
+	  * @return true 
+	  */		
 	function siteFetchArchive($id=null) {
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');
@@ -516,14 +709,29 @@ class HD3 {
 		return false;
 	}
 	
-	// User Functions
-	// User actions. Always remote.
+	// User Functions	
+	/**
+	  * User actions. Always remote.
+	  *
+	  * @param string $suburl
+	  * @param string $data
+	  *
+	  * @return true 
+	  */		
 	function user($suburl, $data=null) {
 		return $this->_remote($suburl, $data); 
 	}
-	
-	// Makes requests to the various web services of Handset Detection.
-	// Note : $suburl - the url fragment of the web service eg site/detect/${site_id}
+		 	
+	/**
+	  * Makes requests to the various web services of Handset Detection.
+	  *
+	  * Note : $suburl - the url fragment of the web service eg site/detect/${site_id}
+	  * @param string $suburl
+	  * @param string $data
+	  * @param string $filetype
+	  *
+	  * @return true 
+	  */		
 	function _remote($suburl, $data, $filetype='json') {
 		$this->reply = array();
 		$this->rawreply = array();
@@ -668,8 +876,14 @@ class HD3 {
 		if (strlen($body)) return $body;
 		return $this->setError(299, "Error : Reply body is empty.");
 	}
-
-	// Local get specs needs to read the whole cache into array.
+	
+	/**
+	  * Local get specs needs to read the whole cache into array.
+	  *
+	  * @param 
+	  *
+	  * @return $result 
+	  */		
 	function _localGetSpecs() {
 		$this->lazyLoadCache();
 		$result = $this->Cache->readSpecs();
@@ -678,6 +892,13 @@ class HD3 {
 		return $result;
 	}
 	
+	/**
+	  * Local get device vendors.
+	  *
+	  * @param 
+	  *
+	  * @return true 
+	  */		
 	function _localDeviceVendors() {
 		$data = $this->_localGetSpecs();
 		if (empty($data))
@@ -692,6 +913,13 @@ class HD3 {
 		return $this->setError(0, 'OK');
 	}
 	
+	/**
+	  * Local get device models
+	  *
+	  * @param string $vendor
+	  *
+	  * @return true 
+	  */		
 	function _localDeviceModels($vendor) {
 		$data = $this->_localGetSpecs();
 		if (empty($data))
@@ -720,6 +948,15 @@ class HD3 {
 		return $this->setError(0, 'OK');
 	}
 	
+	
+	/**
+	  * Local get device view 
+	  *
+	  * @param string $vendor
+	  * @param string $model
+	  *
+	  * @return true 
+	  */		
 	function _localDeviceView($vendor, $model) {
 		$data = $this->_localGetSpecs();
 		if (empty($data))
@@ -738,6 +975,14 @@ class HD3 {
 		return $this->setError(301, 'Nothing found');
 	}
 	
+	/**
+	  * Local get device what has
+	  *
+	  * @param string $key
+	  * @param string $value
+	  *
+	  * @return true 
+	  */		
 	function _localDeviceWhatHas($key, $value) {
 		$data = $this->_localGetSpecs();
 		if (empty($data))
@@ -770,7 +1015,14 @@ class HD3 {
 		$this->reply['devices'] = $tmp;
 		return $this->setError(0, 'OK');
 	}
-		
+	
+	/**
+	  * Local site detect
+	  *
+	  * @param string $headers	  
+	  *
+	  * @return true 
+	  */			
 	function _localSiteDetect($headers) {
 		$this->reply = array();
 		$this->rawreply = array();
@@ -824,6 +1076,13 @@ class HD3 {
 		return $this->setError(301, 'Nothing Found', 'Unknown');
 	}
 	
+	/**
+	  * Local get the device
+	  *
+	  * @param string $headers	  
+	  *
+	  * @return true 
+	  */		
 	function _getDevice($headers) {
 		// Remember the agent for generic matching later.
 		$agent = "";
@@ -893,7 +1152,16 @@ class HD3 {
 		if ($this->debug) $this->__log('Trying Generic Match');
 		return $this->_matchDevice('user-agent', $agent, true);
 	}
-
+	
+	/**
+	  * match device
+	  *
+	  * @param string $header
+	  * @param string $value
+	  * @param int $generic
+	  *
+	  * @return true 
+	  */		
 	function _matchDevice($header, $value, $generic=0) {
 		// Strip unwanted chars from lower case version of value
 		$value = str_replace($this->match_filter, "", strtolower($value));
@@ -901,8 +1169,15 @@ class HD3 {
 		
 		return $this->_match($header, $value, $treetag);
 	}
-
-	// Tries headers in diffferent orders depending on the extra $class.
+	
+	/**
+	  * Tries headers in diffferent orders depending on the extra $class.
+	  *
+	  * @param class $class
+	  * @param array $valuearr
+	  *
+	  * @return true 
+	  */		
 	function _getExtra($class, $valuearr) {
 		if ($class == 'platform') {
 			$checkOrder = array_merge(array('x-operamini-phone-ua','user-agent'), array_keys($valuearr)); 
@@ -920,7 +1195,16 @@ class HD3 {
 		}
 		return false;
 	}
-				
+	
+	/**
+	  * match extra
+	  *
+	  * @param string $header
+	  * @param string $value
+	  * @param Class $class
+	  *
+	  * @return true 
+	  */		
 	function _matchExtra($header, $value, $class) {
 		// Note : Extra manipulations less onerous than for devices.	
 		$value = strtolower(str_replace(" ","", trim($value)));
@@ -929,6 +1213,16 @@ class HD3 {
 		return $this->_match($header, $value, $treetag);
 	}
 	
+	
+	/**
+	  * match
+	  *
+	  * @param string $header
+	  * @param string $newvalue
+	  * @param string $treetag
+	  *
+	  * @return true 
+	  */		
 	function _match($header, $newvalue, $treetag) {
 		$f = 0;
 		$r = 0;
@@ -982,6 +1276,13 @@ class HD3 {
 		return false;
 	}
 
+	/**
+	  * get branch
+	  *
+	  * @param string $branch
+	  *
+	  * @return true 
+	  */		
 	function _getBranch($branch) {
 		if (! empty($this->tree[$branch])) {
 			if ($this->debug) $this->__log("$branch fetched from memory");

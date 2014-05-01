@@ -27,10 +27,11 @@
 * - the default is "/^Feedfetcher|^FAST|^gsa_crawler|^Crawler|^goroam|^GameTracker|^http:\/\/|^Lynx|^Link|^LegalX|libwww|^LWP::Simple|FunWebProducts|^Nambu|^WordPress|^yacybot|^YahooFeedSeeker|^Yandex|^MovableType|^Baiduspider|SpamBlockerUtility|AOLBuild|Link Checker|Media Center|Creative ZENcast|GoogleToolbar|MEGAUPLOAD|Alexa Toolbar|^User-Agent|SIMBAR|Wazzup|PeoplePal|GTB5|Dealio Toolbar|Zango|MathPlayer|Hotbar|Comcast Install|WebMoney Advisor|OfficeLiveConnector|IEMB3|GTB6|Avant Browser|America Online Browser|SearchSystem|WinTSI|FBSMTWB|NET_lghpset/" 
 **/
 
-$hdconfig['username']="xxxx";		// Your API Username
-$hdconfig['secret']="xxxxxx";				// Your API Secret
-$hdconfig['site_id']="0";			// Your Site ID
+$hdconfig['username']="203a2c5495";		// Your API Username
+$hdconfig['secret']="4Mcy7r7wDFdCDbg2";				// Your API Secret
+$hdconfig['site_id']="50538";			// Your Site ID
 $hdconfig['filesdir']="";				// Ultimate customer cache directory & downloaded files go here.
+$hdconfig['use_local']=false;
 $hdconfig['debug']=false;				// Set to true to log debug messages to syslog.
 $hdconfig['api_server'] = 'localhost';
 ?>
