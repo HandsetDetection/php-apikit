@@ -31,6 +31,7 @@ $hdconfig['username']="your_api_username";		// Your API Username
 $hdconfig['secret']="your_api_secret";				// Your API Secret
 $hdconfig['site_id']="your_site_id";			// Your Site ID
 $hdconfig['filesdir']="";				// Ultimate customer cache directory & downloaded files go here.
+$hdconfig['use_local'] = true;
 $hdconfig['debug']=false;				// Set to true to log debug messages to syslog.
 $hdconfig['api_server'] = 'localhost';
 ?>

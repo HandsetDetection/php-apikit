@@ -28,7 +28,7 @@ echo "</p>";
 
 // If your site has access to download our device specs database only.
 // Note  - Increase default timeout
-/*echo "</p><h1>Archive Information</h1><p>";
+echo "</p><h1>Archive Information</h1><p>";
 $hd3->setTimeout(500);
 if ($hd3->siteFetchArchive()) {
 	$data = $hd3->getRawReply();
@@ -37,6 +37,6 @@ if ($hd3->siteFetchArchive()) {
 	print $hd3->getError();
 }
 $hd3->setTimeout(500);
-echo "</p>"; */
+echo "</p>"; 
 
 ?>

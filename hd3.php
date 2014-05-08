@@ -142,13 +142,13 @@ if (! class_exists('HD3Cache')) {
 		  */
 		function readSpecs() {
 			$dir = $this->dirpath . DS . $this->dirname;
-			foreach(glob($this->dirpath . DS . $this->dirname . DS . 'Device*.json') as $file) {
+			foreach(glob($this->dirpath . DS . $this->dirname . DS . 'Device*.json') as $file) {				
 				$jsonstr = @file_get_contents($file);
 				if ($jsonstr === false || empty($jsonstr)) {
 					return false;
 				}
 				$data['devices'][] = $this->__decode($jsonstr);
-			}
+			}			
 			return $data;
 		}
 
@@ -393,7 +393,7 @@ class HD3 {
 		$this->reply = array();
 		$this->rawreply = array();
 		$this->detectRequest = apache_request_headers();
-		$this->detectRequest['ipaddress'] = $_SERVER['REMOTE_ADDR'];
+		$this->detectRequest['ipaddress'] = '';//$_SERVER['REMOTE_ADDR'];
 		unset($this->detectRequest['Cookie']);
 	}
 	
@@ -405,6 +405,7 @@ class HD3 {
 	  * @return true 
 	  */	
 	function deviceVendors() {
+		//echo $this->config['use_local'];
 		return ($this->config['use_local'] ? $this->_localDeviceVendors() : $this->_remote('device/vendors', null));
 	}
 	
@@ -739,7 +740,7 @@ class HD3 {
 			
 		if (empty($data)) $data = array();
 		$url = "/apiv3/$suburl.json";
-		$attempts = $this->config['retries'] + 1;
+		$attempts = $this->config['retries'] + 1;		
 		$trys = 0;
 		
 		$requestdata = $this->__encode($data);	
@@ -886,7 +887,7 @@ class HD3 {
 	  */		
 	function _localGetSpecs() {
 		$this->lazyLoadCache();
-		$result = $this->Cache->readSpecs();
+		$result = $this->Cache->readSpecs();		
 		if (! $result)
 			return $this->setError(299, "Error : _localGetSpecs cannot read files from cache.");
 		return $result;
@@ -907,9 +908,9 @@ class HD3 {
 		$tmp = array();
 		foreach($data['devices'] as $item) {
 			$tmp[] = $item['Device']['hd_specs']['general_vendor'];
-		}
-		sort($this->reply['vendor']);
+		}		
 		$this->reply['vendor'] = array_unique($tmp);
+		sort($this->reply['vendor']);
 		return $this->setError(0, 'OK');
 	}
 	
