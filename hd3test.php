@@ -1,5 +1,10 @@
 <?php
 require_once('hd3.php');
+/*
+** run: phpunit --bootstrap test/autoload.php HD3Test
+**
+*/
+
 class Hd3Test extends PHPUnit_Framework_TestCase {
 	
 	protected $hd3;
@@ -7,8 +12,8 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	var $config = array ( 
 		'username' => 'your_api_username',
 		'secret' => 'your_api_secret',
-		'site_id' => 'your_site_id',
-		'use_local' => false
+		'site_id' => 'your_api_siteId',
+		'use_local' => true
 	);
 
 	protected function setUp() {
@@ -28,6 +33,18 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$data = $this->hd3->getReply();
 		$this->assertEquals("Nokia", $data['hd_specs']['general_vendor']);
 		$this->assertEquals("Symbian", $data['hd_specs']['general_platform']);
+		$features = $data["hd_specs"]["features"];
+		$this->assertTrue(in_array("Email", $features));
+		$this->assertTrue(in_array("Push to talk", $features));
+		$this->assertTrue(in_array("PDF viewer", $features));
+		$this->assertFalse(in_array("Gun", $features));
+		$connectors = $data["hd_specs"]["connectors"];
+		$this->assertTrue(in_array("TV Out", $connectors));
+		$this->assertTrue(in_array("miniUSB", $connectors));
+		$this->assertArrayHasKey('design_keyboard', $data['hd_specs']);
+		$this->assertArrayHasKey('display_colors', $data['hd_specs']);
+		$this->assertArrayHasKey('memory_slot', $data['hd_specs']);
+		$this->assertContains('GSM1900', $data['hd_specs']['network']);
 	}
 
 	public function testgeoipsiteDetect() {
@@ -35,9 +52,24 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->hd3->siteDetect(array('options' => 'geoip,hd_specs'));
 		$data = $this->hd3->getReply();
 		$this->assertEquals("38.9266", $data['geoip']['latitude']);
+		$this->assertEquals("-77.3936", $data['geoip']['longitude']);
+		$this->assertEquals("Virginia", $data['geoip']['region']);
+		$this->assertEquals("ServerBeach", $data['geoip']['company']);
+		$this->assertEquals("Herndon", $data['geoip']['city']);
 		$this->assertEquals("US", $data['geoip']['countrycode']);
 	}
-
+	
+	public function testdeviceVendors() {
+		$this->hd3->deviceVendors();
+		$data = $this->hd3->getReply();		
+		$vendor = $data['vendor'];
+		$this->assertContains("Apple", $vendor);
+		$this->assertContains("Acer", $vendor);
+		$this->assertContains("BlackBerry", $vendor);
+		$this->assertContains("Cherry Mobile", $vendor);
+		$this->assertEquals(0, $data['status']);
+	}
+	
 	public function testcountdeviceVendors() {		
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();		
@@ -56,35 +88,57 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertContains("Sony", $data['vendor']);
 	}
 
-	public function testnokiasupernovadeviceModels() {
+	public function testnokiadeviceModels() {
 		$this->hd3->deviceModels('Nokia');
 		$data = $this->hd3->getReply();
-		$this->assertContains("Supernova", $data['model']);
+		$model = $data['model'];
+		$this->assertContains("Supernova", $model);
+		$this->assertContains("Lumia 610 NFC", $model);
+		$this->assertContains("3310i", $model);
+		$this->assertContains("Asha 300", $model);
+		$this->assertContains("Evolve", $model);
 	}
 
-	public function testnokiamodeldeviceView() {
+	public function testnokiadeviceView() {
 		$this->hd3->deviceView('Nokia','N95');
 		$data = $this->hd3->getReply();
 		$this->assertEquals("N95", $data['device']['general_model']);
+		$this->assertEquals("9.2", $data['device']['general_platform_version']);
+		$this->assertEquals("99 x 53 x 21", $data['device']['design_dimensions']);		
+		$this->assertEquals("Symbian", $data['device']['general_platform']);
+		$network = $data['device']['network'];
+		$this->assertContains("Bluetooth 2.0", $network);
+		$this->assertContains("HSDPA2100", $network);
+		$this->assertContains("GPRS Class 10", $network);
+		$this->assertContains("802.11g", $network);
+		$this->assertContains("EDGE Class 32", $network);		
+		$features = $data['device']['features'];
+		$this->assertContains("Dual slide design", $features);
+		$this->assertContains("PDF viewer", $features);
+		$this->assertContains("Picture ID", $features);
+		$this->assertContains("Multiple numbers per contact", $features);
+		$this->assertContains("Accelerometer", $features);		
+		$this->assertArrayHasKey('memory_internal', $data['device']);
+		$this->assertArrayHasKey('connectors', $data['device']);
+		$this->assertArrayHasKey('general_cpu', $data['device']);
+		$this->assertArrayHasKey('display_colors', $data['device']);
+		$this->assertArrayHasKey('memory_slot', $data['device']);
 	}
 
-	public function testnokiaplatformdeviceView() {
-		$this->hd3->deviceView('Nokia','N95');
-		$data = $this->hd3->getReply();
-		$this->assertEquals("Symbian", $data['device']['general_platform']);
-	}
-	
-	public function testnokiafeaturesdeviceView() {
-		$this->hd3->deviceView('Nokia','N95');
-		$data = $this->hd3->getReply();
-		$this->assertContains("Email", $data['device']['features']);
-	}
-	
 	public function testsanyodeviceWhatHas() {
 		$this->hd3->deviceWhatHas('network','CDMA');
 		$data = $this->hd3->getReply();
 		$this->assertEquals("Sanyo", $data['devices'][5]['general_vendor']);
 		$this->assertEquals("SCP-550CN", $data['devices'][5]['general_model']);
+		$this->assertEquals("Pantech", $data['devices'][1896]['general_vendor']);
+		$this->assertEquals("IM-A730S", $data['devices'][1896]['general_model']);
+		$this->assertEquals("DoCoMo", $data['devices'][301]['general_vendor']);
+		$this->assertEquals("N701iECO", $data['devices'][301]['general_model']);
+		$this->assertEquals("Kyocera", $data['devices'][322]['general_vendor']);
+		$this->assertEquals("K483JLC", $data['devices'][322]['general_model']);
 	}	
 } 
+
+#=end
+
 ?>
