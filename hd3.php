@@ -393,7 +393,7 @@ class HD3 {
 		$this->reply = array();
 		$this->rawreply = array();
 		$this->detectRequest = apache_request_headers();
-		$this->detectRequest['ipaddress'] = '';//$_SERVER['REMOTE_ADDR'];
+		$this->detectRequest['ipaddress'] = $_SERVER['REMOTE_ADDR'];
 		unset($this->detectRequest['Cookie']);
 	}
 	
@@ -404,8 +404,7 @@ class HD3 {
 	  *
 	  * @return true 
 	  */	
-	function deviceVendors() {
-		//echo $this->config['use_local'];
+	function deviceVendors() {		
 		return ($this->config['use_local'] ? $this->_localDeviceVendors() : $this->_remote('device/vendors', null));
 	}
 	

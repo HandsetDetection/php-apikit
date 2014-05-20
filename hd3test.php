@@ -4,7 +4,6 @@ require_once('hd3.php');
 ** run: phpunit --bootstrap test/autoload.php HD3Test
 **
 */
-
 class Hd3Test extends PHPUnit_Framework_TestCase {
 	
 	protected $hd3;
@@ -21,6 +20,18 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	}	
 
 	protected function tearDown() { }
+	
+	public function testHD3instanceOf() {
+		$this->assertInstanceOf('HD3', $this->hd3);		
+		$this->assertInternalType('object', $this->hd3);		
+		$this->assertContainsOnlyInstancesOf('HD3', array(new HD3(), new HD2(), new HD()));				
+	}
+	
+	public function testHD3Attributes() {
+		$this->assertObjectHasAttribute('realm', new HD3);
+		$this->assertClassHasAttribute('configFile', 'HD3');
+		$this->assertClassHasStaticAttribute('rawreply', 'HD3');
+	}
 	
 	public function testsiteDetect() {
 		$this->assertFalse($this->hd3->siteDetect());
@@ -44,8 +55,11 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('design_keyboard', $data['hd_specs']);
 		$this->assertArrayHasKey('display_colors', $data['hd_specs']);
 		$this->assertArrayHasKey('memory_slot', $data['hd_specs']);
-		$this->assertContains('GSM1900', $data['hd_specs']['network']);
-	}
+		$this->assertContains('GSM1900', $data['hd_specs']['network']);				
+		foreach(array('RealVideo 9', 'H.264', 'MPEG4', '3GPP') as $media) {
+			$this->assertContains($media, $data['hd_specs']['media_videoplayback']);
+		}		
+	} 
 
 	public function testgeoipsiteDetect() {
 		$this->hd3->setDetectVar('ipaddress','64.34.165.180');
@@ -68,6 +82,10 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertContains("BlackBerry", $vendor);
 		$this->assertContains("Cherry Mobile", $vendor);
 		$this->assertEquals(0, $data['status']);
+		$vendors = current($data);
+		foreach(array('Just5', 'Nokia', 'Asus', 'Acer', 'AOC', 'Tecno', 'Optimus', 'MyPhone', 'Kyocera', 'Gateway') as $vendor) {
+			$this->assertContains($vendor, $vendors);
+		}
 	}
 	
 	public function testcountdeviceVendors() {		
@@ -82,7 +100,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertContains("Samsung", $data['vendor']);
 	}
 
-	public function testburgerdeviceVendors() {
+	public function testsonydeviceVendors() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();
 		$this->assertContains("Sony", $data['vendor']);
@@ -96,9 +114,17 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertContains("Lumia 610 NFC", $model);
 		$this->assertContains("3310i", $model);
 		$this->assertContains("Asha 300", $model);
-		$this->assertContains("Evolve", $model);
+		$this->assertContains("Evolve", $model);		
 	}
-
+	
+	public function testappledeviceModels() {
+		$this->hd3->deviceModels('Apple');
+		$models = current($this->hd3->getReply());
+		foreach(array('iPhone 5S', 'iPod touch 3rd generation', 'iPad 3', 'iPad Air') as $model) {
+			$this->assertContains($model, $models);
+		}
+	}
+	
 	public function testnokiadeviceView() {
 		$this->hd3->deviceView('Nokia','N95');
 		$data = $this->hd3->getReply();
@@ -136,9 +162,17 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("N701iECO", $data['devices'][301]['general_model']);
 		$this->assertEquals("Kyocera", $data['devices'][322]['general_vendor']);
 		$this->assertEquals("K483JLC", $data['devices'][322]['general_model']);
+		$dataVendors = current($data);
+		$vendors = array();
+		foreach($dataVendors as $vendor) {
+			$vendors[] = $vendor['general_vendor'];
+		}
+		$vendors = array_unique($vendors);
+		foreach(array('Huawei', 'UTStarcom', 'SmartQ', 'Cherry Mobile', 'Motorola',
+			'HTC', 'WellcoM', 'ZTE') as $vendor) {
+			$this->assertContains($vendor, $vendors);
+		}
 	}	
 } 
 
-#=end
 
-?>
