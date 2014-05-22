@@ -5,7 +5,7 @@ require_once('hd3.php');
 **
 */
 class Hd3Test extends PHPUnit_Framework_TestCase {
-	
+
 	protected $hd3;
 
 	var $config = array ( 
@@ -15,28 +15,53 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		'use_local' => true
 	);
 
+	/**	  
+	  *
+	  * Setup HD3 class first
+	  *	  
+	  */
 	protected function setUp() {
 		$this->hd3 = new HD3($this->config);	
 	}	
 
 	protected function tearDown() { }
 	
+	/**	  
+	  *
+	  * Test HD3 instances
+	  *	  
+	  */
 	public function testHD3instanceOf() {
 		$this->assertInstanceOf('HD3', $this->hd3);		
 		$this->assertInternalType('object', $this->hd3);		
 		$this->assertContainsOnlyInstancesOf('HD3', array(new HD3(), new HD2(), new HD()));				
 	}
 	
+	/**	  
+	  *
+	  * Test HD3 attributes
+	  *	  
+	  */
 	public function testHD3Attributes() {
 		$this->assertObjectHasAttribute('realm', new HD3);
 		$this->assertClassHasAttribute('configFile', 'HD3');
 		$this->assertClassHasStaticAttribute('rawreply', 'HD3');
 	}
 	
+	/**	  
+	  *
+	  * Test default site detect
+	  *	  
+	  */
 	public function testsiteDetect() {
 		$this->assertFalse($this->hd3->siteDetect());
 	} 
-
+	
+	/**	  
+	  *
+	  * Test device nokia site detect
+	  *	  
+	  */
 	public function testnokiasiteDetect() {
 		$this->hd3->setDetectVar('user-agent','Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN95-3/20.2.011 Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413');
 		$this->hd3->setDetectVar('x-wap-profile','http://nds1.nds.nokia.com/uaprof/NN95-1r100.xml');
@@ -60,7 +85,12 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 			$this->assertContains($media, $data['hd_specs']['media_videoplayback']);
 		}		
 	} 
-
+	
+	/**	  
+	  *
+	  * Test GEOIP site detect
+	  *	  
+	  */
 	public function testgeoipsiteDetect() {
 		$this->hd3->setDetectVar('ipaddress','64.34.165.180');
 		$this->hd3->siteDetect(array('options' => 'geoip,hd_specs'));
@@ -73,6 +103,11 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("US", $data['geoip']['countrycode']);
 	}
 	
+	/**	  
+	  *
+	  * Test device vendors
+	  *	  
+	  */
 	public function testdeviceVendors() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();		
@@ -88,25 +123,45 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 	
+	/**	  
+	  *
+	  * Test count the device vendor
+	  *	  
+	  */
 	public function testcountdeviceVendors() {		
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();		
 		$this->assertGreaterThan(0, count($data['vendor']));
 	}
-
-	public function testsamsungdeviceVendors() {
+	
+	/**	  
+	  *
+	  * Test device model Samsung 
+	  *	  
+	  */
+	public function testsamsungdeviceVendor() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();
 		$this->assertContains("Samsung", $data['vendor']);
 	}
-
-	public function testsonydeviceVendors() {
+	
+	/**	  
+	  *
+	  * Test device vendor Nokia 
+	  *	  
+	  */
+	public function testsonydeviceVendor() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();
 		$this->assertContains("Sony", $data['vendor']);
 	}
-
-	public function testnokiadeviceModels() {
+	
+	/**	  
+	  *
+	  * Test device model Nokia 
+	  *	  
+	  */
+	public function testnokiadeviceModel() {
 		$this->hd3->deviceModels('Nokia');
 		$data = $this->hd3->getReply();
 		$model = $data['model'];
@@ -117,7 +172,12 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertContains("Evolve", $model);		
 	}
 	
-	public function testappledeviceModels() {
+	/**	  
+	  *
+	  * Test device model Apple 
+	  *	  
+	  */
+	public function testappledeviceModel() {
 		$this->hd3->deviceModels('Apple');
 		$models = current($this->hd3->getReply());
 		foreach(array('iPhone 5S', 'iPod touch 3rd generation', 'iPad 3', 'iPad Air') as $model) {
@@ -125,6 +185,11 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 	
+	/**	  
+	  *
+	  * Test Nokia N95 device view
+	  *	  
+	  */
 	public function testnokiadeviceView() {
 		$this->hd3->deviceView('Nokia','N95');
 		$data = $this->hd3->getReply();
@@ -150,7 +215,12 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('display_colors', $data['device']);
 		$this->assertArrayHasKey('memory_slot', $data['device']);
 	}
-
+	
+	/**
+	  * 	  
+	  * Test network cdma devices
+	  *	  
+	  */
 	public function testsanyodeviceWhatHas() {
 		$this->hd3->deviceWhatHas('network','CDMA');
 		$data = $this->hd3->getReply();
@@ -174,5 +244,3 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 		}
 	}	
 } 
-
-
