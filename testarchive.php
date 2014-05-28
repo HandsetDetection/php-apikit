@@ -30,13 +30,21 @@ echo "</p>";
 // Note  - Increase default timeout
 echo "</p><h1>Archive Information</h1><p>";
 $hd3->setTimeout(500);
+$time_start = getmicrotime();
 if ($hd3->siteFetchArchive()) {
 	$data = $hd3->getRawReply();
 	echo "Downloaded ".strlen($data)." bytes";
 } else {
 	print $hd3->getError();
 }
+$time_elapsed = getmicrotime() - $time_start;
+echo "<br/>Time elapsed " . $time_elapsed
 $hd3->setTimeout(500);
 echo "</p>"; 
+
+function getmicrotime(){
+	list($usec, $sec) = explode(" ",microtime());
+	return ((float)$usec + (float)$sec);
+}
 
 ?>
