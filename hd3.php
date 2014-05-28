@@ -224,6 +224,8 @@ class HD3 {
 		'retries' => 3
 	);	
 	
+	var $tree = array();
+	
 	 /**
 	  * This is the main constructor for the class HD3
 	  *
@@ -251,7 +253,6 @@ class HD3 {
 			echo 'Error : Download a premade config file for this site from your "My Sites" section on your <a href="http://www.handsetdetection.com/users/index">My Profile</a> page';
 			exit(1);
 		}
-
 		if (empty($this->config['filesdir'])) $this->config['filesdir'] = dirname(__FILE__);
 		$this->match_filter = preg_split('//', $this->config['match_filter'], null, PREG_SPLIT_NO_EMPTY);
 		$this->debug = $this->config['debug'];
@@ -498,7 +499,7 @@ class HD3 {
 	  *
 	  * @return true 
 	  */		
-	function siteDetect($data=null) {
+	function siteDetect($data=null) {		
 		$id = (int) (empty($data['id']) ? $this->config['site_id'] : $data['id']);
 		$requestBody = array_merge($this->detectRequest, (array) $data);
 		
@@ -506,12 +507,11 @@ class HD3 {
 		// Prevent bots & spiders (search engines) chalking up high detection counts.
 		if (! empty($requestBody['user-agent']) && preg_match($this->config['non_mobile'], $requestBody['user-agent'])) {
 			return $this->setError(301, 'Notice : FastFail, Probable bot, spider or script');
-		}
-
-		if ($this->config['use_local']) {
+		}				
+		if ($this->config['use_local']) {			
 			if ($this->debug) $this->__log("Starting Local Detection");
 			$result = $this->_localSiteDetect($requestBody);
-			if ($this->debug) $this->__log("Finishing Local Detection : result is ($result)");
+			if ($this->debug) $this->__log("Finishing Local Detection : result is ($result)");			
 			return $result;
 		} else {
 			$result = $this->_remote("site/detect/$id", $requestBody);
@@ -1028,7 +1028,7 @@ class HD3 {
 		$this->rawreply = array();
 		$this->setError(0, '');
 		$device = null;
-		$id = $this->_getDevice($headers);
+		$id = $this->_getDevice($headers);		
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");
 		
@@ -1083,12 +1083,15 @@ class HD3 {
 	  *
 	  * @return true 
 	  */		
-	function _getDevice($headers) {
+	function _getDevice($headers) {				
 		// Remember the agent for generic matching later.
 		$agent = "";
 
 		// Convert all headers to lowercase 
 		$headers = array_change_key_case($headers);
+		
+		//echo '<pre>';
+		//print_r($headers);
 		
 		if ($this->debug) $this->__log('Working with headers of '.print_r($headers, true));
 		if ($this->debug) $this->__log('Start Checking Opera Special headers');
@@ -1125,7 +1128,7 @@ class HD3 {
 		}
 		
 		if ($this->debug) $this->__log('End x-wap-profile check - no profile found');
-
+		
 		// Various types of user-agent x-header matching, order is important here (for the first 3).
 		// Choose any x- headers .. skip the others.
 		$order = array('x-operamini-phone-ua', 'x-mobile-ua', 'user-agent');
@@ -1226,7 +1229,7 @@ class HD3 {
 	function _match($header, $newvalue, $treetag) {
 		$f = 0;
 		$r = 0;
-		
+								
 		if ($this->debug) $this->__log("Looking for $treetag $newvalue"); 
 
 		if ($newvalue == "") {
@@ -1237,14 +1240,13 @@ class HD3 {
 		if (strlen($newvalue) < 4) {
 			if ($this->debug) $this->__log("Value ($newvalue) too small - returning false");
 			return false;
-		}
-
-		if ($this->debug) $this->__log("Loading match branch"); 
-		$branch = $this->_getBranch($treetag);
+		}			
+		if ($this->debug) $this->__log("Loading match branch"); 		
+		$branch = $this->_getBranch($treetag);				
 		if (empty($branch)) {
 			if ($this->debug) $this->__log("Match branch ($treetag) empty - returning false");
 			return false;
-		}
+		}						
 		if ($this->debug) $this->__log("Match branch loaded");		
 		
 		if ($header == 'user-agent') {		
@@ -1283,14 +1285,14 @@ class HD3 {
 	  *
 	  * @return true 
 	  */		
-	function _getBranch($branch) {
+	function _getBranch($branch) {					
 		if (! empty($this->tree[$branch])) {
 			if ($this->debug) $this->__log("$branch fetched from memory");
 			return $this->tree[$branch];
 		}
 		
 		$this->lazyLoadCache();
-		$tmp = $this->Cache->read($branch);
+		$tmp = $this->Cache->read($branch);		
 		if ($tmp !== false) {
 			if ($this->debug) $this->__log("$branch fetched from cache");
 			$this->tree[$branch] = $tmp;
