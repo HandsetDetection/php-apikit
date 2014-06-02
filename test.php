@@ -109,7 +109,7 @@ TAG;
 		echo "<div style=\"color:#f00;\">Test Complete</div>";
 		$dps = $this->count / round($this->time,4);
 		$dps = round($dps, 0);
-		echo "<h3>Elapsed time: ".$this->time."ms, Total detections: $this->count, Detections per second: $dps</h3>";		
+		echo "<h3>Elapsed time: ".round($this->time,4)."s, Total detections: $this->count, Detections per second: $dps</h3>";		
 	}
 	
 }

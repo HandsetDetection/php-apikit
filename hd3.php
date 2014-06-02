@@ -672,14 +672,15 @@ class HD3 {
 	  *
 	  * @return true 
 	  */		
-	function siteFetchArchive($id=null) {
+	function siteFetchArchive($id=null) {		
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
-		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');
+		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');	
+		
 		if (! $status)
 			return false;
 
-		$data = $this->getRawReply();
-
+		$data = $this->getRawReply();		
+			
 		if (empty($data)) 
 			return $this->setError(299, 'Error : siteFetchArchive failed. Bad Download. File is zero length');
 		elseif (strlen($data) < 9000000) {
@@ -739,16 +740,16 @@ class HD3 {
 			
 		if (empty($data)) $data = array();
 		$url = "/apiv3/$suburl.json";
+		
 		$attempts = $this->config['retries'] + 1;		
 		$trys = 0;
 		
-		$requestdata = $this->__encode($data);	
+		$requestdata = $this->__encode($data);			
 		
 		$success = false;
-		while($trys++ < $attempts && $success === false) {
+		while($trys++ < $attempts && $success === false) {			
 			if ($this->debug) $this->__log("Connection attempt $trys");			
-			$this->rawreply = $this->_post($this->config['api_server'], $url, $requestdata);
-		
+			$this->rawreply = $this->_post($this->config['api_server'], $url, $requestdata);			
 			if ($this->rawreply === false) {
 				$this->setError(299, "Error : Connection to $url Failed");
 			} else {
@@ -778,13 +779,12 @@ class HD3 {
 	// From http://www.enyem.com/wiki/index.php/Send_POST_request_(PHP)
 	// PHP 4/5 http post function
 	// And modified to fit	
-	function _post($server, $url, $jsondata) {
-
+	function _post($server, $url, $jsondata) {				
 		$host = $server;
 		$port = 80;
 		$timeout = $this->config['timeout'];
 		$uri = parse_url($url);
-		$realm = $this->realm;
+		$realm = $this->realm;		
 		$username = $this->config['username'];
 		$nc = "00000001";
 		$snonce = $this->realm;
@@ -801,6 +801,7 @@ class HD3 {
 		$ha1 = md5($username.':'.$realm.':'.$this->config['secret']);
 		$ha2 = md5('POST:'.$uri['path']);
 		$response = md5($ha1.':'.$snonce.':'.$nc.':'.$cnonce.':'.$qop.':'.$ha2);
+		
 		// * Connect *
 		//echo "Connecting to $host, port $port, url $url<br/>";
 		$errno = ""; 
@@ -831,8 +832,8 @@ class HD3 {
             'opaque="'.$realm.'"'."\r\n";
 		$out .= "Content-length: " . strlen($jsondata) . "\r\n\r\n";
 		$out .= "$jsondata\r\n\r\n";
-
-		if ($this->debug) $this->__log("Sending : $out");
+		
+		if ($this->debug) $this->__log("Sending : $out");		
 		fputs($fp, $out);
 		
 		$reply = "";
@@ -866,6 +867,7 @@ class HD3 {
 		fclose($fp); 
 
    		$hunks = explode("\r\n\r\n",trim($reply));
+		
    		if (!is_array($hunks) or count($hunks) < 2)
 			return $this->setError(299, "Error : Reply is too short.");
 
