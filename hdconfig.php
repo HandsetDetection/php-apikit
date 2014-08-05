@@ -30,8 +30,8 @@
 $hdconfig['username']="**your api username**";					# Your API Username
 $hdconfig['secret']="**your api secret**";				# Your API Secret
 $hdconfig['site_id']="**your api siteId**";						# Your Site ID
-$hdconfig['use_local']=true;
+$hdconfig['use_local']=false;
 $hdconfig['filesdir']="";							# Ultimate customer cache directory & downloaded files go here.
 $hdconfig['debug']=false;							# Set to true to log debug messages to syslog.
-$hdconfig['api_server'] = 'localhost';
+$hdconfig['api_server'] = 'api.handsetdetection.com';
 ?>
