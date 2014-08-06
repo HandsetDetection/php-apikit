@@ -74,7 +74,7 @@ if (! class_exists('HD3Cache')) {
 	class HD3Cache {
 		var $prefix = 'hd34';
 		var $dirpath = "";
-		var $dirname = "hd34cache";
+		public $dirname = "hd34cache";
 		var $duration = 7200;
 
 		function getCacheDir() { return $this->dirpath . DS . $this->dirname; }
@@ -95,11 +95,11 @@ if (! class_exists('HD3Cache')) {
 		  *
 		  * @return $data
 		  */
-		function read($key) {
-			$data = apc_fetch($this->prefix.$key);										
+		function read($key) {						
+			$data = apc_fetch($this->prefix.$key);											
 			// Try file cache
 			if (empty($data)) {
-				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');
+				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');								
 				if ($jsonstr === false || empty($jsonstr)) {
 					return false;
 				}
@@ -298,8 +298,8 @@ class HD3 {
 	function setError($status, $msg, $class=null) { 
 		$this->error = $msg; 
 		if ($this->debug) $this->__log($msg); 
-		$this->reply['status'] = $status;
-		$this->reply['message'] = $msg; 
+		//$this->reply['status'] = $status;
+		//$this->reply['message'] = $msg; 
 		if (! empty($class)) $this->reply['class'] = $class;
 		if ($status > 0) return false;
 		return true;
@@ -508,8 +508,8 @@ class HD3 {
 			return $this->setError(301, 'Notice : FastFail, Probable bot, spider or script');
 		}				
 		if ($this->config['use_local']) {						
-			if ($this->debug) $this->__log("Starting Local Detection");
-			$result = $this->_localSiteDetect($requestBody);								
+			if ($this->debug) $this->__log("Starting Local Detection");						
+			$result = $this->_localSiteDetect($requestBody);													
 			if ($this->debug) $this->__log("Finishing Local Detection : result is ($result)");			
 			return $result;
 		} else {			
@@ -654,11 +654,17 @@ class HD3 {
 	  *
 	  * @return $result 
 	  */		
-	function _getCacheSpecs($id, $type) {		
+	function _getCacheSpecs($id, $type) {				
 		$this->lazyLoadCache();						
 		if (! $result = $this->Cache->read($type.'_'.$id)) {
 			if ($this->debug) $this->__log("Id $id for $type not found");
 		}		
+		unset($result["Device"]["_id"]);				
+		$result = @$result["Device"];				
+		//echo '<pre>';
+		//print_r($result);
+		//echo '</pre>';
+		//die;
 		return $result;
 	}
 	
@@ -671,7 +677,8 @@ class HD3 {
 	  */		
 	function siteFetchArchive($id=null) {		
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
-		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');	
+
+		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');			
 		
 		if (! $status)
 			return false;
@@ -693,9 +700,20 @@ class HD3 {
 
 		if (class_exists('ZipArchive')) {
 			$this->lazyLoadCache();
-			$zip = new ZipArchive();
+			$zip = new ZipArchive();			
 			if ($zip->open($this->config['filesdir'] . DS . "ultimate.zip") === TRUE) {
-				$zip->extractTo($this->Cache->getCacheDir());
+				for($i = 0; $i < $zip->numFiles; $i++) {
+					$filename = $zip->getNameIndex($i);					
+					$filename = str_replace(":","_", $filename);				
+					$str = explode("_", $filename);					
+					if(strpos($filename, "_")) { 
+						$zip->renameIndex($i, @$str[0].'_'.@$str[1]);					
+						$zip->extractTo(getcwd()."/{$this->Cache->dirname}/", $filename);
+					} else {
+						$zip->extractTo(getcwd()."/{$this->Cache->dirname}/", $filename);
+					}     			    				
+					//$zip->extractTo($this->Cache->getCacheDir()."\\".$filename);
+				}
     			$zip->close();
 				return true;
 			} else {
@@ -863,7 +881,9 @@ class HD3 {
 
 		fclose($fp); 
 
-   		$hunks = explode("\r\n\r\n",trim($reply));
+   		//$hunks = explode("\r\n\r\n",trim($reply));
+
+   		$hunks = explode("\r\n\r\n",$reply);
 		
    		if (!is_array($hunks) or count($hunks) < 2)
 			return $this->setError(299, "Error : Reply is too short.");
@@ -1027,10 +1047,10 @@ class HD3 {
 		$this->rawreply = array();
 		$this->setError(0, '');
 		$device = null;
-		$id = $this->_getDevice($headers);				
+		$id = $this->_getDevice($headers);								
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");		
-			$device = $this->_getCacheSpecs($id, 'Device');								
+			$device = $this->_getCacheSpecs($id, 'Device');				
 			if ($device === false) {
 				if ($this->debug) $this->__log("Cache problem : $id not found");
 				return $this->setError(255, "$id not found in cache", 'Unknown');
@@ -1047,7 +1067,8 @@ class HD3 {
 				$platform = $this->_getCacheSpecs($platform_id, 'Extra');
 			if ($browser_id)
 				$browser = $this->_getCacheSpecs($browser_id, 'Extra');
-				
+						
+
 			if ($this->debug) $this->__log("platform ".print_r($platform, true));
 			if ($this->debug) $this->__log("browser".print_r($browser, true));
 
@@ -1065,9 +1086,9 @@ class HD3 {
 				$device['general_browser'] = $platform['general_browser'];
 				$device['general_browser_version'] = $platform['general_browser_version'];	
 			}			
-												
-			$this->reply['hd_specs'] = $device;
-			$this->reply['class'] = (empty($device['general_type']) ? "Unknown" : $device['general_type']);
+															
+			$this->reply = $device;
+			$this->reply['hd_specs']['class'] = (empty($device['hd_specs']['general_type']) ? "Unknown" : $device['hd_specs']['general_type']);
 			$this->devices[$id] = $device;
 			return $this->setError(0, "OK", 'Unknown');
 		}
@@ -1087,7 +1108,7 @@ class HD3 {
 
 		// Convert all headers to lowercase 
 		$headers = array_change_key_case($headers);
-		
+
 		if ($this->debug) $this->__log('Working with headers of '.print_r($headers, true));
 		if ($this->debug) $this->__log('Start Checking Opera Special headers');
 		// Opera mini puts the vendor # model in the header - nice! ... sometimes it puts ? # ? in as well :(
@@ -1104,7 +1125,7 @@ class HD3 {
 		// Profile header matching
 		if ($this->debug) $this->__log('Start Profile Check');
 		if (! empty($headers['profile'])) {
-			$_id = $this->_matchDevice('profile', $headers['profile']);
+			$_id = $this->_matchDevice('profile', $headers['profile']);			
 			if ($_id) {
 				if ($this->debug) $this->__log('End profile check - profile found');
 				return $_id;
@@ -1126,7 +1147,7 @@ class HD3 {
 		
 		// Various types of user-agent x-header matching, order is important here (for the first 3).
 		// Choose any x- headers .. skip the others.
-		$order = array('x-operamini-phone-ua', 'x-mobile-ua', 'user-agent');
+		$order = array('x-operamini-phone-ua', 'x-mobile-ua', 'user-agent');		
 		foreach($headers as $key => $value) {
 			if (! in_array($key, $order) && @$key[0] == 'x' && @$key[1] == '-')
 				$order[] = $key;
@@ -1147,7 +1168,7 @@ class HD3 {
 		}
 
 		// Generic matching - Match of last resort.
-		if ($this->debug) $this->__log('Trying Generic Match');
+		if ($this->debug) $this->__log('Trying Generic Match');		
 		return $this->_matchDevice('user-agent', $agent, true);
 	}
 	
@@ -1162,9 +1183,9 @@ class HD3 {
 	  */		
 	function _matchDevice($header, $value, $generic=0) {
 		// Strip unwanted chars from lower case version of value
-		$value = str_replace($this->match_filter, "", strtolower($value));
-		$treetag = $header.$generic;
-		
+		$value = str_replace($this->match_filter, "", strtolower($value));				
+		$treetag = $header.$generic;		
+
 		return $this->_match($header, $value, $treetag);
 	}
 	
@@ -1237,7 +1258,7 @@ class HD3 {
 			return false;
 		}			
 		if ($this->debug) $this->__log("Loading match branch"); 		
-		$branch = $this->_getBranch($treetag);				
+		$branch = $this->_getBranch($treetag);							
 		if (empty($branch)) {
 			if ($this->debug) $this->__log("Match branch ($treetag) empty - returning false");
 			return false;
@@ -1264,7 +1285,7 @@ class HD3 {
 			// Direct matching strategy
 			if (! empty($branch[$newvalue])) {
 				$node = $branch[$newvalue];
-				if ($this->debug) $this->__log("Match found : $treetag $newvalue ($f/$r)");
+				if ($this->debug) $this->__log("Match found : $treetag $newvalue ($f/$r)");				
 				return $node;
 			}
 		}
@@ -1284,13 +1305,12 @@ class HD3 {
 		if (! empty($this->tree[$branch])) {
 			if ($this->debug) $this->__log("$branch fetched from memory");
 			return $this->tree[$branch];
-		}
-		
+		}		
 		$this->lazyLoadCache();
-		$tmp = $this->Cache->read($branch);		
+		$tmp = $this->Cache->read($branch);			
 		if ($tmp !== false) {
 			if ($this->debug) $this->__log("$branch fetched from cache");
-			$this->tree[$branch] = $tmp;
+			$this->tree[$branch] = $tmp;			
 			return $tmp;
 		}			
 		if ($this->debug) $this->__log("$branch not found");
