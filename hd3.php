@@ -84,7 +84,7 @@ if (! class_exists('HD3Cache')) {
 				if (! mkdir($this->dirpath. DS . $this->dirname)) {
 					return false;
 				}
-			}
+			}			
 			return true;
 		}
 		
@@ -96,8 +96,7 @@ if (! class_exists('HD3Cache')) {
 		  * @return $data
 		  */
 		function read($key) {
-			$data = apc_fetch($this->prefix.$key);
-	
+			$data = apc_fetch($this->prefix.$key);										
 			// Try file cache
 			if (empty($data)) {
 				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');
@@ -141,7 +140,7 @@ if (! class_exists('HD3Cache')) {
 		  * @return $data
 		  */
 		function readSpecs() {
-			$dir = $this->dirpath . DS . $this->dirname;
+			$dir = $this->dirpath . DS . $this->dirname;			
 			foreach(glob($this->dirpath . DS . $this->dirname . DS . 'Device*.json') as $file) {				
 				$jsonstr = @file_get_contents($file);
 				if ($jsonstr === false || empty($jsonstr)) {
@@ -235,7 +234,7 @@ class HD3 {
 	  *
 	  * @return void
 	  */
-	function HD3($config = null) {
+	function HD3($config = null) {		
 		if (! empty($config)) {
 			$this->config = array_merge($this->config, $config);
 		} elseif (! file_exists($this->configFile)) {
@@ -252,7 +251,7 @@ class HD3 {
 			echo 'Error : Please set your username and secret in the hdconfig.php file or in your hd3 constructor config array.<br/>';
 			echo 'Error : Download a premade config file for this site from your "My Sites" section on your <a href="http://www.handsetdetection.com/users/index">My Profile</a> page';
 			exit(1);
-		}
+		}		
 		if (empty($this->config['filesdir'])) $this->config['filesdir'] = dirname(__FILE__);
 		$this->match_filter = preg_split('//', $this->config['match_filter'], null, PREG_SPLIT_NO_EMPTY);
 		$this->debug = $this->config['debug'];
@@ -271,13 +270,13 @@ class HD3 {
 	function lazyLoadCache() {
 		if ($this->debug) $this->__log('lazyLoading Cache Class ');
 		if (empty($this->Cache)) {
-			$this->Cache = new HD3Cache();
-			if (! $this->Cache->setDirectory($this->config['filesdir'])) {
+			$this->Cache = new HD3Cache();								
+			if (! $this->Cache->setDirectory($this->config['filesdir'])) {				
 				if ($this->debug) $this->__log('Failed to create cache directory');
-				return false;
+					return false;
 			}
-		}
-		if ($this->debug) $this->__log('Cache ready');
+		}				
+		if ($this->debug) $this->__log('Cache ready');		
 		return true;
 	}
 
@@ -508,17 +507,17 @@ class HD3 {
 		if (! empty($requestBody['user-agent']) && preg_match($this->config['non_mobile'], $requestBody['user-agent'])) {
 			return $this->setError(301, 'Notice : FastFail, Probable bot, spider or script');
 		}				
-		if ($this->config['use_local']) {			
+		if ($this->config['use_local']) {						
 			if ($this->debug) $this->__log("Starting Local Detection");
-			$result = $this->_localSiteDetect($requestBody);
+			$result = $this->_localSiteDetect($requestBody);								
 			if ($this->debug) $this->__log("Finishing Local Detection : result is ($result)");			
 			return $result;
-		} else {
-			$result = $this->_remote("site/detect/$id", $requestBody);
+		} else {			
+			$result = $this->_remote("site/detect/$id", $requestBody);			
 			if (! $result) {
 				return false;
 			}
-			$reply = $this->getReply();
+			$reply = $this->getReply();			
 			if (isset($reply['status']) && (int) $reply['status'] == 0 || $reply['status'] == "0") {
 				return true;
 			}			
@@ -578,10 +577,8 @@ class HD3 {
 		$str = @file_get_contents($this->config['filesdir'] . DS . "hd3trees.json");
 		if ($str === false || empty($str)) {
 			return $this->setError(299, 'Error : Unable to open trees file hd3trees.json. Is it there ? Are premissions OK ?');
-		}			
-		
+		}					
 		$data = $this->__decode($str);
-
 		$this->lazyLoadCache();
 		foreach($data['trees'] as $key => $branch) {
 			if ($this->debug) $this->__log("Caching ".$key);
@@ -657,9 +654,9 @@ class HD3 {
 	  *
 	  * @return $result 
 	  */		
-	function _getCacheSpecs($id, $type) {
-		$this->lazyLoadCache();
-		if (! $result = $this->Cache->read($type.':'.$id)) {
+	function _getCacheSpecs($id, $type) {		
+		$this->lazyLoadCache();						
+		if (! $result = $this->Cache->read($type.'_'.$id)) {
 			if ($this->debug) $this->__log("Id $id for $type not found");
 		}		
 		return $result;
@@ -887,8 +884,8 @@ class HD3 {
 	  * @return $result 
 	  */		
 	function _localGetSpecs() {
-		$this->lazyLoadCache();
-		$result = $this->Cache->readSpecs();		
+		$this->lazyLoadCache();						
+		$result = $this->Cache->readSpecs();						
 		if (! $result)
 			return $this->setError(299, "Error : _localGetSpecs cannot read files from cache.");
 		return $result;
@@ -1025,16 +1022,15 @@ class HD3 {
 	  *
 	  * @return true 
 	  */			
-	function _localSiteDetect($headers) {
+	function _localSiteDetect($headers) {		
 		$this->reply = array();
 		$this->rawreply = array();
 		$this->setError(0, '');
 		$device = null;
-		$id = $this->_getDevice($headers);		
+		$id = $this->_getDevice($headers);				
 		if ($id) {
-			if ($this->debug) $this->__log("Looking to read $id from cache");
-		
-			$device = $this->_getCacheSpecs($id, 'Device');
+			if ($this->debug) $this->__log("Looking to read $id from cache");		
+			$device = $this->_getCacheSpecs($id, 'Device');								
 			if ($device === false) {
 				if ($this->debug) $this->__log("Cache problem : $id not found");
 				return $this->setError(255, "$id not found in cache", 'Unknown');
@@ -1091,9 +1087,6 @@ class HD3 {
 
 		// Convert all headers to lowercase 
 		$headers = array_change_key_case($headers);
-		
-		//echo '<pre>';
-		//print_r($headers);
 		
 		if ($this->debug) $this->__log('Working with headers of '.print_r($headers, true));
 		if ($this->debug) $this->__log('Start Checking Opera Special headers');
