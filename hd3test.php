@@ -16,11 +16,11 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	var $config = array ( 
 		'username' => 'your_api_username',
 		'secret' => 'your_api_secret',
-		'site_id' => 'your_api_siteId',
+		'site_id' => 'your_api_site_id',
 		'use_local' => true
 	);
 
-	var $header1 = "Mozilla/4.0 (compatible; MSIE 5.0; S60/3.0 NokiaN73-1/2.0(2.0617.0.0.7) Profile/MIDP-2.0 Configuration/CLDC-1.1)";
+	var $header1 = "Mozilla/5.0 (iPad; CPU OS 7_0_6 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B141 Safari/8536.25";
 
 	var $header2 = "Opera/9.80 (J2ME/MIDP; Opera Mini/4.2.24721/26.984; U; en) Presto/2.8.119 Version/10.54";
 
@@ -132,7 +132,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test HD3 instances
 	  *	  
 	  */
-	public function ignore_testHD3instanceOf() {
+	public function testHD3instanceOf() {
 		$this->assertInstanceOf('HD3', $this->hd3);		
 		$this->assertInternalType('object', $this->hd3);		
 		$this->assertContainsOnlyInstancesOf('HD3', array(new HD3(), new HD2(), new HD()));				
@@ -143,7 +143,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test HD3 attributes
 	  *	  
 	  */
-	public function ignore_testHD3Attributes() {
+	public function testHD3Attributes() {
 		$this->assertObjectHasAttribute('realm', new HD3);
 		$this->assertClassHasAttribute('configFile', 'HD3');
 		$this->assertClassHasStaticAttribute('rawreply', 'HD3');
@@ -154,7 +154,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test default site detect
 	  *	  
 	  */
-	public function ignore_testsiteDetect() {
+	public function testsiteDetect() {
 		$this->assertFalse($this->hd3->siteDetect());
 	} 
 	
@@ -163,7 +163,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device nokia site detect
 	  *	  
 	  */
-	public function ignore_testnokiasiteDetect() {
+	public function testnokiasiteDetect() {
 		$this->hd3->setDetectVar('user-agent','Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN95-3/20.2.011 Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413');
 		$this->hd3->setDetectVar('x-wap-profile','http://nds1.nds.nokia.com/uaprof/NN95-1r100.xml');
 		$this->hd3->siteDetect();
@@ -192,7 +192,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test GEOIP site detect
 	  *	  
 	  */
-	public function ignore_testgeoipsiteDetect() {
+	public function testgeoipsiteDetect() {
 		$this->hd3->setDetectVar('ipaddress','64.34.165.180');
 		$this->hd3->siteDetect(array('options' => 'geoip,hd_specs'));
 		$data = $this->hd3->getReply();
@@ -209,7 +209,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device vendors
 	  *	  
 	  */
-	public function ignore_testdeviceVendors() {
+	public function testdeviceVendors() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();		
 		$vendor = $data['vendor'];
@@ -229,7 +229,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test count the device vendor
 	  *	  
 	  */
-	public function ignore_testcountdeviceVendors() {		
+	public function testcountdeviceVendors() {		
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();		
 		$this->assertGreaterThan(0, count($data['vendor']));
@@ -240,7 +240,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device model Samsung 
 	  *	  
 	  */
-	public function ignore_testsamsungdeviceVendor() {
+	public function testsamsungdeviceVendor() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();
 		$this->assertContains("Samsung", $data['vendor']);
@@ -251,7 +251,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device vendor Nokia 
 	  *	  
 	  */
-	public function ignore_testsonydeviceVendor() {
+	public function testsonydeviceVendor() {
 		$this->hd3->deviceVendors();
 		$data = $this->hd3->getReply();
 		$this->assertContains("Sony", $data['vendor']);
@@ -262,7 +262,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device model Nokia 
 	  *	  
 	  */
-	public function ignore_testnokiadeviceModel() {
+	public function testnokiadeviceModel() {
 		$this->hd3->deviceModels('Nokia');
 		$data = $this->hd3->getReply();
 		$model = $data['model'];
@@ -278,7 +278,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test device model Apple 
 	  *	  
 	  */
-	public function ignore_testappledeviceModel() {
+	public function testappledeviceModel() {
 		$this->hd3->deviceModels('Apple');
 		$models = current($this->hd3->getReply());
 		foreach(array('iPhone 5S', 'iPod touch 3rd generation', 'iPad 3', 'iPad Air') as $model) {
@@ -291,7 +291,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test Nokia N95 device view
 	  *	  
 	  */
-	public function ignore_testnokiadeviceView() {
+	public function testnokiadeviceView() {
 		$this->hd3->deviceView('Nokia','N95');
 		$data = $this->hd3->getReply();
 		$this->assertEquals("N95", $data['device']['general_model']);
@@ -322,7 +322,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	  * Test network cdma devices
 	  *	  
 	  */
-	public function ignore_testsanyodeviceWhatHas() {
+	public function testsanyodeviceWhatHas() {
 		$this->hd3->deviceWhatHas('network','CDMA');
 		$data = $this->hd3->getReply();
 		$this->assertEquals("Sanyo", $data['devices'][5]['general_vendor']);
