@@ -95,15 +95,17 @@ if (! class_exists('HD3Cache')) {
 		  *
 		  * @return $data
 		  */
-		function read($key) {						
-			$data = apc_fetch($this->prefix.$key);											
+		function read($key) {									
+			$data = apc_fetch($this->prefix.$key);		
 			// Try file cache
-			if (empty($data)) {
-				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');								
+			if (empty($data)) {				
+				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');		
 				if ($jsonstr === false || empty($jsonstr)) {
 					return false;
 				}
 				$data = $this->__decode($jsonstr);
+
+
 				// Write to APC as well (for next time).
 				if (! empty($data))
 					apc_add($this->prefix.$key, $data, $this->duration);
@@ -234,7 +236,7 @@ class HD3 {
 	  *
 	  * @return void
 	  */
-	function HD3($config = null) {		
+	function HD3($config = null) {				
 		if (! empty($config)) {
 			$this->config = array_merge($this->config, $config);
 		} elseif (! file_exists($this->configFile)) {
@@ -298,8 +300,8 @@ class HD3 {
 	function setError($status, $msg, $class=null) { 
 		$this->error = $msg; 
 		if ($this->debug) $this->__log($msg); 
-		//$this->reply['status'] = $status;
-		//$this->reply['message'] = $msg; 
+		$this->reply['status'] = $status;
+		$this->reply['message'] = $msg; 
 		if (! empty($class)) $this->reply['class'] = $class;
 		if ($status > 0) return false;
 		return true;
@@ -654,17 +656,10 @@ class HD3 {
 	  *
 	  * @return $result 
 	  */		
-	function _getCacheSpecs($id, $type) {				
-		$this->lazyLoadCache();						
-		if (! $result = $this->Cache->read($type.'_'.$id)) {
-			if ($this->debug) $this->__log("Id $id for $type not found");
-		}		
-		unset($result["Device"]["_id"]);				
-		$result = @$result["Device"];				
-		//echo '<pre>';
-		//print_r($result);
-		//echo '</pre>';
-		//die;
+	function _getCacheSpecs($id, $type) {					
+		$this->lazyLoadCache();		
+		$result = array();
+		$result[] = $this->Cache->read($type.'_'.$id);			
 		return $result;
 	}
 	
@@ -1047,10 +1042,13 @@ class HD3 {
 		$this->rawreply = array();
 		$this->setError(0, '');
 		$device = null;
-		$id = $this->_getDevice($headers);								
+		$id = $this->_getDevice($headers);							
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");		
-			$device = $this->_getCacheSpecs($id, 'Device');				
+			$device = $this->_getCacheSpecs($id, 'Device');			
+			unset($device[0]["Device"]["_id"]);
+			$device = $device[0]["Device"];			
+
 			if ($device === false) {
 				if ($this->debug) $this->__log("Cache problem : $id not found");
 				return $this->setError(255, "$id not found in cache", 'Unknown');
@@ -1060,41 +1058,72 @@ class HD3 {
 
 			// Perform Browser & OS (platform) detection
 			$platform = array();
+			$general_platform = null;
+			$general_platform_version = null;
+			$general_browser = null;
+			$general_browser_version = null;
+			$general_language = "en-us";
+			$general_language_full = "English (United States)";
 			$browser = array();
-			$platform_id = $this->_getExtra('platform', $headers);
-			$browser_id = $this->_getExtra('browser', $headers);
-			if ($platform_id) 
-				$platform = $this->_getCacheSpecs($platform_id, 'Extra');
-			if ($browser_id)
-				$browser = $this->_getCacheSpecs($browser_id, 'Extra');
+			$platform_id = $this->_getExtra('platform', $headers);			
+			$browser_id = $this->_getExtra('browser', $headers);			
+
+			if ($platform_id) {				
+				$platform = $this->_getCacheSpecs($platform_id, 'Extra');	
+				$general_platform = @$platform[0]["Extra"]["hd_specs"]["general_platform"];												
+				if($general_platform != null) {					
+					$general_platform_version = @$platform[0]["Extra"]["hd_specs"]["general_platform_version"];	
+				}
+				$general_browser = @$platform[0]["Extra"]["hd_specs"]["general_browser"];				
+				if($general_browser != null) {	
+					$general_browser_version = @$platform[0]["Extra"]["hd_specs"]["general_browser_version"];	
+				}
+			}
+
+			if(@$device["hd_specs"]["general_language"]) {
+				$general_language = $device["hd_specs"]["general_language"];
+				if(@$device["hd_specs"]["general_language_full"]) {
+					$general_language_full = $device["hd_specs"]["general_language_full"];
+				}
+			}
+
+			if ($browser_id) {				
+				$browser = $this->_getCacheSpecs($browser_id, 'Extra');			
+				if($browser != null) {										
+					$general_browser = @$browser[0]["Extra"]["hd_specs"]["general_browser"];
+					if($general_browser != null) {
+						$general_browser_version = @$browser[0]["Extra"]["hd_specs"]["general_browser_version"];
+					}
+				}				
+			}
 						
-
 			if ($this->debug) $this->__log("platform ".print_r($platform, true));
-			if ($this->debug) $this->__log("browser".print_r($browser, true));
+			if ($this->debug) $this->__log("browser".print_r($browser, true));		
 
-			// Selective merge
-			if (! empty($browser['general_browser'])) {
-				$platform['general_browser'] = $browser['general_browser'];
-				$platform['general_browser_version'] = $browser['general_browser_version'];
+			if($general_browser != null) {
+				$device["hd_specs"]["general_browser"] = $general_browser;
 			}
-	
-			if (! empty($platform['general_platform'])) {
-				$device['general_platform'] = $platform['general_platform'];
-				$device['general_platform_version'] = $platform['general_platform_version'];	
+
+			if($general_browser_version != null) {
+				$device["hd_specs"]["general_browser_version"] = $general_browser_version;
 			}
-			if (! empty($platform['general_browser'])) {
-				$device['general_browser'] = $platform['general_browser'];
-				$device['general_browser_version'] = $platform['general_browser_version'];	
-			}			
-															
+
+			if($general_platform_version != null) {
+				$device["hd_specs"]["general_platform_version"] = $general_platform_version;
+			}
+			$device["hd_specs"]["general_language"] = $general_language;
+			$device["hd_specs"]["general_language_full"] = $general_language_full;
+
 			$this->reply = $device;
-			$this->reply['hd_specs']['class'] = (empty($device['hd_specs']['general_type']) ? "Unknown" : $device['hd_specs']['general_type']);
-			$this->devices[$id] = $device;
-			return $this->setError(0, "OK", 'Unknown');
+
+			$this->reply["class"] = $device["hd_specs"]["general_type"];		
+			$this->reply["message"] = "OK";
+			$this->reply["status"] = 0;			
+			return $this->reply;			
 		}
 		return $this->setError(301, 'Nothing Found', 'Unknown');
 	}
-	
+
 	/**
 	  * Local get the device
 	  *

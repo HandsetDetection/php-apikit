@@ -60,13 +60,13 @@ class TestDevices {
 	
 	function singleInstance() {
 		$hd3 = new HD3();
+		$hd3->setup();
 		$this->header();
 		$this->time_start = $this->getmicrotime();		
 		while(!feof($this->file)) {			
 			$line_of_text = fgets($this->file);
 			$headers = explode("|", $line_of_text);
-			for($i = 0; $i<10; $i++) {
-				$hd3->setup();
+			for($i = 0; $i<10; $i++) {				
 				$hd3->setDetectVar("User-Agent", $headers[0]);
 				$hd3->setDetectVar('x-wap-profile', $headers[1]);	
 				if($hd3->siteDetect()) {					
