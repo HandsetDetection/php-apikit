@@ -137,7 +137,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 *
 	 */
 	public function testCompareCloudUltimateFail() {
-		$this->ultimate_HD3->setDetectVar('User-Agent', $this->header2);		
+		$this->ultimate_HD3->setDetectVar('User-Agent', $this->header2); // header 2
 		if($this->cloud_reply && $this->ultimate_HD3->siteDetect()) {
 			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_vendor"], $this->ultimate_HD3->getReply()["hd_specs"]["general_vendor"]);												
 			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_model"], $this->ultimate_HD3->getReply()["hd_specs"]["general_model"]);		

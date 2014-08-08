@@ -1044,8 +1044,7 @@ class HD3 {
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");		
 			$device = $this->_getCacheSpecs($id, 'Device');			
-			if(!empty($device[0]["Device"]["_id"]))
-			{					
+			if(!empty($device[0]["Device"]["_id"])) {					
 				unset($device[0]["Device"]["_id"]);
 				$device = $device[0]["Device"];			
 				if ($device === false) {
