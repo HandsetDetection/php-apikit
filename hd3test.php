@@ -70,7 +70,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimateVendorPass() {			
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_vendor"], $this->ultimate_HD3->getReply()["hd_specs"]["general_vendor"]);												
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_vendor"], $this->ultimate_HD3->ultimate_reply["general_vendor"]);												
 		}
 	}
 
@@ -81,7 +81,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimateModelPass() {	
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_model"], $this->ultimate_HD3->getReply()["hd_specs"]["general_model"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_model"], $this->ultimate_HD3->ultimate_reply["general_model"]);		
 		}
 	}
 
@@ -92,7 +92,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimatePlatformPass() {	
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_platform"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_platform"], $this->ultimate_HD3->gultimate_reply["general_platform"]);		
 		}
 	}
 	
@@ -103,7 +103,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimatePlatformVersionPass() {	
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_platform_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform_version"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_platform_version"], $this->ultimate_HD3->ultimate_reply["general_platform_version"]);		
 		}
 	}
 
@@ -114,7 +114,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimateBrowserPass() {	
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_browser"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_browser"], $this->ultimate_HD3->ultimate_reply["general_browser"]);		
 		}
 
 	}
@@ -126,7 +126,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCompareCloudUltimateBrowserVersionPass() {	
 		if($this->cloud_reply && $this->ultimate_reply) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_browser_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser_version"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_browser_version"], $this->ultimate_HD3->ultimate_reply["general_browser_version"]);		
 		}
 	}
 
@@ -139,12 +139,12 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	public function testCompareCloudUltimateFail() {
 		$this->ultimate_HD3->setDetectVar('User-Agent', $this->header2); // header 2
 		if($this->cloud_reply && $this->ultimate_HD3->siteDetect()) {
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_vendor"], $this->ultimate_HD3->getReply()["hd_specs"]["general_vendor"]);												
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_model"], $this->ultimate_HD3->getReply()["hd_specs"]["general_model"]);		
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_platform"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform"]);		
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_platform_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform_version"]);		
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_browser"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser"]);		
-			$this->assertEquals($this->cloud_HD3->getReply()["hd_specs"]["general_browser_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser_version"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_vendor"], $this->ultimate_HD3->getReply()["hd_specs"]["general_vendor"]);												
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_model"], $this->ultimate_HD3->getReply()["hd_specs"]["general_model"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_platform"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_platform_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_platform_version"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_browser"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser"]);		
+			$this->assertEquals($this->cloud_HD3->cloud_reply["general_browser_version"], $this->ultimate_HD3->getReply()["hd_specs"]["general_browser_version"]);		
 		}
 	}
 
