@@ -96,15 +96,14 @@ if (! class_exists('HD3Cache')) {
 		  * @return $data
 		  */
 		function read($key) {									
-			$data = apc_fetch($this->prefix.$key);		
+			$data = apc_fetch($this->prefix.$key);			
 			// Try file cache
 			if (empty($data)) {				
-				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');		
+				$jsonstr = @file_get_contents($this->dirpath . DS . $this->dirname . DS . $key . '.json');					
 				if ($jsonstr === false || empty($jsonstr)) {
 					return false;
 				}
 				$data = $this->__decode($jsonstr);
-
 
 				// Write to APC as well (for next time).
 				if (! empty($data))
@@ -395,7 +394,7 @@ class HD3 {
 		$this->reply = array();
 		$this->rawreply = array();
 		$this->detectRequest = apache_request_headers();
-		$this->detectRequest['ipaddress'] = $_SERVER['REMOTE_ADDR'];
+		$this->detectRequest['ipaddress'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 		unset($this->detectRequest['Cookie']);
 	}
 	
@@ -659,7 +658,7 @@ class HD3 {
 	function _getCacheSpecs($id, $type) {					
 		$this->lazyLoadCache();		
 		$result = array();
-		$result[] = $this->Cache->read($type.'_'.$id);			
+		$result[] = $this->Cache->read($type.'_'.$id);						
 		return $result;
 	}
 	
@@ -673,7 +672,7 @@ class HD3 {
 	function siteFetchArchive($id=null) {		
 		$id = (int) (empty($id) ? $this->config['site_id'] : $id);
 
-		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');			
+		$status = $this->_remote("site/fetcharchive/$id", "", 'zip');		
 		
 		if (! $status)
 			return false;
@@ -706,8 +705,7 @@ class HD3 {
 						$zip->extractTo(getcwd()."/{$this->Cache->dirname}/", $filename);
 					} else {
 						$zip->extractTo(getcwd()."/{$this->Cache->dirname}/", $filename);
-					}     			    				
-					//$zip->extractTo($this->Cache->getCacheDir()."\\".$filename);
+					}     			    									
 				}
     			$zip->close();
 				return true;
@@ -1046,80 +1044,83 @@ class HD3 {
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");		
 			$device = $this->_getCacheSpecs($id, 'Device');			
-			unset($device[0]["Device"]["_id"]);
-			$device = $device[0]["Device"];			
-
-			if ($device === false) {
-				if ($this->debug) $this->__log("Cache problem : $id not found");
-				return $this->setError(255, "$id not found in cache", 'Unknown');
-			}
-			
-			if ($this->debug) $this->__log("$id fetched from cache");
-
-			// Perform Browser & OS (platform) detection
-			$platform = array();
-			$general_platform = null;
-			$general_platform_version = null;
-			$general_browser = null;
-			$general_browser_version = null;
-			$general_language = "en-us";
-			$general_language_full = "English (United States)";
-			$browser = array();
-			$platform_id = $this->_getExtra('platform', $headers);			
-			$browser_id = $this->_getExtra('browser', $headers);			
-
-			if ($platform_id) {				
-				$platform = $this->_getCacheSpecs($platform_id, 'Extra');	
-				$general_platform = @$platform[0]["Extra"]["hd_specs"]["general_platform"];												
-				if($general_platform != null) {					
-					$general_platform_version = @$platform[0]["Extra"]["hd_specs"]["general_platform_version"];	
+			if(!empty($device[0]["Device"]["_id"]))
+			{					
+				unset($device[0]["Device"]["_id"]);
+				$device = $device[0]["Device"];			
+				if ($device === false) {
+					if ($this->debug) $this->__log("Cache problem : $id not found");
+					return $this->setError(255, "$id not found in cache", 'Unknown');
 				}
-				$general_browser = @$platform[0]["Extra"]["hd_specs"]["general_browser"];				
-				if($general_browser != null) {	
-					$general_browser_version = @$platform[0]["Extra"]["hd_specs"]["general_browser_version"];	
-				}
-			}
+				
+				if ($this->debug) $this->__log("$id fetched from cache");
 
-			if(@$device["hd_specs"]["general_language"]) {
-				$general_language = $device["hd_specs"]["general_language"];
-				if(@$device["hd_specs"]["general_language_full"]) {
-					$general_language_full = $device["hd_specs"]["general_language_full"];
-				}
-			}
+				// Perform Browser & OS (platform) detection
+				$platform = array();
+				$general_platform = null;
+				$general_platform_version = null;
+				$general_browser = null;
+				$general_browser_version = null;
+				$general_language = "en-us";
+				$general_language_full = "English (United States)";
+				$browser = array();
+				$platform_id = $this->_getExtra('platform', $headers);			
+				$browser_id = $this->_getExtra('browser', $headers);			
 
-			if ($browser_id) {				
-				$browser = $this->_getCacheSpecs($browser_id, 'Extra');			
-				if($browser != null) {										
-					$general_browser = @$browser[0]["Extra"]["hd_specs"]["general_browser"];
-					if($general_browser != null) {
-						$general_browser_version = @$browser[0]["Extra"]["hd_specs"]["general_browser_version"];
+				if ($platform_id) {				
+					$platform = $this->_getCacheSpecs($platform_id, 'Extra');	
+					$general_platform = @$platform[0]["Extra"]["hd_specs"]["general_platform"];												
+					if($general_platform != null) {					
+						$general_platform_version = @$platform[0]["Extra"]["hd_specs"]["general_platform_version"];	
 					}
-				}				
+					$general_browser = @$platform[0]["Extra"]["hd_specs"]["general_browser"];				
+					if($general_browser != null) {	
+						$general_browser_version = @$platform[0]["Extra"]["hd_specs"]["general_browser_version"];	
+					}
+				}
+
+				if(@$device["hd_specs"]["general_language"]) {
+					$general_language = $device["hd_specs"]["general_language"];
+					if(@$device["hd_specs"]["general_language_full"]) {
+						$general_language_full = $device["hd_specs"]["general_language_full"];
+					}
+				}
+
+				if ($browser_id) {				
+					$browser = $this->_getCacheSpecs($browser_id, 'Extra');			
+					if($browser != null) {										
+						$general_browser = @$browser[0]["Extra"]["hd_specs"]["general_browser"];
+						if($general_browser != null) {
+							$general_browser_version = @$browser[0]["Extra"]["hd_specs"]["general_browser_version"];
+						}
+					}				
+				}
+							
+				if ($this->debug) $this->__log("platform ".print_r($platform, true));
+				if ($this->debug) $this->__log("browser".print_r($browser, true));		
+
+				if($general_browser != null) {
+					$device["hd_specs"]["general_browser"] = $general_browser;
+				}
+
+				if($general_browser_version != null) {
+					$device["hd_specs"]["general_browser_version"] = $general_browser_version;
+				}
+
+				if($general_platform_version != null) {
+					$device["hd_specs"]["general_platform_version"] = $general_platform_version;
+				}
+				$device["hd_specs"]["general_language"] = $general_language;
+				$device["hd_specs"]["general_language_full"] = $general_language_full;
+
+				$this->reply = $device;
+
+				$this->reply["class"] = $device["hd_specs"]["general_type"];		
+				$this->reply["message"] = "OK";
+				$this->reply["status"] = 0;			
+				return $this->reply;			
 			}
-						
-			if ($this->debug) $this->__log("platform ".print_r($platform, true));
-			if ($this->debug) $this->__log("browser".print_r($browser, true));		
-
-			if($general_browser != null) {
-				$device["hd_specs"]["general_browser"] = $general_browser;
-			}
-
-			if($general_browser_version != null) {
-				$device["hd_specs"]["general_browser_version"] = $general_browser_version;
-			}
-
-			if($general_platform_version != null) {
-				$device["hd_specs"]["general_platform_version"] = $general_platform_version;
-			}
-			$device["hd_specs"]["general_language"] = $general_language;
-			$device["hd_specs"]["general_language_full"] = $general_language_full;
-
-			$this->reply = $device;
-
-			$this->reply["class"] = $device["hd_specs"]["general_type"];		
-			$this->reply["message"] = "OK";
-			$this->reply["status"] = 0;			
-			return $this->reply;			
+			return $this->setError(301, 'Please download device json files.', 'Unknown');
 		}
 		return $this->setError(301, 'Nothing Found', 'Unknown');
 	}

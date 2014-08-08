@@ -14,9 +14,9 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	protected $ultimate_HD3;
 
 	var $config = array ( 
-		'username' => 'your_api_username',
-		'secret' => 'your_api_secret',
-		'site_id' => 'your_api_site_id',
+		'username' => '203a2c5495',
+		'secret' => '4Mcy7r7wDFdCDbg2',
+		'site_id' => '50538',
 		'use_local' => true
 	);
 
@@ -135,7 +135,7 @@ class Hd3Test extends PHPUnit_Framework_TestCase {
 	public function testHD3instanceOf() {
 		$this->assertInstanceOf('HD3', $this->hd3);		
 		$this->assertInternalType('object', $this->hd3);		
-		$this->assertContainsOnlyInstancesOf('HD3', array(new HD3(), new HD2(), new HD()));				
+		$this->assertContainsOnlyInstancesOf('HD3', array(new HD3()));				
 	}
 	
 	/**	  
