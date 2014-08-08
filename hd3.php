@@ -690,7 +690,7 @@ class HD3 {
 
 		$status = file_put_contents($this->config['filesdir'] . DS . "ultimate.zip", $this->getRawReply());
 		if ($status === false)
-			return $this->setError(299, "Error : siteFetchArchive failed. Could not write ". $this->config['filesdir'] . DS . "ultimate.zip");
+			return $this->setError(299, "Error : siteFetchArchive failed. Could not write ". $this->config['filesdir'] . DS . "ultimate.zip"); 
 
 		if (class_exists('ZipArchive')) {
 			$this->lazyLoadCache();
