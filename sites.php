@@ -6,7 +6,7 @@
 
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 1200);
-ini_set('memory_limit', "512M");
+ini_set('memory_limit', "768M");
 error_reporting(E_ALL);
 
 require_once('hd3.php');
