@@ -101,7 +101,10 @@ if (! class_exists('HD3Cache')) {
 		 * @param string $key
 		 * @return $data if found, false otherwise
 		 */
-		function read($key) {									
+		function read($key) {				
+			//echo '<pre>';			
+			//echo $this->prefix.'<br/>';
+			//echo $this->prefix.$key.'<Br/>';
 			return apc_fetch($this->prefix.$key);			
 		}
 	
@@ -1012,17 +1015,17 @@ class HD3 {
 		$this->rawreply = array();
 		$this->setError(0, '');
 		$device = null;
-		
 		// Fast Cache Check
 		ksort($headers);
 		$fastKey = preg_replace('/ /','', $this->__encode($headers));
+		//echo '<pre>';
+		//echo $fastKey;
 		if ($device = $this->Cache->read($fastKey)) {
 			$this->reply['hd_specs'] = $device;
 			$this->reply['class'] = (empty($device['general_type']) ? "Unknown" : $device['general_type']);
 			return $this->setError(0, "OK");			
 		}
-		
-		$id = $this->_getDevice($headers);							
+		$id = $this->_getDevice($headers);						
 		if ($id) {
 			if ($this->debug) $this->__log("Looking to read $id from cache");		
 			$device = $this->_getCacheSpecs($id, 'Device');			

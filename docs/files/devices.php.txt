@@ -21,7 +21,6 @@ if ($hd->deviceVendors()) {
 } else {
 	print $hd->getError();
 }
-
 echo "</p><h1>Nokia Models</h1><p>";
 // Models example : Get a list of all models for a specific vendor
 if ($hd->deviceModels('Nokia')) {
@@ -50,7 +49,6 @@ if ($hd->deviceWhatHas('network','CDMA')) {
 } else {
 	print $hd->getError();
 }
-
 
 echo "</p>";
 

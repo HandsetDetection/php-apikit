@@ -8,17 +8,17 @@
     <meta name="author" content=""/>
     <meta name="description" content=""/>
 
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/prism.css" rel="stylesheet" media="all"/>
     <link href="../css/template.css" rel="stylesheet" media="all"/>
     
     <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <script src="../js/html5.js"></script>
     <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
     <script src="../js/jquery.smooth-scroll.js"></script>
     <script src="../js/prism.min.js"></script>
     <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
@@ -59,12 +59,12 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">96</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">122</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">2</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">2</span>
                                 </a>
                             </li>
                             <li>
@@ -91,11 +91,12 @@
                 <li class="nav-header">Navigation</li>
                                                                             <li><a href="#devices.php"><i class="icon-file"></i> devices.php</a></li>
                                                                                                     <li><a href="#hd3.php"><i class="icon-file"></i> hd3.php</a></li>
-                                                                                                    <li><a href="#hd3test.php"><i class="icon-file"></i> hd3test.php</a></li>
                                                                                                                                                             <li><a href="#json.php"><i class="icon-file"></i> json.php</a></li>
                                                                                                     <li><a href="#sites.php"><i class="icon-file"></i> sites.php</a></li>
                                                                                                     <li><a href="#testarchive.php"><i class="icon-file"></i> testarchive.php</a></li>
+                                                                                                    <li><a href="#unittest.php"><i class="icon-file"></i> unittest.php</a></li>
                                                                                                     <li><a href="#users.php"><i class="icon-file"></i> users.php</a></li>
+                                                                                                    <li><a href="#volumetest.php"><i class="icon-file"></i> volumetest.php</a></li>
                                                                     </ul>
         </div>
 
@@ -137,7 +138,7 @@
                         <h3>
                             <i class="icon-file"></i>
                             hd3.php
-                            <small style="float: right;padding-right: 10px;">76</small>
+                            <small style="float: right;padding-right: 10px;">83</small>
                         </h3>
                         <div>
                             <table class="table markers table-bordered">
@@ -157,388 +158,425 @@
                                                                     <tr>
                                         <td>error</td>
                                         <td>50</td>
-                                        <td>No summary for function \apache_request_headers()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>74</td>
-                                        <td>No summary for class \HD3Cache</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>80</td>
-                                        <td>No summary for method getCacheDir()</td>
+                                        <td>No summary for function &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>81</td>
+                                        <td>No summary for class &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>87</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>88</td>
                                         <td>Argument $dir is missing from the Docblock of setDirectory()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>81</td>
-                                        <td>No summary for method setDirectory()</td>
+                                        <td>88</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>122</td>
-                                        <td>Argument $data is missing from the Docblock of write()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>75</td>
+                                        <td>82</td>
                                         <td>No summary for property $prefix</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>76</td>
+                                        <td>83</td>
                                         <td>No summary for property $dirpath</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>77</td>
+                                        <td>84</td>
                                         <td>No summary for property $dirname</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>78</td>
+                                        <td>85</td>
                                         <td>No summary for property $duration</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>283</td>
+                                        <td>299</td>
                                         <td>Argument $enable is missing from the Docblock of setLocalDetection()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>283</td>
-                                        <td>No summary for method setLocalDetection()</td>
+                                        <td>299</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>284</td>
+                                        <td>300</td>
                                         <td>Argument $user is missing from the Docblock of setProxyUser()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>284</td>
-                                        <td>No summary for method setProxyUser()</td>
+                                        <td>300</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>285</td>
+                                        <td>301</td>
                                         <td>Argument $pass is missing from the Docblock of setProxyPass()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>285</td>
-                                        <td>No summary for method setProxyPass()</td>
+                                        <td>301</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>286</td>
+                                        <td>302</td>
                                         <td>Argument $proxy is missing from the Docblock of setUseProxy()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>286</td>
-                                        <td>No summary for method setUseProxy()</td>
+                                        <td>302</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>287</td>
+                                        <td>303</td>
                                         <td>Argument $name is missing from the Docblock of setProxyServer()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>287</td>
-                                        <td>No summary for method setProxyServer()</td>
+                                        <td>303</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>288</td>
+                                        <td>304</td>
                                         <td>Argument $number is missing from the Docblock of setProxyPort()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>288</td>
-                                        <td>No summary for method setProxyPort()</td>
+                                        <td>304</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>289</td>
+                                        <td>305</td>
                                         <td>Argument $mobile_site is missing from the Docblock of setMobileSite()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>289</td>
-                                        <td>No summary for method setMobileSite()</td>
+                                        <td>305</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>290</td>
+                                        <td>306</td>
                                         <td>Argument $secret is missing from the Docblock of setSecret()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>290</td>
-                                        <td>No summary for method setSecret()</td>
+                                        <td>306</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>291</td>
+                                        <td>307</td>
                                         <td>Argument $user is missing from the Docblock of setUsername()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>291</td>
-                                        <td>No summary for method setUsername()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>292</td>
-                                        <td>Argument $timeout is missing from the Docblock of setTimeout()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>292</td>
-                                        <td>No summary for method setTimeout()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>293</td>
-                                        <td>Argument $key is missing from the Docblock of setDetectVar()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>293</td>
-                                        <td>Argument $value is missing from the Docblock of setDetectVar()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>293</td>
-                                        <td>No summary for method setDetectVar()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>294</td>
-                                        <td>Argument $siteid is missing from the Docblock of setSiteId()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>294</td>
-                                        <td>No summary for method setSiteId()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>295</td>
-                                        <td>Argument $value is missing from the Docblock of setUseLocal()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>295</td>
-                                        <td>No summary for method setUseLocal()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>296</td>
-                                        <td>Argument $reply is missing from the Docblock of setReply()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>296</td>
-                                        <td>No summary for method setReply()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>297</td>
-                                        <td>Argument $function is missing from the Docblock of setLogger()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>297</td>
-                                        <td>No summary for method setLogger()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>298</td>
-                                        <td>Argument $status is missing from the Docblock of setError()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>298</td>
-                                        <td>Argument $msg is missing from the Docblock of setError()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>298</td>
-                                        <td>Argument $class is missing from the Docblock of setError()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>298</td>
-                                        <td>No summary for method setError()</td>
+                                        <td>307</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>308</td>
-                                        <td>No summary for method getLocalDetection()</td>
+                                        <td>Argument $timeout is missing from the Docblock of setTimeout()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>308</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>309</td>
-                                        <td>No summary for method getProxyUser()</td>
+                                        <td>Argument $key is missing from the Docblock of setDetectVar()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>309</td>
+                                        <td>Argument $value is missing from the Docblock of setDetectVar()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>309</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>310</td>
-                                        <td>No summary for method getProxyPass()</td>
+                                        <td>Argument $siteid is missing from the Docblock of setSiteId()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>310</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>311</td>
-                                        <td>No summary for method getUseProxy()</td>
+                                        <td>Argument $value is missing from the Docblock of setUseLocal()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>311</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>312</td>
-                                        <td>No summary for method getProxyServer()</td>
+                                        <td>Argument $value is missing from the Docblock of setApiServer()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>312</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>313</td>
-                                        <td>No summary for method getProxyPort()</td>
+                                        <td>Argument $reply is missing from the Docblock of setReply()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>313</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>314</td>
-                                        <td>No summary for method getError()</td>
+                                        <td>Argument $function is missing from the Docblock of setLogger()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>314</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>315</td>
-                                        <td>No summary for method getErrorMsg()</td>
+                                        <td>Argument $directory is missing from the Docblock of setFilesDir()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>316</td>
-                                        <td>No summary for method getSecret()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>317</td>
-                                        <td>No summary for method getUsername()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>318</td>
-                                        <td>No summary for method getTimeout()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>319</td>
-                                        <td>No summary for method getReply()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>320</td>
-                                        <td>No summary for method getRawReply()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>321</td>
-                                        <td>No summary for method getSiteId()</td>
+                                        <td>315</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
                                         <td>322</td>
-                                        <td>No summary for method getUseLocal()</td>
+                                        <td>Argument $status is missing from the Docblock of setError()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>325</td>
+                                        <td>322</td>
+                                        <td>Argument $msg is missing from the Docblock of setError()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>322</td>
+                                        <td>Argument $class is missing from the Docblock of setError()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>322</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>332</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>333</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>334</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>335</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>336</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>337</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>338</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>339</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>340</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>341</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>342</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>343</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>344</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>345</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>346</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>347</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>348</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>349</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>352</td>
                                         <td>Argument $msg is missing from the Docblock of __log()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>325</td>
-                                        <td>No summary for method __log()</td>
+                                        <td>352</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>781</td>
+                                        <td>771</td>
                                         <td>Argument $server is missing from the Docblock of _post()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>781</td>
+                                        <td>771</td>
                                         <td>Argument $url is missing from the Docblock of _post()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>781</td>
+                                        <td>771</td>
                                         <td>Argument $jsondata is missing from the Docblock of _post()</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>781</td>
-                                        <td>No summary for method _post()</td>
+                                        <td>771</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>198</td>
+                                        <td>235</td>
                                         <td>No summary for property $realm</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>199</td>
+                                        <td>236</td>
                                         <td>No summary for property $reply</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>200</td>
+                                        <td>237</td>
                                         <td>No summary for property $rawreply</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>201</td>
+                                        <td>238</td>
                                         <td>No summary for property $detectRequest</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>202</td>
+                                        <td>239</td>
                                         <td>No summary for property $error</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>203</td>
+                                        <td>240</td>
                                         <td>No summary for property $logger</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>204</td>
+                                        <td>241</td>
                                         <td>No summary for property $debug</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>205</td>
+                                        <td>242</td>
                                         <td>No summary for property $configFile</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
-                                        <td>207</td>
+                                        <td>244</td>
                                         <td>No summary for property $config</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>264</td>
+                                        <td>No summary for property $tree</td>
                                     </tr>
                                                             </tbody>
                             </table>
                         </div>
                                     </div>
                             <div class="package-contents">
-                                            <a name="hd3test.php" id="hd3test.php"></a>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="json.php" id="json.php"></a>
                         <h3>
                             <i class="icon-file"></i>
-                            hd3test.php
-                            <small style="float: right;padding-right: 10px;">6</small>
+                            json.php
+                            <small style="float: right;padding-right: 10px;">11</small>
                         </h3>
                         <div>
                             <table class="table markers table-bordered">
@@ -553,60 +591,12 @@
                                                                     <tr>
                                         <td>error</td>
                                         <td>0</td>
-                                        <td>No summary was found for this file</td>
+                                        <td>Only one @package tag is allowed</td>
                                     </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>5</td>
-                                        <td>No summary for class \Hd3Test</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>13</td>
-                                        <td>No summary for method setup()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>17</td>
-                                        <td>No summary for method testsiteDetect()</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>7</td>
-                                        <td>No summary for property $hd3</td>
-                                    </tr>
-                                                                    <tr>
-                                        <td>error</td>
-                                        <td>8</td>
-                                        <td>No summary for property $config</td>
-                                    </tr>
-                                                            </tbody>
-                            </table>
-                        </div>
-                                    </div>
-                            <div class="package-contents">
-                                    </div>
-                            <div class="package-contents">
-                                            <a name="json.php" id="json.php"></a>
-                        <h3>
-                            <i class="icon-file"></i>
-                            json.php
-                            <small style="float: right;padding-right: 10px;">10</small>
-                        </h3>
-                        <div>
-                            <table class="table markers table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Line</th>
-                                    <th>Description</th>
-                                </tr>
-                                </thead>
-                                <tbody>
                                                                     <tr>
                                         <td>error</td>
                                         <td>795</td>
-                                        <td>No summary for class \Services_JSON_Error</td>
+                                        <td>No summary for class &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
@@ -621,7 +611,7 @@
                                                                     <tr>
                                         <td>error</td>
                                         <td>766</td>
-                                        <td>No summary for method isError()</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                                     <tr>
                                         <td>error</td>
@@ -651,7 +641,7 @@
                                                                     <tr>
                                         <td>error</td>
                                         <td>797</td>
-                                        <td>No summary for method Services_JSON_Error()</td>
+                                        <td>No summary for method &quot;&quot;</td>
                                     </tr>
                                                             </tbody>
                             </table>
@@ -688,7 +678,7 @@
                         <h3>
                             <i class="icon-file"></i>
                             testarchive.php
-                            <small style="float: right;padding-right: 10px;">1</small>
+                            <small style="float: right;padding-right: 10px;">2</small>
                         </h3>
                         <div>
                             <table class="table markers table-bordered">
@@ -704,6 +694,77 @@
                                         <td>error</td>
                                         <td>0</td>
                                         <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>30</td>
+                                        <td>No summary for function &quot;&quot;</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="unittest.php" id="unittest.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            unittest.php
+                            <small style="float: right;padding-right: 10px;">9</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>11</td>
+                                        <td>No summary for class &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>412</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>413</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>423</td>
+                                        <td>Argument $string is missing from the Docblock of _compareDevices()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>13</td>
+                                        <td>No summary for property $devices</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>365</td>
+                                        <td>No summary for property $notFoundHeaders</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>377</td>
+                                        <td>No summary for property $deviceHeaders</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>410</td>
+                                        <td>No summary for property $fileDevice10</td>
                                     </tr>
                                                             </tbody>
                             </table>
@@ -730,6 +791,97 @@
                                         <td>error</td>
                                         <td>0</td>
                                         <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="volumetest.php" id="volumetest.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            volumetest.php
+                            <small style="float: right;padding-right: 10px;">14</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>8</td>
+                                        <td>No summary for class &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>10</td>
+                                        <td>No summary for class &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>20</td>
+                                        <td>Argument $filename is missing from the Docblock of __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>20</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>29</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>34</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>61</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>88</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>107</td>
+                                        <td>No summary for method &quot;&quot;</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for property $file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>14</td>
+                                        <td>No summary for property $time_start</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>16</td>
+                                        <td>No summary for property $time</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>18</td>
+                                        <td>No summary for property $count</td>
                                     </tr>
                                                             </tbody>
                             </table>
@@ -774,7 +926,7 @@
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on May 1st, 2014 at 02:20.
+                    on August 26th, 2014 at 16:18.
                 </section>
             </section>
         </section>
