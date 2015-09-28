@@ -1,21 +1,15 @@
 <?php
 /**
-* Handset Detection v3.2 API Kit configuration file
-* This file configures your Handset Detection PHP API Kit with your details.
+* Handset Detection v4.0 API Kit configuration file
 *
-* 1) Copy and paste this text into a file called hdconfig.php in your apikit directory.
-* 2) Alter any other option sfor your local setup
+* Config file options
 *
-* See http://www.handsetdetection.com/resources for a full list of api web service calls
-*
-* config file options 
-*
-* username : your api username * Required
-* secret : your api secret * Required
-* site_id : the site_id to be used for these queries * Required
+* username : your api username * Required : From 'Dashboard (Manage Sites Section) > Site Settings > Cloud ' Page
+* secret : your api secret * Required : From 'Dashboard (Manage Sites Section) > Site Settings > Cloud ' Page
+* site_id : the site_id to be used for these queries * Required : From 'Dashboard (Manage Sites Section) > Site Settings > Cloud ' Page
 * filesdir : defaults to the installation directory - when set any downloaded files and any file caches will be setup here eg /tmp
 * use_local : set to true if you're using an Ultimate licence (download the data set and perform detections locally)
-* api_server : defaults to api.handsetdetection.com - Use a different hostname to force connections to a different cluster
+* api_server : defaults to api.handsetdetection.com - Use a different hostname to force connections to a different serevr pool
 * debug : defaults to false - Set to true to log interesting messages to syslog
 * retries : default 3 - number of times a connection is retried
 * use_proxy : set to true to connect through a proxy server
@@ -23,15 +17,24 @@
 * proxy_port : port of proxy server
 * proxy_user : if proxy server requires a username
 * proxy_pass : if proxy server requires a password
-* non_mobile : a regular expressions of useragent fragments that indicate the device is definetly not mobile (mostly search engines & toolbars)
-* - the default is "/^Feedfetcher|^FAST|^gsa_crawler|^Crawler|^goroam|^GameTracker|^http:\/\/|^Lynx|^Link|^LegalX|libwww|^LWP::Simple|FunWebProducts|^Nambu|^WordPress|^yacybot|^YahooFeedSeeker|^Yandex|^MovableType|^Baiduspider|SpamBlockerUtility|AOLBuild|Link Checker|Media Center|Creative ZENcast|GoogleToolbar|MEGAUPLOAD|Alexa Toolbar|^User-Agent|SIMBAR|Wazzup|PeoplePal|GTB5|Dealio Toolbar|Zango|MathPlayer|Hotbar|Comcast Install|WebMoney Advisor|OfficeLiveConnector|IEMB3|GTB6|Avant Browser|America Online Browser|SearchSystem|WinTSI|FBSMTWB|NET_lghpset/" 
+* log_unknown : Anonymously log unclassified http headers - Fast (uses UDP) places no strain on the system.
+* log_generics : Anonymously log generic replies (so we can do a better job picking them up) - Fast (uses UDP) places no strain on the system.
 **/
 
-$hdconfig['username']="your_api_username";					# Your API Username
-$hdconfig['secret']="your_api_secret";						# Your API Secret
-$hdconfig['site_id']="your_api_siteId";						# Your Site ID
-$hdconfig['use_local']=false;								# 
-$hdconfig['filesdir']="";									# Ultimate customer cache directory & downloaded files go here inside filesdir folder.
-$hdconfig['debug']=false;									# Set to true to log debug messages to syslog.
+$hdconfig['username'] = "your_api_username";
+$hdconfig['secret'] = "your_api_secret";
+$hdconfig['site_id'] = "your_api_siteId";
+$hdconfig['use_local'] = false;
+$hdconfig['filesdir'] = '';
+$hdconfig['debug'] = false;
 $hdconfig['api_server'] = 'api.handsetdetection.com';
-?>
+$hdconfig['cache_requests'] = false;
+$hdconfig['geoip'] = true;
+$hdconfig['timeout'] = 10;
+$hdconfig['use_proxy'] = false;
+$hdconfig['proxy_server'] = '';
+$hdconfig['proxy_port'] = '';
+$hdconfig['proxy_user'] = '';
+$hdconfig['proxy_pass'] = '';
+$hdconfig['retries'] = 3;
+$hdconfig['log_unknown'] = true;

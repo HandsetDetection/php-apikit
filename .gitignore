@@ -1,6 +1,6 @@
-hd34cache/*
-hd34cache
+hd40store/*
 ultimate.zip
-hd3specs.json
-hd3trees.json
-php-apikit.komodoproject
+hd4CloudConfig.php
+hd4CloudProxyConfig.php
+hd4UltimateConfig.php
+*.komodoproject
