@@ -19,3 +19,4 @@ richard@handsetdetection.com
 Examples at examples.php
 Exhaustive tests in testHD4.php
 Documentation at http://handsetdetection.readme.io
+Main website http://www.handsetdetection.com
