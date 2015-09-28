@@ -1,6 +1,6 @@
 {
 	"name": "handsetdetection/php-apikit",
-	"description": "An handset detection service",
+	"description": "A device detection service by HandsetDetection.com",
 	"homepage": "https://github.com/HandsetDetection/php-apikit",
 	"keywords": ["user-agent", "device", "detection"],
 	"minimum-stability": "dev",
@@ -21,7 +21,7 @@
 	],
 	"autoload": {
 		"psr-0": {
-			"HD3": ""
+			"HD4": ""
 		}
 	}
 }
