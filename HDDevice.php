@@ -672,13 +672,35 @@ class HDDevice extends HDBase {
 	 */
 	function getHighAccuracyCandidates() {
 		$branch = $this->getBranch('hachecks');
-		$ruleKey = $this->detectedRuleKey['device'];
+		$ruleKey = @$this->detectedRuleKey['device'];
 		if (! empty($branch[$ruleKey])) {
 			return $branch[$ruleKey];
 		}
 		return false;
 	}
 	
+	/**
+	 * Determines if hd4Helper would provide mor accurate results.
+	 *
+	 * @param array $headers HTTP Headers
+	 * @return true if required, false otherwise
+	 **/
+	function isHelperUseful($headers) {
+		if (empty($headers))
+			return false;
+
+		unset($headers['ip']);
+		unset($headers['host']);
+
+		if (empty($this->localDetect($headers)))
+			return false;
+
+		if (empty($this->getHighAccuracyCandidates()))
+			return false;
+
+		return true;
+	}
+
 	/**
 	 * Custom sort function for sorting results.
 	 *

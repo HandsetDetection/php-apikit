@@ -386,4 +386,14 @@ class HD4 extends HDBase {
 		$zip->close();
 		return true;
 	}
+
+	/**
+	 * This method can indicate if using the js Helper would yeild more accurate results.
+	 *
+	 * @param array $headers
+	 * @return true if helpful, false otherwise.
+	 **/
+	function isHelperUseful($headers) {
+		return $this->Device->isHelperUseful($headers);
+	}
 }
