@@ -43,7 +43,7 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$store->purge();
 	}
 
-	function testIsHelperRequiredTrue() {
+	function testIsHelperUsefulTrue() {
 		$headers = array(
 			'User-Agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)'
 		);
@@ -53,7 +53,7 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($result);
 	}
 
-	function testIsHelperRequiredFalse() {
+	function testIsHelperUsefulFalse() {
 		$headers = array(
 			'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
 		);
