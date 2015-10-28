@@ -33,8 +33,8 @@ namespace HandsetDetection;
 require_once("HDBase.php");
 
 class HDExtra extends HDBase {
-
 	var $data = null;
+	var $Store = null;
 
 	function __construct() {
 		parent::__construct();

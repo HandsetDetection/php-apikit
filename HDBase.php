@@ -34,7 +34,6 @@ define('DETECTIONV4_STANDARD', 0);
 define('DETECTIONV4_GENERIC', 1);
 
 class HDBase {
-
 	var $config = array();
 	var $apiBase = '/apiv4/';
 	var $detectedRuleKey = array();
@@ -43,6 +42,7 @@ class HDBase {
 	var $apikit = 'PHP 4.0.0';
 	var $loggerHost = 'logger.handsetdetection.com';
 	var $loggerPort = 80;
+	var $reply = null;
 	
 	var $detectionConfig = array(
 		'device-ua-order' => array('x-operamini-phone-ua', 'x-mobile-ua', 'device-stock-ua', 'user-agent', 'agent'),
