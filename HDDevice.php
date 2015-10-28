@@ -35,10 +35,16 @@ require_once("HDStore.php");
 require_once("HDExtra.php");
 
 class HDDevice extends HDBase {
-
+	var $device = null;
+	var $platform = null;
+	var $browser = null;
+	var $app = null;
+	var $ratingResult = null;
+	var $Store = null;
+	var $Extra = null;
+	
 	function __construct() {
 		parent::__construct();
-		
 		$this->Store = HDStore::getInstance();
 		$this->Extra = new HDExtra();
 	}
@@ -484,7 +490,7 @@ class HDDevice extends HDBase {
 			return false;
 		
 		// Platform Detection
-		$this->platform = $this->v4MatchBiHelper($buildInfo, 'platform');
+		$this->platform = $this->v4MatchBIHelper($buildInfo, 'platform');
 		if (! empty($this->platform))
 			$this->specsOverlay('platform', $this->device, $this->platform);
 
