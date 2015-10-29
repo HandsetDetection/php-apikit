@@ -44,7 +44,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
                   'display_x' => '240',
                   'display_y' => '320',
                   'display_other' => array(),
-				  'display_pixel_ratio' => '',
+				  'display_pixel_ratio' => '1.0',
 				  'display_ppi' => 154,
                   'memory_internal' => array('160MB','64MB RAM','256MB ROM'),
                   'memory_slot' => array('microSD', '8GB', '128MB'),
@@ -85,7 +85,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$result = $hd->deviceVendors();
 		$reply = $hd->getReply();
-		print_r(json_encode($reply));
+		//print_r(json_encode($reply));
 
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
@@ -103,8 +103,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
-
-		print_r(json_encode($data));
+		//print_r(json_encode($data));
 		
 		$this->assertEquals($reply, true);
 		$this->assertGreaterThan(700, count($data['model']));
@@ -121,7 +120,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceView('Nokia', 'N95');
 		$data = $hd->getReply();
-		print_r(json_encode($data));
+		//print_r(json_encode($data));
 		
 		$this->assertEquals($reply, true);
 		$this->assertEquals(0, $data['status']);
@@ -129,8 +128,8 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		ksort($data['device']);
 		ksort($this->devices['NokiaN95']);
 
-//		print_r(json_encode($data['device']));
-//		print_r(json_encode($this->devices['NokiaN95']));
+		//print_r(json_encode($data['device']));
+		//print_r(json_encode($this->devices['NokiaN95']));
 		$this->assertEquals(strtolower(json_encode($this->devices['NokiaN95'])), strtolower(json_encode($data['device'])));
 	}
 
@@ -143,7 +142,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();
-		print_r(json_encode($data));
+		//print_r(json_encode($data));
 		
 		$this->assertEquals($reply, true);
 		$this->assertEquals(0, $data['status']);
@@ -213,7 +212,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+		$this->assertEquals('Console', $reply['hd_specs']['general_type']);
 	}
 
 	/**
@@ -435,13 +434,13 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 			'ro.product_ship' => 'true'
 		);
 
-		print_r(json_encode($buildInfo));
+		//print_r(json_encode($buildInfo));
 		
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$result = $hd->deviceDetect($buildInfo);
 		$reply = $hd->getReply();
 
-		print_r(json_encode($reply));
+		//print_r(json_encode($reply));
 		
 		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
@@ -466,7 +465,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$result = $hd->deviceDetect($buildInfo);
 		$reply = $hd->getReply();
 
-		print_r(json_encode($reply));
+		//print_r(json_encode($reply));
 		
 		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
@@ -490,7 +489,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$result = $hd->deviceDetect($buildInfo);
 		$reply = $hd->getReply();
 
-		print_r(json_encode($reply));
+		//print_r(json_encode($reply));
 		
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
@@ -646,7 +645,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+		$this->assertEquals('Console', $reply['hd_specs']['general_type']);
 	}
 
 	/**

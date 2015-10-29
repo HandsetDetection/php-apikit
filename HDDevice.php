@@ -686,7 +686,7 @@ class HDDevice extends HDBase {
 	}
 	
 	/**
-	 * Determines if hd4Helper would provide mor accurate results.
+	 * Determines if hd4Helper would provide more accurate results.
 	 *
 	 * @param array $headers HTTP Headers
 	 * @return true if required, false otherwise
@@ -698,10 +698,12 @@ class HDDevice extends HDBase {
 		unset($headers['ip']);
 		unset($headers['host']);
 
-		if (empty($this->localDetect($headers)))
+		$tmp = $this->localDetect($headers);
+		if (empty($tmp))
 			return false;
 
-		if (empty($this->getHighAccuracyCandidates()))
+		$tmp = $this->getHighAccuracyCandidates();
+		if (empty($tmp))
 			return false;
 
 		return true;
