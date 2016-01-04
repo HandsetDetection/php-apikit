@@ -47,7 +47,7 @@ class HD4 extends HDBase {
 	var $detectRequest = array();
 	var $error = '';
 	var $logger = null;
-	var $debug = true;
+	var $debug = false;
 	var $configFile = 'hdconfig.php';				// hdconfig.php is the v3x PHP config file name.
 	
 	var $config = array (

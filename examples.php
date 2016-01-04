@@ -72,7 +72,7 @@ echo "</p>";
 // This is the most simple detection call - http headers are picked up automatically.
 // You're probably using a normal browser so expect this to reply with NOTFOUND
 echo "<h1>Simple Detection - Using your web browser standard headers (expect NotFound)</h1><p>";
-if ($hd->siteDetect()) {
+if ($hd->deviceDetect()) {
 	$tmp = $hd->getReply();
 	print_r($tmp);
 } else {
@@ -88,7 +88,7 @@ echo "</p>";
 echo "<h1>Simple Detection - Setting Headers for an N95</h1><p>";
 $hd->setDetectVar('user-agent','Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN95-3/20.2.011 Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413');
 $hd->setDetectVar('x-wap-profile','http://nds1.nds.nokia.com/uaprof/NN95-1r100.xml');
-if ($hd->siteDetect()) {
+if ($hd->deviceDetect()) {
 	$tmp = $hd->getReply();
 	print_r($tmp);
 } else {
@@ -101,7 +101,7 @@ echo "</p>";
 // Note : We use the ipaddress to get the geoip location.
 echo "<h1>Simple Detection - Passing a different ip address</h1><p>";
 $hd->setDetectVar('ipaddress','64.34.165.180');
-if ($hd->siteDetect(array('options' => 'geoip,hd_specs'))) {
+if ($hd->deviceDetect(array('options' => 'geoip,hd_specs'))) {
 	$tmp = $hd->getReply();
 	print_r($tmp);
 } else {
@@ -114,7 +114,7 @@ echo "</p>";
 echo "<h1>Archive Information</h1><p>";
 $hd->setTimeout(500);
 $time_start = _getmicrotime();
-if ($hd->siteFetchArchive()) {
+if ($hd->deviceFetchArchive()) {
 	$data = $hd->getRawReply();
 	echo "Downloaded ".strlen($data)." bytes";
 } else {
