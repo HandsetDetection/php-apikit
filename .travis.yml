@@ -15,10 +15,7 @@ notifications:
 before_install:
   - openssl aes-256-cbc -K $encrypted_61c82c0e3f69_key -iv $encrypted_61c82c0e3f69_iv -in travisConfigs.tar.enc -out travisConfigs.tar -d
   - tar xvf travisConfigs.tar
-  - echo yes | pecl install `if [ "$(php -v | grep 'PHP 7')" ]; then echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && echo apcu-beta; else echo apcu; fi`
   - if [[ $TRAVIS_PHP_VERSION =~ 5.[34] ]] ; then printf "extension=apc.so\napc.cli_enable=1\n" >> ./tests/travis_php.ini; fi;
-  - if [[ $TRAVIS_PHP_VERSION =~ 5.[56] ]] ; then pecl config-set preferred_state beta; printf "yes\n" | pecl install apcu; fi;
-  - if [[ $TRAVIS_PHP_VERSION =~ 7.[0] ]] ; then pecl config-set preferred_state beta; printf "yes\n" | pecl install apcu; fi;
+  - if [[ $TRAVIS_PHP_VERSION =~ 5.[56] ]] ; then echo yes | pecl install apcu-4.0.10; fi;
+  - if [[ $TRAVIS_PHP_VERSION = 7.* ]] ; then pecl config-set preferred_state beta; echo yes | pecl install apcu; fi;
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
-
-  
