@@ -233,28 +233,16 @@ class HDDevice extends HDBase {
 			}
 		}
 
-		// Benchmark - 20 points - Enough to tie break but not enough to overrule display or pixel ratio.
+		// Benchmark - 10 points - Enough to tie break but not enough to overrule display or pixel ratio.
 		if (! empty($props['benchmark'])) {
-			$total += 20;
+			$total += 10;
 			if (! empty($specs['benchmark_min']) && ! empty($specs['benchmark_max'])) {
 				if ((int) $props['benchmark'] >= (int) @$specs['benchmark_min'] && (int) $props['benchmark'] <= (int) @$specs['benchmark_max']) {
 					// Inside range
 					$result['benchmark'] = 10;
-					$result['benchmark_span'] = (int) 10;
 				} else {
-					// Calculate benchmark chunk spans .. as a tie breaker for close calls.
-					$result['benchmark'] = 0;
-					$steps = (int) ($specs['benchmark_max'] - $specs['benchmark_min']) / 10;
 					// Outside range
-					if ((int) $props['benchmark'] >= (int) @$specs['benchmark_max']) {
-						// Above range : Calculate how many steps above range
-						$tmp = (int) round(($props['benchmark'] - $specs['benchmark_max']) / $steps);
-						$result['benchmark_span'] = (int) 10 - (min(10, max(0, $tmp)));
-					} elseif ((int) $props['benchmark'] <= (int) @$specs['benchmark_min']) {
-						// Below range : Calculate how many steps above range
-						$tmp = (int) round(($specs['benchmark_min'] - $props['benchmark']) / $steps);
-						$result['benchmark_span'] = (int) 10 - (min(10, max(0, $tmp)));
-					}
+					$result['benchmark'] = 0;
 				}
 			}
 		}
