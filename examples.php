@@ -119,6 +119,8 @@ if ($hd->deviceFetchArchive()) {
 	echo "Downloaded ".strlen($data)." bytes";
 } else {
 	print $hd->getError();
+	print $hd->getRawReply();
+	print "\n";
 }
 $time_elapsed = _getmicrotime() - $time_start;
 echo "<br/>Time elapsed " . $time_elapsed . "ms";
