@@ -43,15 +43,22 @@ class HDCache {
 	var $duration = 7200;
 
 	function read($key) {
-		return apc_fetch($this->prefix.$key);
+		if (function_exists('apc_fetch'))
+			return apc_fetch($this->prefix.$key);
+		return null;
 	}
 
 	function write($key, $data) {
-		return apc_store($this->prefix.$key, $data, $this->duration);
+		if (function_exists('apc_store'))
+			return apc_store($this->prefix.$key, $data, $this->duration);
+		return null;
 	}
 
 	function purge() {
-		apc_clear_cache('user');
-		return apc_clear_cache();
+		if (function_exists('apc_clear_cache')) {
+			apc_clear_cache('user');
+			return apc_clear_cache();
+		}
+		return false;
 	}
 }
