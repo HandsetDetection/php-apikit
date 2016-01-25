@@ -26,7 +26,6 @@ if (@$hdconfig['username'] == "your_api_username") {
 require_once('HD4.php');
 $hd = new HandsetDetection\HD4($configFile);
 
-/*
 /// Vendors example : Get a list of all vendors
 echo "<h1>Vendors</h1><p>";
 if ($hd->deviceVendors()) {
@@ -66,7 +65,6 @@ if ($hd->deviceWhatHas('network','CDMA')) {
 	print $hd->getError();
 }
 echo "</p>";
-*/
 
 // ***************************** Detection Examples ********************************
 // This is the most simple detection call - http headers are picked up automatically.
