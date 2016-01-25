@@ -89,7 +89,7 @@ class HD4 extends HDBase {
 			require($config);
 			$this->config = array_merge($this->config, (array) $hdconfig);
 		} elseif (! file_exists($this->configFile)) {
-			throw new Exception ('Error : Invalid config file and no config passed to constructor');
+			throw new \Exception ('Error : Invalid config file and no config passed to constructor');
 		} else {
 			$hdconfig = array();
 			require($this->configFile);
