@@ -202,31 +202,39 @@ class HDDevice extends HDBase {
 
 		$specs = $device['Device']['hd_specs'];
 
-		$total = 0;
+		$total = 70;
 		$result = array();
 
 		// Display Resolution - Worth 40 points if correct
+		$result['resolution'] = 0;
 		if (! empty($props['display_x']) && ! empty($props['display_y'])) {
-			$total += 40;
-			if ($specs['display_x'] == $props['display_x'] && $specs['display_y'] == $props['display_y']) {
+			$pMaxRes = (int) max($props['display_x'], $props['display_y']);
+			$pMinRes = (int) min($props['display_x'], $props['display_y']);
+			$sMaxRes = (int) max($specs['display_x'], $specs['display_y']);
+			$sMinRes = (int) min($specs['display_x'], $specs['display_y']);
+			if ($pMaxRes == $sMaxRes && $pMinRes == $sMinRes) {
+				// Check for native match first
 				$result['resolution'] = 40;
-			} elseif ($specs['display_x'] == $props['display_y'] && $specs['display_y'] == $props['display_x']) {
-				$result['resolution'] = 40;
-			} elseif (@$specs['display_pixel_ratio'] > 1.0) {
-				// The resolution is often scaled by the pixel ratio for apple devices.
-				$adjX = (int) $props['display_x'] * $specs['display_pixel_ratio'];
-				$adjY = (int) $props['display_y'] * $specs['display_pixel_ratio'];
-				if ($specs['display_x'] == $adjX && $specs['display_y'] == $adjY) {
-					$result['resolution'] = 40;
-				} elseif ($specs['display_x'] == $adjY && $specs['display_y'] == $adjX) {
-					$result['resolution'] = 40;
+			} else {
+				// Check for css dimensions match.
+				// css dimensions should be display_[xy] / display_pixel_ratio or others in other modes.
+				// Devices can have multiple css display modes (eg. iPhone 6, iPhone 6+ Zoom mode)
+				$cssScreenSizes = empty($specs['display_css_screen_sizes']) ? array() : $specs['display_css_screen_sizes'];
+				foreach($cssScreenSizes as $size) {
+					$dimensions = explode('x', $size);
+					$tmpMaxRes = (int) max($dimensions);
+					$tmpMinRes = (int) min($dimensions);
+					if ($pMaxRes == $tmpMaxRes && $pMinRes == $tmpMinRes) {
+						$result['resolution'] = 40;
+						break;
+					}
 				}
 			}
 		}
 
-		// Display pixel ratio - also worth 40 points
+		// Display pixel ratio - 20 points
+		$result['display_pixel_ratio'] = 20;
 		if (! empty($props['display_pixel_ratio'])) {
-			$total += 40;
 			// Note : display_pixel_ratio will be a string stored as 1.33 or 1.5 or 2, perhaps 2.0 ..
 			if (@$specs['display_pixel_ratio'] == (string) round($props['display_pixel_ratio']/100, 2)) {
 				$result['display_pixel_ratio'] = 40;
@@ -234,21 +242,19 @@ class HDDevice extends HDBase {
 		}
 
 		// Benchmark - 10 points - Enough to tie break but not enough to overrule display or pixel ratio.
+		$result['benchmark'] = 0;
 		if (! empty($props['benchmark'])) {
-			$total += 10;
 			if (! empty($specs['benchmark_min']) && ! empty($specs['benchmark_max'])) {
 				if ((int) $props['benchmark'] >= (int) @$specs['benchmark_min'] && (int) $props['benchmark'] <= (int) @$specs['benchmark_max']) {
 					// Inside range
 					$result['benchmark'] = 10;
-				} else {
-					// Outside range
-					$result['benchmark'] = 0;
 				}
 			}
 		}
 
-		$result['score'] = ($total == 0) ? (int) 0 : (int) round((array_sum($result) / $total)*100, 2);
+		$result['score'] = (int) array_sum($result);
 		$result['possible'] = $total;
+		$result['_id'] = $deviceId;
 
 		// Distance from mean used in tie breaking situations if two devices have the same score.
 		$result['distance'] = 100000;

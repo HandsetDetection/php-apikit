@@ -23,6 +23,7 @@ if (@$hdconfig['username'] == "your_api_username")
 
 require_once('../HD4.php');
 $hd = new HandsetDetection\HD4($configFile);
+//$hd->deviceFetchArchive();
 
 class FileException extends Exception {};
 
@@ -81,7 +82,6 @@ class Benchmark {
 				echo "</tr>";
 			}
 			$this->count++;
-			if ($this->count > 1) break;
 		}
 		$this->time = $this->getmicrotime() - $this->time_start;
 	}
