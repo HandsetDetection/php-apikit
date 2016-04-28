@@ -8,11 +8,11 @@ depending on your configuration.
 
 Download the package directly from github or use composer.
 
-{
-    "require": {
-      "handsetdetection/php-apikit": "4.0.*"
-    }
-}
+	{
+		"require": {
+		  "handsetdetection/php-apikit": "4.*"
+		}
+	}
 
 
 ## Configuration ##
@@ -156,10 +156,3 @@ See the [Handset Detection GitHub Repo](https://github.com/HandsetDetection).
 ## Support ##
 
 Let us know if you have any hassles (hello@handsetdetection.com).
-
-
-Thanks.
-
-Cheers
-Richard Uren
-richard@handsetdetection.com
