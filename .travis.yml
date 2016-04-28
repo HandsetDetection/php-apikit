@@ -17,7 +17,7 @@ before_install:
   - tar xvf travisConfigs.tar
   - if [[ $TRAVIS_PHP_VERSION =~ 5.[34] ]] ; then printf "extension=apc.so\napc.cli_enable=1\n" >> ./tests/travis_php.ini; fi;
   - if [[ $TRAVIS_PHP_VERSION =~ 5.[56] ]] ; then echo yes | pecl install apcu-4.0.10; fi;
-  - if [[ $TRAVIS_PHP_VERSION = 7.* ]] ; then pecl config-set preferred_state beta; echo yes | pecl install apcu; fi;
+  - if [[ $TRAVIS_PHP_VERSION = 7.* ]] ; then echo yes | pecl install apcu; fi;
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
 
 # Note : Having issues with APCu and PHP 7.0    
