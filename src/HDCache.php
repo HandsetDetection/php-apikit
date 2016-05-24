@@ -28,37 +28,75 @@
 */
 
 /**
- * Cache class for HandsetDetection - Uses file backed store
+ * Cache class for HandsetDetection
  *
  * Notes :
- *  - Cache objects may be > 1Mb when serialized which makes memcache a bad choice (1Mb limit).
- *  - Consider php-igbinary to improve serialization performance in time critical situations.
- *  - 48Mb of APC cache is optimal if you can spare it.
+ *  - Cache objects may be > 1Mb when serialized so ensure memcache or memcached can handle it.
+ *  - Consider php-igbinary to improve serialization performance.
+ *  - 48Mb of APC cache is optimal if available.
  **/
 
 namespace HandsetDetection;
 
+use HandsetDetection\Cache\APC;
+use HandsetDetection\Cache\Memcache;
+use HandsetDetection\Cache\Memcached;
+
 class HDCache {
-	var $prefix = 'hd40';
-	var $duration = 7200;
+	var $prefix;
+	var $ttl;
+	protected $cache = null;
 
+	function __construct($config = array()) {
+		$this->prefix = isset($config['cache']['prefix']) ? $config['cache']['prefix'] : 'hd40';
+		$this->duration = isset($config['cache']['ttl']) ? $config['cache']['ttl'] : 7200;
+
+		if (isset($config['cache']['memcached']))
+			$this->cache = new Memcached($config);
+		elseif (isset($config['cache']['memcache']))
+			$this->cache = new Memcache($config);
+		else
+			$this->cache = new APC();
+	}
+
+	/**
+	 * Fetch a cache key
+	 *
+	 * @param string $key
+	 * @return value on success, null otherwise
+	 **/
 	function read($key) {
-		if (function_exists('apc_fetch'))
-			return apc_fetch($this->prefix.$key);
-		return null;
+		return $this->cache->get($this->prefix.$key);
 	}
 
+	/**
+	 * Store a data at $key
+	 *
+	 * @param string $key
+	 * @param mixed $data
+	 * @return true on success, false otherwise
+	 **/
 	function write($key, $data) {
-		if (function_exists('apc_store'))
-			return apc_store($this->prefix.$key, $data, $this->duration);
-		return null;
+		return $this->cache->set($this->prefix.$key, $data, $this->duration);
 	}
 
+	/**
+	 * Remove a cache key (and its data)
+	 *
+	 * @param string $key
+	 * @return true on success, false otherwise
+	 **/
+	function delete($key) {
+		return $this->cache->delete($this->prefix.$key);
+	}
+
+	/**
+	 * Flush the whole cache
+	 *
+	 * @param void
+	 * @return true on success, false otherwise
+	 **/
 	function purge() {
-		if (function_exists('apc_clear_cache')) {
-			apc_clear_cache('user');
-			return apc_clear_cache();
-		}
-		return false;
+		return $this->cache->flush();
 	}
 }

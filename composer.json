@@ -1,10 +1,10 @@
 {
 	"name": "handsetdetection/php-apikit",
-	"description": "A device detection service by HandsetDetection.com",
+	"description": "A library for stand alone or web service device detection, using HandsetDetection.com.",
 	"homepage": "https://github.com/HandsetDetection/php-apikit",
 	"keywords": ["user-agent", "device", "detection"],
 	"minimum-stability": "dev",
-	"license": "commercial",
+	"license": "MIT",
 	"type": "library",
 	"require": {
 		"php": ">=5.2.4"
@@ -20,8 +20,8 @@
 		}
 	],
 	"autoload": {
-		"psr-0": {
-			"HD4": ""
+		"psr-4": {
+			"HandsetDetection\\": "src/"
 		}
 	}
 }

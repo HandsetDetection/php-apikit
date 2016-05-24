@@ -33,7 +33,7 @@
 
 namespace HandsetDetection;
 
-require_once('HDCache.php');
+use HandsetDetection\HDCache;
 
 class HDStore {
 	public $dirname = "hd40store";

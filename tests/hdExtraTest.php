@@ -1,8 +1,6 @@
 <?php
 
 error_reporting(E_ALL | E_STRICT);
-require_once('HDStore.php');
-require_once('HDExtra.php');
 
 class HDExtraTest extends PHPUnit_Framework_TestCase {
 

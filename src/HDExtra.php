@@ -30,7 +30,7 @@
 
 namespace HandsetDetection;
 
-require_once("HDBase.php");
+use HandsetDetection\HDBase;
 
 class HDExtra extends HDBase {
 	var $data = null;

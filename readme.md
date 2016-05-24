@@ -122,6 +122,51 @@ Note : Increase the default timeout before downloading the archive.
         print $hd->getRawReply();
     }
 
+## Flexible Caching Options
+
+Version 4.1.* includes APC(u), Memcache and Memcached caching options. For backwards compatibility if no option
+is set in the config file then it defaults to APC.
+
+### Using Memcache
+
+Include a the following cache configuration in your config file.
+Options represent any cache flags you would like to pass to the memcache::set call. See http://php.net/manual/en/memcache.set.php for more information.
+
+	$hdconfig['cache'] = array (
+		'memcache' => array (
+			'options' => 0,
+			'servers' => array(
+				'localhost' => '11211'
+			)
+		)
+	)
+
+### Using Memcached
+
+Include a the following cache configuration in your config file.
+Options represent cache settings set via the setOption call : See http://php.net/manual/en/memcached.setoption.php for more information.
+Pass options as $option => $value in the options array.
+
+	$hdconfig['cache'] = array (
+		'memcached' => array(
+			'options' => array(),
+			'servers' => array(
+				array('localhost', '11211'),
+			)
+		)
+	);
+
+If you're using cache connection pooling then pass the pool name as follows :
+
+	$hdconfig['cache'] = array (
+		'memcached' => array(
+			'pool' => 'mypool',
+			'options' => array(),
+			'servers' => array(
+				array('localhost', '11211'),
+			)
+		)
+	);
 
 ## Extra Examples ##
 

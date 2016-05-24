@@ -1,9 +1,6 @@
 <?php
 
 error_reporting(E_ALL | E_STRICT);
-require_once('HD4.php');
-require_once('HDDevice.php');
-require_once('HDStore.php');
 
 // The device class performs the same functions as our Cloud API, but locally.
 // It is only used when use_local is set to true in the config file.
