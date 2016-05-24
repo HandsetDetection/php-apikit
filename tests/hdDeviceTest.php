@@ -21,6 +21,9 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$hd4->remote("community/fetcharchive", '', 'zip', true);
 		$status = file_put_contents($archive, $hd4->getRawReply());
 
+		if (sizeof($hd4->getRawReply()) < 300)
+			$this->markTestSkipped('Community Edition can not be downloaded right now....');
+
 		$zip = new \ZipArchive();
 		if ($zip->open($archive) === false)
 			return false;
