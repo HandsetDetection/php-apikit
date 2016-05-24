@@ -34,24 +34,22 @@ class APC implements CacheInterface {
 
 	/** Get key */
 	public function get($key) {
-		$data = apc_fetch($key);
-		if ($data === false)
-			return null;
-		return $data;
+		$data = function_exists('apcu_fetch') ? apcu_fetch($key) : apc_fetch($key);
+		return ($data === false) ? null : $data;
 	}
 
 	/** Set key */
 	public function set($key, $data, $ttl) {
-		return apc_store($key, $data, $ttl);
+		return function_exists('apcu_store') ? apcu_store($key, $data, $ttl) : apc_store($key, $data, $ttl);
 	}
 
 	/** Delete key */
 	public function del($key) {
-		return apc_delete($key);
+		return function_exists('apcu_delete') ? apcu_delete($key) : apc_delete($key);
 	}
 
 	/** Flush Cache */
 	public function flush() {
-		return apc_clear_cache('user');
+		return function_exists('apcu_clear_cache') ? apcu_clear_cache('user') : apc_clear_cache('user');
 	}
 }
