@@ -41,6 +41,7 @@ namespace HandsetDetection;
 use HandsetDetection\Cache\APC;
 use HandsetDetection\Cache\Memcache;
 use HandsetDetection\Cache\Memcached;
+use HandsetDetection\Cache\File;
 
 class HDCache {
 	var $prefix;
@@ -55,6 +56,8 @@ class HDCache {
 			$this->cache = new Memcached($config);
 		elseif (isset($config['cache']['memcache']))
 			$this->cache = new Memcache($config);
+		elseif (isset($config['cache']['file']))
+			$this->cache = new File($config);
 		else
 			$this->cache = new APC();
 	}
@@ -87,7 +90,7 @@ class HDCache {
 	 * @return true on success, false otherwise
 	 **/
 	function delete($key) {
-		return $this->cache->delete($this->prefix.$key);
+		return $this->cache->del($this->prefix.$key);
 	}
 
 	/**
