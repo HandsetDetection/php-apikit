@@ -36,13 +36,13 @@ class File implements CacheInterface {
 	protected $dir;
 
 	/**
-	 * Construct a new File cache layer object.
+	 * Construct a new File cache object.
 	 *
 	 * @param  string $dir
 	 * @throws \RuntimeException
 	 */
 	public function __construct($config = array()) {
-		$dir = empty($config['cachedir']) ? sys_get_temp_dir() : $config['cachedir'];
+		$dir = empty($config['cache']['file']['directory']) ? sys_get_temp_dir() : $config['cache']['file']['directory'];
 
 		if (substr($dir, -1) !== DIRECTORY_SEPARATOR)
 			$dir .= DIRECTORY_SEPARATOR;
@@ -66,14 +66,14 @@ class File implements CacheInterface {
 		if (time() > $data[0] && $data[0] != -1)
 			return null;
 
-		return $data[1];
+		return unserialize($data[1]);
 	}
 
 	/** Set key */
 	public function set($key, $data, $ttl) {
 		$fname = $this->getFilePath($key);
-		$tempName = tempname(); // $fname . '-' . mt_rand(10000, 99999);
-		file_put_contents($tempName, time() + $ttl . "\n" . $data);
+		$tempName = tempnam(sys_get_temp_dir(), $key);
+		file_put_contents($tempName, time() + $ttl . "\n" . serialize($data));
 		return rename($tempName, $fname);
 	}
 
@@ -89,9 +89,10 @@ class File implements CacheInterface {
 	public function flush() {
 		$files = glob($this->dir . '*');
 		foreach($files as $file) {
-		  if (is_file($file))
-			@unlink($file);
+			if (is_file($file))
+				@unlink($file);
 		}
+		return true;
 	}
 
 	/** Get fully qualified path to file */
