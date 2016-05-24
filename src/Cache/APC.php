@@ -50,6 +50,6 @@ class APC implements CacheInterface {
 
 	/** Flush Cache */
 	public function flush() {
-		return function_exists('apcu_clear_cache') ? apcu_clear_cache('user') : apc_clear_cache('user');
+		return function_exists('apcu_clear_cache') ? apcu_clear_cache() : apc_clear_cache('user');
 	}
 }
