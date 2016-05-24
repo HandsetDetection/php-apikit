@@ -9,8 +9,8 @@ ini_set('max_execution_time', 120);
 ini_set('memory_limit', "512M");
 error_reporting(E_ALL);
 
-//$configFile = 'hdconfig.php';
-$configFile = 'hd4UltimateConfig.php';
+$configFile = 'hdconfig.php';
+//$configFile = 'hd4UltimateConfig.php';
 
 // Ensure config file is setup.
 if (! file_exists($configFile)) {

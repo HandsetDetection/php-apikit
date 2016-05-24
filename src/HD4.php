@@ -1,6 +1,6 @@
 <?php
 /*
-** Copyright (c) Richard Uren 2012 - 2015 <richard@teleport.com.au>
+** Copyright (c) Richard Uren 2012 - 2016 <richard@teleport.com.au>
 ** All Rights Reserved
 **
 ** --
@@ -34,8 +34,8 @@
 
 namespace HandsetDetection;
 
-require_once('HDBase.php');
-require_once('HDDevice.php');
+use HandsetDetection\HDBase;
+use HandsetDetection\HDDevice;
 
 /**
  * HD4 Class

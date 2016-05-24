@@ -3,8 +3,6 @@
 // testHasBiKeys - key case, android, ios, http, windows phone.
 
 error_reporting(E_ALL | E_STRICT);
-require_once('HD4.php');
-require_once('HDStore.php');
 
 class HD4Test extends PHPUnit_Framework_TestCase {
 

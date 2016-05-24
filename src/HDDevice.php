@@ -30,9 +30,9 @@
 
 namespace HandsetDetection;
 
-require_once("HDBase.php");
-require_once("HDStore.php");
-require_once("HDExtra.php");
+use HandsetDetection\HDBase;
+use HandsetDetection\HDStore;
+use HandsetDetection\HDExtra;
 
 class HDDevice extends HDBase {
 	var $device = null;

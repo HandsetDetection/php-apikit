@@ -1,6 +1,6 @@
 <?php
 /*
-** Copyright (c) Teleport corp 2012 - 2015 <richard@teleport.com.au>
+** Copyright (c) Richard Uren 2012 - 2016 <richard@teleport.com.au>
 ** All Rights Reserved
 **
 ** --
@@ -23,42 +23,22 @@
 ** OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ** ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 ** TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-** USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-** DAMAGE.
+** USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
- * Cache class for HandsetDetection - Uses file backed store
- *
- * Notes :
- *  - Cache objects may be > 1Mb when serialized which makes memcache a bad choice (1Mb limit).
- *  - Consider php-igbinary to improve serialization performance in time critical situations.
- *  - 48Mb of APC cache is optimal if you can spare it.
- **/
+namespace HandsetDetection\Cache;
 
-namespace HandsetDetection;
+interface CacheInterface {
+	
+	/** Get data for a key. */
+	public function get($key);
 
-class HDCache {
-	var $prefix = 'hd40';
-	var $duration = 7200;
+	/** Set data for a key */
+	public function set($key, $data, $ttl);
 
-	function read($key) {
-		if (function_exists('apc_fetch'))
-			return apc_fetch($this->prefix.$key);
-		return null;
-	}
+	/** Delete a key */
+	public function del($key);
 
-	function write($key, $data) {
-		if (function_exists('apc_store'))
-			return apc_store($this->prefix.$key, $data, $this->duration);
-		return null;
-	}
-
-	function purge() {
-		if (function_exists('apc_clear_cache')) {
-			apc_clear_cache('user');
-			return apc_clear_cache();
-		}
-		return false;
-	}
+	/** Flush cache */
+	public function flush();
 }
