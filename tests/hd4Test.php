@@ -523,7 +523,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	function test_ultimate_deviceVendors() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$result = $hd->deviceVendors();
 		$reply = $hd->getReply();
 		//print_r($reply);
@@ -540,7 +540,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	public function test_ultimate_deviceModels() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
 		$this->assertEquals($reply, true);
@@ -555,7 +555,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	public function test_ultimate_deviceView() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceView('Nokia', 'N95');
 		$data = $hd->getReply();
 		$this->assertEquals($reply, true);
@@ -575,7 +575,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	public function test_ultimate_deviceDeviceWhatHas() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();
 		$this->assertEquals($reply, true);
