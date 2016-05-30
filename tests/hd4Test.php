@@ -508,6 +508,10 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_fetchArchive() {
 		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
 		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+
+		$store = HandsetDetection\HDStore::getInstance();
+		$store->purge();
+		
 		$result = $hd->deviceFetchArchive();
 		$this->assertTrue($result);
 
@@ -939,12 +943,14 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group community
 	 **/
 	function test_ultimate_community_fetchArchive() {
-		// Start tests with a clean slate
+		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
+		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+
+		// Purge store
 		$store = HandsetDetection\HDStore::getInstance();
 		$store->purge();
 
-		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
-		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+		// Fetch new device specs into store.
 		$result = $hd->communityFetchArchive();
 
 		$this->assertTrue($result);
