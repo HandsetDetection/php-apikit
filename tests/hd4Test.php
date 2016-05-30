@@ -103,7 +103,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
-		//print_r(json_encode($data));
 		
 		$this->assertEquals($reply, true);
 		$this->assertGreaterThan(700, count($data['model']));
@@ -138,7 +137,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @depends test_cloudConfigExists
 	 * @group cloud
 	 **/		
-	public function test_deviceDeviceWhatHas() {
+	public function test_deviceWhatHas() {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();
@@ -169,7 +168,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 
 		$result = $hd->deviceDetect($headers);
 		$reply = $hd->getReply();
-		//print_r($reply);
+
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
@@ -526,7 +525,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$result = $hd->deviceVendors();
 		$reply = $hd->getReply();
-		//print_r($reply);
+
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
@@ -543,6 +542,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
+
 		$this->assertEquals($reply, true);
 		$this->assertGreaterThan(700, count($data['model']));
 		$this->assertEquals(0, $data['status']);
@@ -564,8 +564,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		ksort($data['device']);
 		ksort($this->devices['NokiaN95']);
 
-//		print_r(json_encode($data['device']));
-//		print_r(json_encode($this->devices['NokiaN95']));
 		$this->assertEquals(strtolower(json_encode($this->devices['NokiaN95'])), strtolower(json_encode($data['device'])));
 	}
 
@@ -574,7 +572,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @depends test_fetchArchive
 	 * @group ultimate
 	 **/
-	public function test_ultimate_deviceDeviceWhatHas() {
+	public function test_ultimate_deviceWhatHas() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();

@@ -42,13 +42,27 @@ class HDDevice extends HDBase {
 	var $ratingResult = null;
 	var $Store = null;
 	var $Extra = null;
+	var $config = null;
 	
-	function __construct() {
+	function __construct($config=array()) {
 		parent::__construct();
-		$this->Store = HDStore::getInstance();
-		$this->Extra = new HDExtra();
+		$this->setConfig($config);
 	}
 
+	/**
+	 * Set Config sets config vars
+	 *
+	 * @param array $config A config assoc array.
+	 * @return true on success, false otherwise
+	 **/
+	function setConfig($config) {
+		foreach((array) $config as $key => $value)
+			$this->config[$key] = $value;
+
+		$this->Store = HDStore::getInstance();
+		$this->Store->setConfig($this->config);
+		$this->Extra = new HDExtra($this->config);
+	}
 	/**
 	 * Find all device vendors
 	 *

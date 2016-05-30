@@ -15,14 +15,11 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$archive = $dir . DIRECTORY_SEPARATOR . "communityTest.zip";
 		$hd4 = new HandsetDetection\HD4('hd4UltimateConfig.php');
 
-		$store = HandsetDetection\HDStore::getInstance();
-		$store->setPath($dir, true);
-
 		$hd4->remote("community/fetcharchive", '', 'zip', true);
 		$status = file_put_contents($archive, $hd4->getRawReply());
 
 		if (sizeof($hd4->getRawReply()) < 300)
-			$this->markTestSkipped('Community Edition can not be downloaded right now....');
+			self::markTestSkipped('Community Edition can not be downloaded right now....');
 
 		$zip = new \ZipArchive();
 		if ($zip->open($archive) === false)
@@ -31,7 +28,7 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		for ($i = 0; $i < $zip->numFiles; $i++) {
 			$filename = $zip->getNameIndex($i);
 			$zip->extractTo($dir, $filename);
-			$store->moveIn($dir . DIRECTORY_SEPARATOR . $filename, $filename);
+			$hd4->Store->moveIn($dir . DIRECTORY_SEPARATOR . $filename, $filename);
 		}
 		$zip->close();
 		return true;
@@ -39,8 +36,8 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 
 	// Remove community edition
 	static function tearDownAfterClass() {
-		$store = HandsetDetection\HDStore::getInstance();
-		$store->purge();
+		$hd4->Store = HandsetDetection\HDStore::getInstance();
+		$hd4->Store->purge();
 	}
 
 	function testIsHelperUsefulTrue() {

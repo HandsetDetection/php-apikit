@@ -49,6 +49,19 @@ class HDCache {
 	protected $cache = null;
 
 	function __construct($config = array()) {
+		$this->setConfig($config);
+	}
+
+	/**
+	 * Set config file
+	 *
+	 * @param array $config An assoc array of config data
+	 * @return true on success, false otherwise
+	 **/
+	function setConfig($config) {
+		foreach((array) $config as $key => $value)
+			$this->config[$key] = $value;
+
 		$this->prefix = isset($config['cache']['prefix']) ? $config['cache']['prefix'] : 'hd40';
 		$this->duration = isset($config['cache']['ttl']) ? $config['cache']['ttl'] : 7200;
 
@@ -60,8 +73,9 @@ class HDCache {
 			$this->cache = new File($config);
 		else
 			$this->cache = new APC();
-	}
 
+		return true;
+	}
 	/**
 	 * Fetch a cache key
 	 *
