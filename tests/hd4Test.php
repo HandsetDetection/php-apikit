@@ -965,7 +965,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		if (function_exists('apcu_cache_info')) {
 			echo "APCU\n";
 			print_r(apcu_cache_info());
-		} elseif (function_exists('apc_cache_info ')) {
+		} elseif (function_exists('apc_cache_info')) {
 			echo "APC\n";
 			print_r(apc_cache_info('user'));
 		}
