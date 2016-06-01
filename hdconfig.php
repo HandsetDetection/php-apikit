@@ -9,7 +9,7 @@
 * site_id : the site_id to be used for these queries * Required : From 'Dashboard (Manage Sites Section) > Site Settings > Cloud ' Page
 * filesdir : defaults to the installation directory - when set any downloaded files and any file caches will be setup here eg /tmp
 * use_local : set to true if you're using an Ultimate licence (download the data set and perform detections locally)
-* api_server : defaults to api.handsetdetection.com - Use a different hostname to force connections to a different serevr pool
+* api_server : defaults to api.handsetdetection.com - Use a different hostname to force connections to a different server pool
 * debug : defaults to false - Set to true to log interesting messages to syslog
 * retries : default 3 - number of times a connection is retried
 * use_proxy : set to true to connect through a proxy server

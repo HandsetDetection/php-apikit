@@ -23,7 +23,8 @@ before_install:
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source
-
+  - php -i
+  
 # Setup test run config files
 before_script:
   - cat hdconfig.php | sed -e s/your_api_username/$API_USERNAME/ -e s/your_api_secret/$API_SECRET/ -e s/your_api_siteId/$API_SITE_ID/ -e "s/\[\'use_local\'\] = false/\[\'use_local\'\] = true/" > hd4UltimateConfig.php
