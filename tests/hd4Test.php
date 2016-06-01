@@ -949,9 +949,25 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_ultimate_community_fetchArchive() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 
+		if (function_exists('apcu_cache_info')) {
+			echo "APCU\n";
+			print_r(apcu_cache_info());
+		} elseif (function_exists('apc_cache_info')) {
+			echo "APC\n";
+			print_r(apc_cache_info('user'));
+		}
+
 		// Purge store
 		$store = HandsetDetection\HDStore::getInstance();
 		$store->purge();
+
+		if (function_exists('apcu_cache_info')) {
+			echo "APCU\n";
+			print_r(apcu_cache_info());
+		} elseif (function_exists('apc_cache_info ')) {
+			echo "APC\n";
+			print_r(apc_cache_info('user'));
+		}
 
 		// Fetch new device specs into store.
 		$result = $hd->communityFetchArchive();
