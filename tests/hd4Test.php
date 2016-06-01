@@ -604,14 +604,15 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 
 		$result = $hd->deviceDetect($headers);
 		$reply = $hd->getReply();
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('Computer', $reply['hd_specs']['general_type']);
 		print_r($reply);
 		echo "\n";
 		echo filesize("/tmp/ultimate.zip")."\n";
 		echo filesize("/tmp/hd40store/Device_3298.json")."\n";
+		
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('Computer', $reply['hd_specs']['general_type']);
 	}
 
 	/**
@@ -976,14 +977,14 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 
 		$result = $hd->deviceDetect($headers);
 		$reply = $hd->getReply();
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
 		print_r($reply);
 		echo "\n";
 		echo filesize("/tmp/communityultimate.zip")."\n";
 		echo filesize("/tmp/hd40store/Device_3298.json")."\n";		
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
 	}
 
 	/**
