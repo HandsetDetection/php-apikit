@@ -948,7 +948,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 **/
 	function test_ultimate_community_fetchArchive() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-
+		echo "Cache Check\n";
 		if (function_exists('apcu_cache_info')) {
 			echo "APCU\n";
 			print_r(apcu_cache_info());
@@ -956,10 +956,11 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 			echo "APC\n";
 			print_r(apc_cache_info('user'));
 		}
+		echo "About to Purge\n";
 
 		// Purge store
-		$store = HandsetDetection\HDStore::getInstance();
-		$store->purge();
+		$hd->Store->purge();
+		echo "Post Purge\n";
 
 		if (function_exists('apcu_cache_info')) {
 			echo "APCU\n";
@@ -968,6 +969,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 			echo "APC\n";
 			print_r(apc_cache_info('user'));
 		}
+		echo "About to download\n";
 
 		// Fetch new device specs into store.
 		$result = $hd->communityFetchArchive();
