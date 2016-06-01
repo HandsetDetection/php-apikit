@@ -390,8 +390,11 @@ class HD4 extends HDBase {
 
 		for ($i = 0; $i < $zip->numFiles; $i++) {
 			$filename = $zip->getNameIndex($i);
-			$zip->extractTo(sys_get_temp_dir(), $filename);
-			$this->Store->moveIn(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename, $filename);
+			if (! $zip->extractTo(sys_get_temp_dir(), $filename))
+				return $this->setError(299, "Error : Failed to extract $filename from archive to ".sys_get_temp_dir());
+			
+			if (! $this->Store->moveIn(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename, $filename))
+				return $this->setError(299, "Error : Failed to move ".sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename . " into Store");
 		}
 		$zip->close();
 		return true;
