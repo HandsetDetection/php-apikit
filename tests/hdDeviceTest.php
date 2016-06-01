@@ -8,36 +8,21 @@ error_reporting(E_ALL | E_STRICT);
 // So install the latest community edition so there is something to work with.
 
 class HDDeviceTest extends PHPUnit_Framework_TestCase {
+	var $hd4 = null;
 
 	// Setup community edition for tests. Takes 60s or so to download and install.
 	static function setUpBeforeClass() {
-		$dir = sys_get_temp_dir();
-		$archive = $dir . DIRECTORY_SEPARATOR . "communityTest.zip";
 		$hd4 = new HandsetDetection\HD4('hd4UltimateConfig.php');
-
-		$hd4->remote("community/fetcharchive", '', 'zip', true);
-		$status = file_put_contents($archive, $hd4->getRawReply());
-
-		if (sizeof($hd4->getRawReply()) < 300)
-			self::markTestSkipped('Community Edition can not be downloaded right now....');
-
-		$zip = new \ZipArchive();
-		if ($zip->open($archive) === false)
-			return false;
-
-		for ($i = 0; $i < $zip->numFiles; $i++) {
-			$filename = $zip->getNameIndex($i);
-			$zip->extractTo($dir, $filename);
-			$hd4->Store->moveIn($dir . DIRECTORY_SEPARATOR . $filename, $filename);
-		}
-		$zip->close();
+		echo "Fetching Archive-";
+		$hd4->communityFetchArchive();
+		echo "Done";
 		return true;
 	}
 
 	// Remove community edition
 	static function tearDownAfterClass() {
-		$hd4->Store = HandsetDetection\HDStore::getInstance();
-		$hd4->Store->purge();
+		$store = HandsetDetection\HDStore::getInstance();
+		$store->purge();
 	}
 
 	function testIsHelperUsefulTrue() {
@@ -60,4 +45,3 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($result);
 	}
 }
-
