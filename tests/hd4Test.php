@@ -506,8 +506,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	function test_fetchArchive() {
-		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
-		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 
 		$store = HandsetDetection\HDStore::getInstance();
 		$store->purge();
@@ -943,8 +942,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group community
 	 **/
 	function test_ultimate_community_fetchArchive() {
-		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
-		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 
 		// Purge store
 		$store = HandsetDetection\HDStore::getInstance();
@@ -1297,4 +1295,3 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(0, $reply['hd_specs']['display_ppi']);
 	}	
 }
-

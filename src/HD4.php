@@ -367,11 +367,11 @@ class HD4 extends HDBase {
 			return $this->setError(299, 'Error : FetchArchive failed. Bad Download. File too short at '.strlen($data).' bytes.');
 		}
 
-		$status = file_put_contents($this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip", $this->getRawReply());
+		$status = file_put_contents($this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip", $this->getRawReply());
 		if ($status === false)
-			return $this->setError(299, "Error : FetchArchive failed. Could not write ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+			return $this->setError(299, "Error : FetchArchive failed. Could not write ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip");
 
-		return $this->installArchive($this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+		return $this->installArchive($this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip");
 	}	
 	/**
 	 * Install an ultimate archive file
@@ -382,11 +382,11 @@ class HD4 extends HDBase {
 	function installArchive($file) {
 		// Unzip the archive and cache the individual files
 		if (! class_exists('ZipArchive'))
-			return $this->setError(299, "Error : Failed to open ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip, is the ZIP module installed ?");
+			return $this->setError(299, "Error : Failed to open ". $file." is the ZIP module installed ?");
 
 		$zip = new \ZipArchive();
 		if ($zip->open($file) === false)
-			return $this->setError(299, "Error : Failed to open ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+			return $this->setError(299, "Error : Failed to open ". $file);
 
 		for ($i = 0; $i < $zip->numFiles; $i++) {
 			$filename = $zip->getNameIndex($i);
