@@ -507,6 +507,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 **/
 	function test_fetchArchive() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
 
 		$store = HandsetDetection\HDStore::getInstance();
 		$store->purge();
@@ -948,6 +949,8 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 **/
 	function test_ultimate_community_fetchArchive() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
+
 		echo "Cache Check\n";
 		if (function_exists('apcu_cache_info')) {
 			echo "APCU\n";
