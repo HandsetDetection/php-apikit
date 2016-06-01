@@ -29,6 +29,8 @@ before_script:
   - cat hdconfig.php | sed -e s/your_api_username/$API_USERNAME/ -e s/your_api_secret/$API_SECRET/ -e s/your_api_siteId/$API_SITE_ID/ -e "s/\[\'use_local\'\] = false/\[\'use_local\'\] = true/" > hd4UltimateConfig.php
   - cat hdconfig.php | sed -e s/your_api_username/$API_USERNAME/ -e s/your_api_secret/$API_SECRET/ -e s/your_api_siteId/$API_SITE_ID/ > hd4CloudConfig.php
 
+script: phpunit --debug
+
 # Note : Having issues with APCu and PHP 7.0    
 matrix:
     allow_failures:
