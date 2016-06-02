@@ -103,7 +103,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
-		//print_r(json_encode($data));
 		
 		$this->assertEquals($reply, true);
 		$this->assertGreaterThan(700, count($data['model']));
@@ -138,7 +137,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @depends test_cloudConfigExists
 	 * @group cloud
 	 **/		
-	public function test_deviceDeviceWhatHas() {
+	public function test_deviceWhatHas() {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();
@@ -169,7 +168,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 
 		$result = $hd->deviceDetect($headers);
 		$reply = $hd->getReply();
-		//print_r($reply);
+
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
@@ -507,14 +506,22 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	function test_fetchArchive() {
-		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
-		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
-		$result = $hd->deviceFetchArchive();
-		$this->assertTrue($result);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
 
+		$store = HandsetDetection\HDStore::getInstance();
+		$store->purge();
+
+		$result = $hd->deviceFetchArchive();
 		$data = $hd->getRawReply();
-		echo "Downloaded ".strlen($data)." bytes";
-		$this->assertGreaterThan(19000000, strlen($data));		// Filesize greater than 19Mb (currently 21Mb).
+		$size = strlen($data);
+		echo "Downloaded $size bytes ";
+		if ($size < 1000) {
+			$this->markTestSkipped($data);
+		} else {
+			$this->assertTrue($result);
+			$this->assertGreaterThan(19000000, strlen($data));		// Filesize greater than 19Mb (currently 28Mb).
+		}
 	}
 
 	/**
@@ -523,10 +530,10 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	function test_ultimate_deviceVendors() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$result = $hd->deviceVendors();
 		$reply = $hd->getReply();
-		//print_r($reply);
+
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
@@ -540,9 +547,10 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	public function test_ultimate_deviceModels() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceModels('Nokia');
 		$data = $hd->getReply();
+
 		$this->assertEquals($reply, true);
 		$this->assertGreaterThan(700, count($data['model']));
 		$this->assertEquals(0, $data['status']);
@@ -555,7 +563,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group ultimate
 	 **/
 	public function test_ultimate_deviceView() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceView('Nokia', 'N95');
 		$data = $hd->getReply();
 		$this->assertEquals($reply, true);
@@ -564,8 +572,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		ksort($data['device']);
 		ksort($this->devices['NokiaN95']);
 
-//		print_r(json_encode($data['device']));
-//		print_r(json_encode($this->devices['NokiaN95']));
 		$this->assertEquals(strtolower(json_encode($this->devices['NokiaN95'])), strtolower(json_encode($data['device'])));
 	}
 
@@ -574,8 +580,8 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @depends test_fetchArchive
 	 * @group ultimate
 	 **/
-	public function test_ultimate_deviceDeviceWhatHas() {
-		$hd = new HandsetDetection\HD4($this->cloudConfig);
+	public function test_ultimate_deviceWhatHas() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$reply = $hd->deviceWhatHas('design_dimensions', '101 x 44 x 16');
 		$data = $hd->getReply();
 		$this->assertEquals($reply, true);
@@ -589,7 +595,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(true, preg_match('/Voxtel/', $jsonString));
 		$this->assertEquals(true, preg_match('/RX800/', $jsonString));
 	}
-	
+
 	/**
 	 * Windows PC running Chrome
 	 * @depends test_fetchArchive
@@ -941,19 +947,24 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	 * @group community
 	 **/
 	function test_ultimate_community_fetchArchive() {
-		// Start tests with a clean slate
-		$store = HandsetDetection\HDStore::getInstance();
-		$store->purge();
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
 
-		// Note : request storage dir to be created if it does not exist. (with TRUE as 2nd param)
-		$hd = new HandsetDetection\HD4($this->ultimateConfig, true);
+		// Purge store
+		$hd->Store->purge();
+
+		// Fetch new device specs into store.
 		$result = $hd->communityFetchArchive();
-
-		$this->assertTrue($result);
-
+		
 		$data = $hd->getRawReply();
-		echo "Downloaded ".strlen($data)." bytes";
-		$this->assertGreaterThan(9000000, strlen($data));		// Filesize greater than 9Mb
+		$size = strlen($data);
+		echo "Downloaded $size bytes ";
+		if ($size < 1000) {
+			$this->markTestSkipped($data);
+		} else {
+			$this->assertTrue($result);
+			$this->assertGreaterThan(9000000, strlen($data));		// Filesize greater than 9Mb
+		}
 	}
 
 
@@ -1246,7 +1257,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('', $reply['hd_specs']['general_type']);
 	}
 
-	// 
 	/**
 	 * iPhone 4S Native
 	 * @depends test_ultimate_community_fetchArchive
@@ -1270,7 +1280,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('', $reply['hd_specs']['general_type']);
 	}
 
-	// 
 	/**
 	 * Windows Phone Native Nokia Lumia 1020
 	 * @depends test_ultimate_community_fetchArchive
@@ -1293,4 +1302,3 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(0, $reply['hd_specs']['display_ppi']);
 	}	
 }
-

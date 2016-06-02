@@ -39,9 +39,11 @@
 namespace HandsetDetection;
 
 use HandsetDetection\Cache\APC;
+use HandsetDetection\Cache\APCu;
 use HandsetDetection\Cache\Memcache;
 use HandsetDetection\Cache\Memcached;
 use HandsetDetection\Cache\File;
+use HandsetDetection\Cache\None;
 
 class HDCache {
 	var $prefix;
@@ -49,6 +51,19 @@ class HDCache {
 	protected $cache = null;
 
 	function __construct($config = array()) {
+		$this->setConfig($config);
+	}
+
+	/**
+	 * Set config file
+	 *
+	 * @param array $config An assoc array of config data
+	 * @return true on success, false otherwise
+	 **/
+	function setConfig($config) {
+		foreach((array) $config as $key => $value)
+			$this->config[$key] = $value;
+
 		$this->prefix = isset($config['cache']['prefix']) ? $config['cache']['prefix'] : 'hd40';
 		$this->duration = isset($config['cache']['ttl']) ? $config['cache']['ttl'] : 7200;
 
@@ -58,10 +73,25 @@ class HDCache {
 			$this->cache = new Memcache($config);
 		elseif (isset($config['cache']['file']))
 			$this->cache = new File($config);
-		else
-			$this->cache = new APC();
-	}
+		elseif (isset($config['cache']['none']))
+			$this->cache = new None($config);
+		elseif (isset($config['cache']['apc']))
+			$this->cache = new APC($config);
+		elseif (isset($config['cache']['apcu']))
+			$this->cache = new APCu($config);
+		elseif (! isset($config['cache'])) {
+			// The legacy option was to use apc/apc by default - so use apcu/apc if 'cache' is not set
+			if (function_exists('apcu_store'))
+				$this->cache = new APCu($config);
+			elseif (function_exists('apc_store'))
+				$this->cache = new APC($config);
+		}
 
+		if (empty($this->cache))
+			$this->cache = new None($config);
+
+		return true;
+	}
 	/**
 	 * Fetch a cache key
 	 *

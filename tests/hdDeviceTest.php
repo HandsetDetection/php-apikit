@@ -8,29 +8,14 @@ error_reporting(E_ALL | E_STRICT);
 // So install the latest community edition so there is something to work with.
 
 class HDDeviceTest extends PHPUnit_Framework_TestCase {
+	var $hd4 = null;
 
 	// Setup community edition for tests. Takes 60s or so to download and install.
 	static function setUpBeforeClass() {
-		$dir = sys_get_temp_dir();
-		$file = $dir . DIRECTORY_SEPARATOR . "communityTest.zip";
-		$hd4 = new HandsetDetection\HD4();
-
-		$store = HandsetDetection\HDStore::getInstance();
-		$store->setPath($dir, true);
-
-		$hd4->remote("community/fetcharchive", '', 'zip', false);
-		$status = file_put_contents($dir . DIRECTORY_SEPARATOR . "communityTest.zip", $hd4->getRawReply());
-
-		$zip = new \ZipArchive();
-		if ($zip->open($file) === false)
-			return false;
-
-		for ($i = 0; $i < $zip->numFiles; $i++) {
-			$filename = $zip->getNameIndex($i);
-			$zip->extractTo($dir, $filename);
-			$store->moveIn($dir . DIRECTORY_SEPARATOR . $filename, $filename);
-		}
-		$zip->close();
+		$hd4 = new HandsetDetection\HD4('hd4UltimateConfig.php');
+		echo "Fetching Archive-";
+		$hd4->communityFetchArchive();
+		echo "Done";
 		return true;
 	}
 
@@ -60,4 +45,3 @@ class HDDeviceTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($result);
 	}
 }
-

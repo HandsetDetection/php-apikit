@@ -1,6 +1,6 @@
 <?php
 
-class APCTest extends PHPUnit_Framework_TestCase {
+class APCuTest extends PHPUnit_Framework_TestCase {
 
 	var $volumeTest = 10000;
 	var $testData = array(
@@ -11,8 +11,8 @@ class APCTest extends PHPUnit_Framework_TestCase {
 		);
 
     public function setUp() {
-        if (! extension_loaded('apc'))
-            $this->markTestSkipped('APC extension not available.');
+        if (! extension_loaded('apcu'))
+            $this->markTestSkipped('APCu extension not available.');
 
         if (! ini_get('apc.enable_cli'))
             $this->markTestSkipped('Enable apc.enable_cli');
@@ -21,7 +21,7 @@ class APCTest extends PHPUnit_Framework_TestCase {
 	function testBasic() {
 		$config = array(
 			'cache' => array(
-				'apc' => true
+				'apcu' => true
 			)
 		);
 
@@ -43,7 +43,7 @@ class APCTest extends PHPUnit_Framework_TestCase {
 	function testVolume() {
 		$config = array(
 			'cache' => array(
-				'apc' => true
+				'apcu' => true
 			)
 		);
 		

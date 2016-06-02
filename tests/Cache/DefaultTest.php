@@ -1,6 +1,6 @@
 <?php
 
-class APCTest extends PHPUnit_Framework_TestCase {
+class DefaultTest extends PHPUnit_Framework_TestCase {
 
 	var $volumeTest = 10000;
 	var $testData = array(
@@ -11,21 +11,10 @@ class APCTest extends PHPUnit_Framework_TestCase {
 		);
 
     public function setUp() {
-        if (! extension_loaded('apc'))
-            $this->markTestSkipped('APC extension not available.');
-
-        if (! ini_get('apc.enable_cli'))
-            $this->markTestSkipped('Enable apc.enable_cli');
     }
 
 	function testBasic() {
-		$config = array(
-			'cache' => array(
-				'apc' => true
-			)
-		);
-
-		$cache = new HandsetDetection\HDCache($config);
+		$cache = new HandsetDetection\HDCache();
 		$now = time();
 
 		// Test Write & Read
@@ -41,13 +30,7 @@ class APCTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function testVolume() {
-		$config = array(
-			'cache' => array(
-				'apc' => true
-			)
-		);
-		
-		$cache = new HandsetDetection\HDCache($config);
+		$cache = new HandsetDetection\HDCache();
 		$now = time();
 
 		for($i=0; $i < $this->volumeTest; $i++) {

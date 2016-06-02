@@ -48,13 +48,12 @@ class HD4 extends HDBase {
 	var $error = '';
 	var $logger = null;
 	var $debug = false;
-	var $configFile = 'hdconfig.php';				// hdconfig.php is the v3x PHP config file name.
+	var $configFile = 'hdconfig.php';
 	
 	var $config = array (
 		'username' => '',
 		'secret' => '',
 		'site_id' => '',
-		'mobile_site' => '',
 		'use_proxy' => 0,
 		'proxy_server' => '',
 		'proxy_port' => '',
@@ -66,7 +65,7 @@ class HD4 extends HDBase {
 		'debug' => false,
 		'filesdir' => '',
 		'retries' => 3,
-		'cache_requests' => true,
+		'cache_requests' => false,
 		'geoip' => false,
 		'log_unknown' => true
 	);	
@@ -81,23 +80,7 @@ class HD4 extends HDBase {
 	 */
 	function __construct($config = null) {
 		parent::__construct();
-		
-		if (! empty($config) && is_array($config)) {
-			$this->config = array_merge($this->config, $config);
-		} elseif (! empty($config) && is_string($config) && file_exists($config)) {
-			$hdconfig = array();
-			require($config);
-			$this->config = array_merge($this->config, (array) $hdconfig);
-		} elseif (! file_exists($this->configFile)) {
-			throw new \Exception ('Error : Invalid config file and no config passed to constructor');
-		} else {
-			$hdconfig = array();
-			require($this->configFile);
-			$this->config = array_merge($this->config, (array) $hdconfig);
-		}
-
-		if (empty($this->config['filesdir']))
-			$this->config['filesdir'] = dirname(__FILE__);
+		$this->setConfig($config);
 			
 		if (empty($this->config['username'])) {
 			throw new \Exception('Error : API username not set. Download a premade config from your Site Settings.');
@@ -105,20 +88,11 @@ class HD4 extends HDBase {
 			throw new \Exception('Error : API secret not set. Download a premade config from your Site Settings.');
 		}
 
-		$this->debug = $this->config['debug'];
-		//$this->log('Config '.print_r($this->config, true));
-
-		$this->Store = HDStore::getInstance();
-		$this->Store->setPath($this->config['filesdir'], true);
-		
-		$this->Cache = new HDCache();
-		$this->Device = new HDDevice();
-
-		$this->setup();
-
 		if (! empty($this->config['use_local']) && ! class_exists('ZipArchive')) {
 			throw new \Exception('Ultimate detection needs ZipArchive to unzip archive files. Please install this php module.');
 		}
+		
+		$this->setup();
 	}
 
 	function setLocalDetection($enable){ $this->config['use_local'] = $enable;}
@@ -127,7 +101,6 @@ class HD4 extends HDBase {
 	function setUseProxy($proxy){ $this->config['use_proxy'] = $proxy; }
 	function setProxyServer($name) { $this->config['proxy_server'] = $name; }
 	function setProxyPort($number) {$this->config['proxy_port'] = $number; }
-	function setMobileSite($mobile_site) { $this->config['mobile_site'] = $mobile_site; }
 	function setSecret($secret) { $this->config['secret'] = $secret; }
 	function setUsername($user) { $this->config['username'] = $user; }
 	function setTimeout($timeout) { $this->config['timeout'] = $timeout; }
@@ -138,7 +111,7 @@ class HD4 extends HDBase {
 	function setLogger($function) { $this->config['logger'] = $function; }
 	function setFilesDir($directory) {
 		$this->config['filesdir'] = $directory;
-		if (! $this->Store->setDirectory($directory)) {				
+		if (! $this->Store->setDirectory($directory)) {
 			throw new InvalidCacheDirectoryException('Error : Failed to create cache directory in ('.$directory.'). Set your filesdir config setting or check directory permissions.');
 		}
 	}
@@ -161,6 +134,35 @@ class HD4 extends HDBase {
 	function getApiServer() { return $this->config['api_server']; }
 	function getDetectRequest() { return $this->detectRequest; }
 	function getFilesDir() { return $this->config['filesdir']; }
+	
+	/**
+	 * Set config file
+	 *
+	 * @param array $config An assoc array of config data
+	 * @return true on success, false otherwise
+	 **/
+	function setConfig($cfg) {
+		$config = array();
+		if (is_array($cfg)) {
+			$config = $cfg;
+		} elseif (is_string($cfg)) {
+			// Sets $hdconfig
+			require($cfg);
+			$config = $hdconfig;
+		}
+		
+		foreach($config as $key => $value)
+			$this->config[$key] = $value;
+
+		if (empty($this->config['filesdir']))
+			$this->config['filesdir'] = dirname(__FILE__);
+
+		$this->Store = HDStore::getInstance();
+		$this->Store->setConfig($this->config, true);
+		$this->Cache = new HDCache($this->config);
+		$this->Device = new HDDevice($this->config);
+		return true;
+	}
 	
 	/**
 	 * Setup the api kit with the current HTTP headers.
@@ -214,7 +216,9 @@ class HD4 extends HDBase {
 		if (empty($this->config['use_local']))
 			return $this->remote("device/vendors", null);
 		
-		$reply = $this->Device->localVendors();
+		if ($this->Device->localVendors())
+			$this->reply = $this->Device->getReply();
+
 		return $this->setError($this->Device->getStatus(), $this->Device->getMessage());
 	}
 	
@@ -228,14 +232,16 @@ class HD4 extends HDBase {
 		if (empty($this->config['use_local']))
 			return $this->remote("device/models/$vendor", null);
 
-		$reply = $this->Device->localModels();
+		if ($this->Device->localModels($vendor))
+			$this->reply = $this->Device->getReply();
+
 		return $this->setError($this->Device->getStatus(), $this->Device->getMessage());
 	}
 	
 	/**
 	 * Find properties for a specific device
 	 *
-	 * @param string $vendor The device vendor eg. Nokia 
+	 * @param string $vendor The device vendor eg. Nokia
 	 * @param string $model The deviec model eg. N95
 	 * @return bool true on success, false otherwise. Use getReply to inspect results on success.
 	 */
@@ -243,7 +249,9 @@ class HD4 extends HDBase {
 		if (empty($this->config['use_local']))
 			return $this->remote("device/view/$vendor/$model", null);
 		
-		$reply = $this->Device->localView();
+		if ($this->Device->localView($vendor, $model))
+			$this->reply = $this->Device->getReply();
+
 		return $this->setError($this->Device->getStatus(), $this->Device->getMessage());
 	}
 	
@@ -258,7 +266,9 @@ class HD4 extends HDBase {
 		if (empty($this->config['use_local']))
 			return $this->remote("device/whathas/$key/$value", null);
 		
-		$reply = $this->Device->localWhatHas($key, $value);
+		if ($this->Device->localWhatHas($key, $value))
+			$this->reply = $this->Device->getReply();
+			
 		return $this->setError($this->Device->getStatus(), $this->Device->getMessage());
 	}
 		
@@ -357,11 +367,11 @@ class HD4 extends HDBase {
 			return $this->setError(299, 'Error : FetchArchive failed. Bad Download. File too short at '.strlen($data).' bytes.');
 		}
 
-		$status = file_put_contents($this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip", $this->getRawReply());
+		$status = file_put_contents($this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip", $this->getRawReply());
 		if ($status === false)
-			return $this->setError(299, "Error : FetchArchive failed. Could not write ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+			return $this->setError(299, "Error : FetchArchive failed. Could not write ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip");
 
-		return $this->installArchive($this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+		return $this->installArchive($this->config['filesdir'] . DIRECTORY_SEPARATOR . "communityultimate.zip");
 	}	
 	/**
 	 * Install an ultimate archive file
@@ -372,16 +382,19 @@ class HD4 extends HDBase {
 	function installArchive($file) {
 		// Unzip the archive and cache the individual files
 		if (! class_exists('ZipArchive'))
-			return $this->setError(299, "Error : Failed to open ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip, is the ZIP module installed ?");
+			return $this->setError(299, "Error : Failed to open ". $file." is the ZIP module installed ?");
 
 		$zip = new \ZipArchive();
 		if ($zip->open($file) === false)
-			return $this->setError(299, "Error : Failed to open ". $this->config['filesdir'] . DIRECTORY_SEPARATOR . "ultimate.zip");
+			return $this->setError(299, "Error : Failed to open ". $file);
 
 		for ($i = 0; $i < $zip->numFiles; $i++) {
 			$filename = $zip->getNameIndex($i);
-			$zip->extractTo(sys_get_temp_dir(), $filename);
-			$this->Store->moveIn(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename, $filename);
+			if (! $zip->extractTo(sys_get_temp_dir(), $filename))
+				return $this->setError(299, "Error : Failed to extract $filename from archive to ".sys_get_temp_dir());
+			
+			if (! $this->Store->moveIn(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename, $filename))
+				return $this->setError(299, "Error : Failed to move ".sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename . " into Store");
 		}
 		$zip->close();
 		return true;

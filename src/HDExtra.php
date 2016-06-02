@@ -36,9 +36,21 @@ class HDExtra extends HDBase {
 	var $data = null;
 	var $Store = null;
 
-	function __construct() {
+	function __construct($config=array()) {
 		parent::__construct();
+		$this->setConfig($config);
+	}
+
+	/**
+	 * Set Config variables
+	 *
+	 * @param array $config A config array
+	 * @return boolean true on success, false otherwise
+	 **/
+	function setConfig($config) {
 		$this->Store = HDStore::getInstance();
+		$this->Store->setConfig($config);
+		return true;
 	}
 
 	function set($data) { $this->data = $data; }

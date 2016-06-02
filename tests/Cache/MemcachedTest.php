@@ -15,7 +15,7 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
             $this->markTestSkipped('Memcached extension is not available.');
 	}
 
-	function testMemcachedBasic() {
+	function testBasic() {
 		$config = array(
 			'cache' => array(
 				'memcached' => array(
@@ -44,7 +44,7 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($reply);
 	}
 
-	function testMemcachedVolume() {
+	function testVolume() {
 		$config = array(
 			'cache' => array(
 				'memcached' => array(
@@ -81,7 +81,7 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
 		$cache->purge();
 	}
 
-	function testMemcachedPoolBasic() {
+	function testPoolBasic() {
 		$config = array(
 			'cache' => array(
 				'memcached' => array(
@@ -101,7 +101,7 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->testData, $reply);
 	}
 
-	function testMemcachedPoolVolume() {
+	function testPoolVolume() {
 		$config = array(
 			'cache' => array(
 				'memcached' => array(

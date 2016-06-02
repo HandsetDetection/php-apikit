@@ -41,6 +41,7 @@ class HDStore {
 	var $directory = "";
 	private $Cache = null;
 	private static $_instance = null;
+	private $config = array();
 	
 	/**
 	 * Singleton Constructor
@@ -48,10 +49,8 @@ class HDStore {
 	 * @param string $path Location of storage ROOT dir.
 	 * @param boolean $createDirectory - Create storage directory if it does not exist
 	 **/
-	private function __construct() {
-		$this->path =  dirname(__FILE__);
-		$this->directory = $this->path . DIRECTORY_SEPARATOR . $this->dirname;
-		$this->Cache = new HDCache();
+	private function __construct($config = array()) {
+		$this->setConfig($config, true);
 	}
 
 	/**
@@ -68,16 +67,20 @@ class HDStore {
     }
 
 	/**
-	 * Sets the path to the root directory for storage operations, optionally creating the storage directory in it.
+	 * Sets the storage config options, optionally creating the storage directory.
 	 *
-	 * @param string $path
+	 * @param array $config An assoc array of config info.
 	 * @param boolean $createDirectory
 	 * @return void
 	 **/
-	public function setPath($path=null, $createDirectory) {
-		$this->path = empty($path) ? dirname(__FILE__) : $path;
+	public function setConfig($config, $createDirectory=false) {
+		foreach((array) $config as $key => $value)
+			$this->config[$key] = $value;
+
+		$this->path = empty($this->config['filesdir']) ? dirname(__FILE__) : $this->config['filesdir'];
 		$this->directory = $this->path . DIRECTORY_SEPARATOR . $this->dirname;
-		
+		$this->Cache = new HDCache($this->config);
+
 		if ($createDirectory) {
 			if (! is_dir($this->directory)) {
 				if (! mkdir($this->directory)) {

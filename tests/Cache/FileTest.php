@@ -10,14 +10,19 @@ class FileTest extends PHPUnit_Framework_TestCase {
 			'number' => 4
 		);
 
-	function testFileBasic() {
+	function testBasic() {
+		$testDir = "/tmp/testdir";
+		if (! is_dir($testDir))
+			mkdir($testDir);
+
 		$config = array(
 			'cache' => array(
 				'file' => array(
-					'directory' => '/tmp',
+					'directory' => $testDir,
 				)
 			)
 		);
+
 
 		$cache = new HandsetDetection\HDCache($config);
 		$now = time();
@@ -34,11 +39,15 @@ class FileTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($reply);
 	}
 
-	function testFileVolume() {
+	function testVolume() {
+		$testDir = "/tmp/testdir";
+		if (! is_dir($testDir))
+			mkdir($testDir);
+		
 		$config = array(
 			'cache' => array(
 				'file' => array(
-					'directory' => '/tmp',
+					'directory' => $testDir,
 				)
 			)
 		);
