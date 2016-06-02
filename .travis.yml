@@ -36,6 +36,8 @@ script: phpunit --debug
 after_script:
   - ls -la /tmp
   - ls -la /tmp/hd40store
+  - tail -15 hd4CloudConfig.php
+  - tail -15 hd4UltimateConfig.php
   
 # Note : Having issues with APCu and PHP 7.0    
 matrix:
