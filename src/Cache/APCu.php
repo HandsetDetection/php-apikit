@@ -30,31 +30,31 @@ namespace HandsetDetection\Cache;
 
 use HandsetDetection\Cache\CacheInterface;
 
-class APC implements CacheInterface {
+class APCu implements CacheInterface {
 
 	public function __construct($config = array()) {
-		if (! function_exists('apc_store'))
-			throw new \RuntimeException('APC functions not available. Is the APC module installed ?');
+		if (! function_exists('apcu_store'))
+			throw new \RuntimeException('APCu functions not available. Is the APCu module installed ?');
 	}
 
 	/** Get key */
 	public function get($key) {
-		$data = apc_fetch($key);
+		$data = apcu_fetch($key);
 		return ($data === false) ? null : $data;
 	}
 
 	/** Set key */
 	public function set($key, $data, $ttl) {
-		return apc_store($key, $data, $ttl);
+		return apcu_store($key, $data, $ttl);
 	}
 
 	/** Delete key */
 	public function del($key) {
-		return apc_delete($key);
+		return apcu_delete($key);
 	}
 
 	/** Flush Cache */
 	public function flush() {
-		return apc_clear_cache('user');
+		return apcu_clear_cache();
 	}
 }

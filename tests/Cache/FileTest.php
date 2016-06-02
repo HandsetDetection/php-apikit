@@ -10,7 +10,7 @@ class FileTest extends PHPUnit_Framework_TestCase {
 			'number' => 4
 		);
 
-	function testFileBasic() {
+	function testBasic() {
 		$testDir = "/tmp/testdir";
 		if (! is_dir($testDir))
 			mkdir($testDir);
@@ -39,7 +39,7 @@ class FileTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($reply);
 	}
 
-	function testFileVolume() {
+	function testVolume() {
 		$testDir = "/tmp/testdir";
 		if (! is_dir($testDir))
 			mkdir($testDir);

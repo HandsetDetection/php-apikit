@@ -14,7 +14,7 @@ class MemcacheTest extends PHPUnit_Framework_TestCase {
             $this->markTestSkipped('Memcache extension is not available.');
 	}
 
-	function testMemcacheBasic() {
+	function testBasic() {
 		$config = array(
 			'cache' => array(
 				'memcache' => array(
@@ -41,7 +41,7 @@ class MemcacheTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($reply);
 	}
 
-	function testMemcacheVolume() {
+	function testVolume() {
 		$config = array(
 			'cache' => array(
 				'memcache' => array(

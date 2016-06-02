@@ -1,6 +1,6 @@
 <?php
 
-class APCTest extends PHPUnit_Framework_TestCase {
+class NoneTest extends PHPUnit_Framework_TestCase {
 
 	var $volumeTest = 10000;
 	var $testData = array(
@@ -11,17 +11,12 @@ class APCTest extends PHPUnit_Framework_TestCase {
 		);
 
     public function setUp() {
-        if (! extension_loaded('apc'))
-            $this->markTestSkipped('APC extension not available.');
-
-        if (! ini_get('apc.enable_cli'))
-            $this->markTestSkipped('Enable apc.enable_cli');
     }
 
 	function testBasic() {
 		$config = array(
 			'cache' => array(
-				'apc' => true
+				'none' => true
 			)
 		);
 
@@ -31,19 +26,19 @@ class APCTest extends PHPUnit_Framework_TestCase {
 		// Test Write & Read
 		$cache->write($now, $this->testData);
 		$reply = $cache->read($now);
-		$this->assertEquals($this->testData, $reply);
+		$this->assertFalse($reply);
 
 		// Test Flush
 		$reply = $cache->purge();
-		$this->assertTrue($reply);
+		$this->assertFalse($reply);
 		$reply = $cache->read($now);
-		$this->assertNull($reply);
+		$this->assertFalse($reply);
 	}
 
 	function testVolume() {
 		$config = array(
 			'cache' => array(
-				'apc' => true
+				'none' => true
 			)
 		);
 		
@@ -55,19 +50,19 @@ class APCTest extends PHPUnit_Framework_TestCase {
 
 			// Write
 			$reply = $cache->write($key, $this->testData);
-			$this->assertTrue($reply);
+			$this->assertFalse($reply);
 
 			// Read
 			$reply = $cache->read($key);
-			$this->assertEquals($this->testData, $reply);
+			$this->assertFalse($reply);
 
 			// Delete
 			$reply = $cache->delete($key);
-			$this->assertTrue($reply);
+			$this->assertFalse($reply);
 
 			// Read
 			$reply = $cache->read($key);
-			$this->assertNull($reply);
+			$this->assertFalse($reply);
 		}
 		$end = time();
 		$cache->purge();
