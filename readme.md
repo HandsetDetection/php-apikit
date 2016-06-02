@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/HandsetDetection/php-apikit.svg?branch=master)](https://travis-ci.org/HandsetDetection/php-apikit)
+[![Latest Stable Version](https://poser.pugx.org/handsetdetection/php-apikit/v/stable)](https://packagist.org/packages/handsetdetection/php-apikit)
+[![License](https://poser.pugx.org/handsetdetection/php-apikit/license)](https://packagist.org/packages/handsetdetection/php-apikit)
+
 # PHP API Kit v4.0, implementing v4.0 of the HandsetDetection API. #
 
 API Kits can use our web service or resolve detections locally 
