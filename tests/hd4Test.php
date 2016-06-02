@@ -608,8 +608,8 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		print_r($reply);
 		echo "\n";
 		echo filesize("/tmp/ultimate.zip")."\n";
-		echo filesize("/tmp/hd40store/Device_3298.json")."\n";
-		
+		echo filesize("/tmp/hd40store/Device_50172.json")."\n";
+		echo file_get_contents("/tmp/hd40store/Device_50172.json")."\n";
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
@@ -1001,7 +1001,8 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		print_r($reply);
 		echo "\n";
 		echo filesize("/tmp/communityultimate.zip")."\n";
-		echo filesize("/tmp/hd40store/Device_3298.json")."\n";		
+		echo filesize("/tmp/hd40store/Device_50172.json")."\n";
+		echo file_get_contents("/tmp/hd40store/Device_50172.json")."\n";
 		$this->assertTrue($result);
 		$this->assertEquals(0, $reply['status']);
 		$this->assertEquals('OK', $reply['message']);
