@@ -498,6 +498,399 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	}
 
 	// ***************************************************************************************************
+	// *********************************** Ultimate Community Tests **************************************
+	// ***************************************************************************************************
+
+	/**
+	 * Fetch Archive Test
+	 *
+	 * The community fetchArchive version contains a cut down version of the device specs.
+	 * It has general_vendor, general_model, display_x, display_y, general_platform, general_platform_version,
+	 * general_browser, general_browser_version, general_app, general_app_version, general_language,
+	 * general_language_full, benahmark_min & benchmark_max
+	 *
+	 * @group community
+	 **/
+	function test_ultimate_community_fetchArchive() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
+
+		echo "Cache Check\n";
+		if (function_exists('apcu_cache_info')) {
+			echo "APCU\n";
+			print_r(apcu_cache_info());
+		} elseif (function_exists('apc_cache_info')) {
+			echo "APC\n";
+			print_r(apc_cache_info('user'));
+		}
+		echo "About to Purge\n";
+
+		// Purge store
+		$hd->Store->purge();
+		echo "Post Purge\n";
+
+		if (function_exists('apcu_cache_info')) {
+			echo "APCU\n";
+			print_r(apcu_cache_info());
+		} elseif (function_exists('apc_cache_info')) {
+			echo "APC\n";
+			print_r(apc_cache_info('user'));
+		}
+		echo "About to download\n";
+
+		// Fetch new device specs into store.
+		$result = $hd->communityFetchArchive();
+
+		$this->assertTrue($result);
+
+		$data = $hd->getRawReply();
+		echo "Downloaded ".strlen($data)." bytes";
+		$this->assertGreaterThan(9000000, strlen($data));		// Filesize greater than 9Mb
+	}
+
+
+	/**
+	 * Windows PC running Chrome
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPDesktop() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		print_r($reply);
+		echo "\n";
+		echo filesize("/tmp/communityultimate.zip")."\n";
+		echo filesize("/tmp/hd40store/Device_50172.json")."\n";
+		echo file_get_contents("/tmp/hd40store/Device_50172.json")."\n";
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+	}
+
+	/**
+	 * Junk user-agent
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPDesktopJunk() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'.time()
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertFalse($result);
+		$this->assertEquals(301, $reply['status']);
+		$this->assertEquals('Not Found', $reply['message']);
+	}
+
+	/**
+	 * Wii
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPWii() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'User-Agent' => 'Opera/9.30 (Nintendo Wii; U; ; 2047-7; es-Es)'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+	}
+
+	/**
+	 * iPhone
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTP() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'User-Agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.3', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * iPhone - user-agent in random other header
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPOtherHeader() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'blahblahblah',
+			'x-fish-header' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals(0, $reply['status']);
+		$this->assertEquals('OK', $reply['message']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.3', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * iPhone 3GS (same UA as iPhone 3G, different x-local-hardwareinfo header)
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPHardwareInfo() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
+			'x-local-hardwareinfo' => '320:480:100:100'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 3GS', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * iPhone 3G (same UA as iPhone 3GS, different x-local-hardwareinfo header)
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPHardwareInfoB() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
+			'x-local-hardwareinfo' => '320:480:100:72'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 3G', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * iPhone - Crazy benchmark (eg from emulated desktop) with outdated OS
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPHardwareInfoC() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
+			'x-local-hardwareinfo' => '320:480:200:1200',
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 3G', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('2.0', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * iPhone 5s running Facebook 9.0 app (hence no general_browser set).
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPFBiOS() {
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D201 [FBAN/FBIOS;FBAV/9.0.0.25.31;FBBV/2102024;FBDV/iPhone6,2;FBMD/iPhone;FBSN/iPhone OS;FBSV/7.1.1;FBSS/2; FBCR/vodafoneIE;FBID/phone;FBLC/en_US;FBOP/5]',
+			'Accept-Language' => 'da, en-gb;q=0.8, en;q=0.7'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 5S', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('7.1.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('da', $reply['hd_specs']['general_language']);
+		$this->assertEquals('Danish', $reply['hd_specs']['general_language_full']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertEquals('Facebook', $reply['hd_specs']['general_app']);
+		$this->assertEquals('9.0', $reply['hd_specs']['general_app_version']);
+		$this->assertEquals('', $reply['hd_specs']['general_browser']);
+		$this->assertEquals('', $reply['hd_specs']['general_browser_version']);
+
+		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
+		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
+		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
+	}
+
+	/**
+	 * Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectBIAndroid() {
+		$buildInfo = array (
+			'ro.build.PDA' => 'I9500XXUFNE7',
+			'ro.build.changelist' => '699287',
+			'ro.build.characteristics' => 'phone',
+			'ro.build.date.utc' => '1401287026',
+			'ro.build.date' => 'Wed May 28 23:23:46 KST 2014',
+			'ro.build.description' => 'ja3gxx-user 4.4.2 KOT49H I9500XXUFNE7 release-keys',
+			'ro.build.display.id' => 'KOT49H.I9500XXUFNE7',
+			'ro.build.fingerprint' => 'samsung/ja3gxx/ja3g:4.4.2/KOT49H/I9500XXUFNE7:user/release-keys',
+			'ro.build.hidden_ver' => 'I9500XXUFNE7',
+			'ro.build.host' => 'SWDD5723',
+			'ro.build.id' => 'KOT49H',
+			'ro.build.product' => 'ja3g',
+			'ro.build.tags' => 'release-keys',
+			'ro.build.type' => 'user',
+			'ro.build.user' => 'dpi',
+			'ro.build.version.codename' => 'REL',
+			'ro.build.version.incremental' => 'I9500XXUFNE7',
+			'ro.build.version.release' => '4.4.2',
+			'ro.build.version.sdk' => '19',
+			'ro.product.board' => 'universal5410',
+			'ro.product.brand' => 'samsung',
+			'ro.product.cpu.abi2' => 'armeabi',
+			'ro.product.cpu.abi' => 'armeabi-v7a',
+			'ro.product.device' => 'ja3g',
+			'ro.product.locale.language' => 'en',
+			'ro.product.locale.region' => 'GB',
+			'ro.product.manufacturer' => 'samsung',
+			'ro.product.model' => 'GT-I9500',
+			'ro.product.name' => 'ja3gxx',
+			'ro.product_ship' => 'true'
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		//$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEmpty('', @$reply['hd_specs']['general_aliases'][0]);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+	}
+
+	//
+	/**
+	 * iPhone 4S Native
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectBIiOS() {
+		$buildInfo = array (
+			'utsname.machine' => 'iphone4,1',
+			'utsname.brand' => 'Apple'
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		// Note : Default shipped version in the absence of any version information
+		$this->assertEquals('5.0', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+	}
+
+	//
+	/**
+	 * Windows Phone Native Nokia Lumia 1020
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectWindowsPhone() {
+		$buildInfo = array (
+			'devicemanufacturer' => 'nokia',
+			'devicename' => 'RM-875'
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+		$this->assertEquals(0, $reply['hd_specs']['display_ppi']);
+	}
+	
+	// ***************************************************************************************************
 	// ***************************************** Ultimate Tests ******************************************
 	// ***************************************************************************************************
 
@@ -932,397 +1325,4 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
 	}
-
-	// ***************************************************************************************************
-	// *********************************** Ultimate Community Tests **************************************
-	// ***************************************************************************************************
-
-	/**
-	 * Fetch Archive Test
-	 *
-	 * The community fetchArchive version contains a cut down version of the device specs.
-	 * It has general_vendor, general_model, display_x, display_y, general_platform, general_platform_version,
-	 * general_browser, general_browser_version, general_app, general_app_version, general_language,
-	 * general_language_full, benahmark_min & benchmark_max
-	 *
-	 * @group community
-	 **/
-	function test_ultimate_community_fetchArchive() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$hd->setTimeout(500);
-
-		echo "Cache Check\n";
-		if (function_exists('apcu_cache_info')) {
-			echo "APCU\n";
-			print_r(apcu_cache_info());
-		} elseif (function_exists('apc_cache_info')) {
-			echo "APC\n";
-			print_r(apc_cache_info('user'));
-		}
-		echo "About to Purge\n";
-
-		// Purge store
-		$hd->Store->purge();
-		echo "Post Purge\n";
-
-		if (function_exists('apcu_cache_info')) {
-			echo "APCU\n";
-			print_r(apcu_cache_info());
-		} elseif (function_exists('apc_cache_info')) {
-			echo "APC\n";
-			print_r(apc_cache_info('user'));
-		}
-		echo "About to download\n";
-
-		// Fetch new device specs into store.
-		$result = $hd->communityFetchArchive();
-
-		$this->assertTrue($result);
-
-		$data = $hd->getRawReply();
-		echo "Downloaded ".strlen($data)." bytes";
-		$this->assertGreaterThan(9000000, strlen($data));		// Filesize greater than 9Mb
-	}
-
-
-	/**
-	 * Windows PC running Chrome
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPDesktop() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		print_r($reply);
-		echo "\n";
-		echo filesize("/tmp/communityultimate.zip")."\n";
-		echo filesize("/tmp/hd40store/Device_50172.json")."\n";
-		echo file_get_contents("/tmp/hd40store/Device_50172.json")."\n";
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-	}
-
-	/**
-	 * Junk user-agent
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPDesktopJunk() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'.time()
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertFalse($result);
-		$this->assertEquals(301, $reply['status']);
-		$this->assertEquals('Not Found', $reply['message']);
-	}
-
-	/**
-	 * Wii
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPWii() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'User-Agent' => 'Opera/9.30 (Nintendo Wii; U; ; 2047-7; es-Es)'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-	}
-
-	/**
-	 * iPhone
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTP() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'User-Agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('4.3', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * iPhone - user-agent in random other header
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPOtherHeader() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'user-agent' => 'blahblahblah',
-			'x-fish-header' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals(0, $reply['status']);
-		$this->assertEquals('OK', $reply['message']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('4.3', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * iPhone 3GS (same UA as iPhone 3G, different x-local-hardwareinfo header)
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPHardwareInfo() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
-			'x-local-hardwareinfo' => '320:480:100:100'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone 3GS', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('4.2.1', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * iPhone 3G (same UA as iPhone 3GS, different x-local-hardwareinfo header)
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPHardwareInfoB() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
-			'x-local-hardwareinfo' => '320:480:100:72'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone 3G', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('4.2.1', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * iPhone - Crazy benchmark (eg from emulated desktop) with outdated OS
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPHardwareInfoC() {
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'user-agent' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; en-gb) AppleWebKit/533.17.9 (KHTML, like Gecko)',
-			'x-local-hardwareinfo' => '320:480:200:1200',
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone 3G', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('2.0', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('en-gb', $reply['hd_specs']['general_language']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * iPhone 5s running Facebook 9.0 app (hence no general_browser set).
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectHTTPFBiOS() {
-
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$headers = array(
-			'user-agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D201 [FBAN/FBIOS;FBAV/9.0.0.25.31;FBBV/2102024;FBDV/iPhone6,2;FBMD/iPhone;FBSN/iPhone OS;FBSV/7.1.1;FBSS/2; FBCR/vodafoneIE;FBID/phone;FBLC/en_US;FBOP/5]',
-			'Accept-Language' => 'da, en-gb;q=0.8, en;q=0.7'
-		);
-
-		$result = $hd->deviceDetect($headers);
-		$reply = $hd->getReply();
-		//print_r($reply);
-		$this->assertTrue($result);
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone 5S', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('7.1.1', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('da', $reply['hd_specs']['general_language']);
-		$this->assertEquals('Danish', $reply['hd_specs']['general_language_full']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertEquals('Facebook', $reply['hd_specs']['general_app']);
-		$this->assertEquals('9.0', $reply['hd_specs']['general_app_version']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser_version']);
-
-		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
-		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_min', $reply['hd_specs']);
-		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
-	}
-
-	/**
-	 * Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectBIAndroid() {
-		$buildInfo = array (
-			'ro.build.PDA' => 'I9500XXUFNE7',
-			'ro.build.changelist' => '699287',
-			'ro.build.characteristics' => 'phone',
-			'ro.build.date.utc' => '1401287026',
-			'ro.build.date' => 'Wed May 28 23:23:46 KST 2014',
-			'ro.build.description' => 'ja3gxx-user 4.4.2 KOT49H I9500XXUFNE7 release-keys',
-			'ro.build.display.id' => 'KOT49H.I9500XXUFNE7',
-			'ro.build.fingerprint' => 'samsung/ja3gxx/ja3g:4.4.2/KOT49H/I9500XXUFNE7:user/release-keys',
-			'ro.build.hidden_ver' => 'I9500XXUFNE7',
-			'ro.build.host' => 'SWDD5723',
-			'ro.build.id' => 'KOT49H',
-			'ro.build.product' => 'ja3g',
-			'ro.build.tags' => 'release-keys',
-			'ro.build.type' => 'user',
-			'ro.build.user' => 'dpi',
-			'ro.build.version.codename' => 'REL',
-			'ro.build.version.incremental' => 'I9500XXUFNE7',
-			'ro.build.version.release' => '4.4.2',
-			'ro.build.version.sdk' => '19',
-			'ro.product.board' => 'universal5410',
-			'ro.product.brand' => 'samsung',
-			'ro.product.cpu.abi2' => 'armeabi',
-			'ro.product.cpu.abi' => 'armeabi-v7a',
-			'ro.product.device' => 'ja3g',
-			'ro.product.locale.language' => 'en',
-			'ro.product.locale.region' => 'GB',
-			'ro.product.manufacturer' => 'samsung',
-			'ro.product.model' => 'GT-I9500',
-			'ro.product.name' => 'ja3gxx',
-			'ro.product_ship' => 'true'
-		);
-
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$result = $hd->deviceDetect($buildInfo);
-		$reply = $hd->getReply();
-
-		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
-		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
-		//$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
-		$this->assertEmpty('', @$reply['hd_specs']['general_aliases'][0]);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-	}
-
-	// 
-	/**
-	 * iPhone 4S Native
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectBIiOS() {
-		$buildInfo = array (
-			'utsname.machine' => 'iphone4,1',
-			'utsname.brand' => 'Apple'
-		);
-
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$result = $hd->deviceDetect($buildInfo);
-		$reply = $hd->getReply();
-
-		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
-		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
-		// Note : Default shipped version in the absence of any version information
-		$this->assertEquals('5.0', $reply['hd_specs']['general_platform_version']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-	}
-
-	// 
-	/**
-	 * Windows Phone Native Nokia Lumia 1020
-	 * @depends test_ultimate_community_fetchArchive
-	 * @group community
-	 **/
-	function test_ultimate_community_deviceDetectWindowsPhone() {
-		$buildInfo = array (
-			'devicemanufacturer' => 'nokia',
-			'devicename' => 'RM-875'
-		);
-
-		$hd = new HandsetDetection\HD4($this->ultimateConfig);
-		$result = $hd->deviceDetect($buildInfo);
-		$reply = $hd->getReply();
-
-		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
-		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
-		$this->assertEquals('', $reply['hd_specs']['general_type']);
-		$this->assertEquals(0, $reply['hd_specs']['display_ppi']);
-	}	
 }
