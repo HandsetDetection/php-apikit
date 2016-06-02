@@ -92,6 +92,8 @@ class HD4 extends HDBase {
 			throw new \Exception('Ultimate detection needs ZipArchive to unzip archive files. Please install this php module.');
 		}
 		
+		echo "Config username is ".$this->config['username']." use_local set to .".$this->config['use_local']."\n";
+
 		$this->setup();
 	}
 
