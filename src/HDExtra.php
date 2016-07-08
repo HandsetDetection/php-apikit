@@ -114,7 +114,7 @@ class HDExtra extends HDBase {
 		// Try directly from http header first
 		if (! empty($headers['language'])) {
 			$candidate = $headers['language'];
-			if ($this->detectionLanguages[$candidate]) {
+			if (array_key_exists($candidate, $this->detectionLanguages) && $this->detectionLanguages[$candidate]) {
 				$extra['Extra']['hd_specs']['general_language'] =  $candidate;
 				$extra['Extra']['hd_specs']['general_language_full'] = $this->detectionLanguages[$candidate];
 				return $extra;
