@@ -280,7 +280,8 @@ class HD4 extends HDBase {
 	 */		
 	function deviceDetect($data=null) {
 		$id = (int) (empty($data['id']) ? $this->config['site_id'] : $data['id']);
-		$requestBody = array_merge($this->detectRequest, (array) $data);
+		unset($data['id']);
+		$requestBody = ! empty($data) ? $data : $this->detectRequest;
 		$fastKey = '';
 		
 		// If caching enabled then check cache
