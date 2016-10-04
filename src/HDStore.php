@@ -44,13 +44,10 @@ class HDStore {
 	private $config = array();
 	
 	/**
-	 * Singleton Constructor
+	 * Constructor
 	 *
-	 * @param string $path Location of storage ROOT dir.
-	 * @param boolean $createDirectory - Create storage directory if it does not exist
 	 **/
-	private function __construct($config = array()) {
-		$this->setConfig($config, true);
+	private function __construct() {
 	}
 
 	/**
