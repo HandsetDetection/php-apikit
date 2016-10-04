@@ -15,6 +15,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	function testReadWrite() {
 		$key = 'storekey'.time();
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$store->write($key, $this->testData);
 
 		$data = $store->read($key);
@@ -32,6 +33,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	function testStoreFetch() {
 		$key = 'storekey2'.time();
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$store->store($key, $this->testData);
 
 		$cache = new HandsetDetection\HDCache();
@@ -48,6 +50,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	// Test purge
 	function testPurge() {
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$files = glob($store->directory . DIRECTORY_SEPARATOR . '*.json');
 		$this->assertNotEmpty($files);
 		
@@ -61,6 +64,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	function testFetchDevices() {
 		$key = 'Device'.time();
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$store->store($key, $this->testData);
 
 		$devices = $store->fetchDevices();
@@ -71,6 +75,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	// Moves a file from disk into store (vanishes from previous location).
 	function testMoveInFetch() {
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$store->purge();
 
 		$tmpData = '{"Device":{"_id":"3454","hd_ops":{"is_generic":0,"stop_on_detect":0,"overlay_result_specs":0},"hd_specs":{"general_vendor":"Sagem","general_model":"MyX5-2","general_platform":"","general_image":"","general_aliases":"","general_eusar":"","general_battery":"","general_type":"","general_cpu":"","design_formfactor":"","design_dimensions":"","design_weight":0,"design_antenna":"","design_keyboard":"","design_softkeys":"","design_sidekeys":"","display_type":"","display_color":"","display_colors":"","display_size":"","display_x":"128","display_y":"160","display_other":"","memory_internal":"","memory_slot":"","network":"","media_camera":"","media_secondcamera":"","media_videocapture":"","media_videoplayback":"","media_audio":"","media_other":"","features":"","connectors":"","general_platform_version":"","general_browser":"","general_browser_version":"","general_language":"","general_platform_version_max":"","general_app":"","general_app_version":"","display_ppi":0,"display_pixel_ratio":0,"benchmark_min":0,"benchmark_max":0,"general_app_category":"","general_virtual":0,"display_css_screen_sizes":""}}}';
@@ -96,6 +101,7 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 	// Test singleton'ship
 	function testSingleton() {
 		$store = HandsetDetection\HDStore::getInstance();
+		$store->setConfig(array('filesdir' => '/tmp'), true);
 		$store2 = HandsetDetection\HDStore::getInstance();
 
 		$store->setConfig(array('filesdir' => '/tmp/storetest'));
