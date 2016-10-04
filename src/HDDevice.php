@@ -588,6 +588,8 @@ class HDDevice extends HDBase {
 
 		// Sanitize headers & cleanup language
 		foreach($headers as $key => $value) {
+			$key = strtolower($key);
+
 			if ($key == 'accept-language' || $key == 'content-language') {
 				$key = 'language';
 				$tmp = preg_split("/[,;]/", str_replace(" ","", strtolower($value)));
@@ -595,9 +597,17 @@ class HDDevice extends HDBase {
 					$value = $tmp[0];
 				else
 					continue;
+			} elseif ($key != 'profile' && $key != 'x-wap-profile') {
+				// Handle strings that have had + substituted for a space ie. badly (semi) url encoded..
+				$charCounts = count_chars($value, 0);
+				$stringLen = strlen($value);
+				if ($charCounts[ord(' ')] == 0 && $charCounts[ord('+')] > 5 && $stringLen > 20) {
+					$value = str_replace('+', ' ', $value);
+				}
 			}
-			$this->deviceHeaders[strtolower($key)] = $this->cleanStr($value);
-			$this->extraHeaders[strtolower($key)] = $this->Extra->extraCleanStr($value);
+
+			$this->deviceHeaders[$key] = $this->cleanStr($value);
+			$this->extraHeaders[$key] = $this->Extra->extraCleanStr($value);
 		}
 
 		$this->device = $this->matchDevice($this->deviceHeaders);
