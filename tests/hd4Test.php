@@ -183,7 +183,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_deviceDetectHTTPDesktopJunk() {
 		$hd = new HandsetDetection\HD4($this->cloudConfig);
 		$headers = array(
-			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'.time()
+			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'
 		);
 
 		$result = $hd->deviceDetect($headers);
@@ -360,6 +360,27 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Detection test user-agent has been encoded with plus for space.
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectHTTPPlusForSpace() {
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0+(Linux;+Android+5.1.1;+SM-J110M+Build/LMY48B;+wv)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/47.0.2526.100+Mobile+Safari/537.36',
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		$this->assertTrue($result);
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('SM-J110M', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.1.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
 	 * Detection test iPhone 5s running Facebook 9.0 app (hence no general_browser set).
 	 * @depends test_cloudConfigExists
 	 * @group cloud
@@ -474,6 +495,32 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 	}
 	
+	/**
+	 * Detection test iPhone 4S Native
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectBIiOSOverlayPlatform() {
+		$buildInfo = array (
+			'utsname.machine' => 'iphone4,1',
+			'utsname.brand' => 'Apple',
+			'uidevice.systemversion' => '5.1',
+			'uidevice.systemname' => 'iphone os'
+		);
+
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		//print_r(json_encode($reply));
+
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
 	/**
 	 * Detection test Windows Phone Native Nokia Lumia 1020
 	 * @depends test_cloudConfigExists
@@ -623,7 +670,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_ultimate_deviceDetectHTTPDesktopJunk() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$headers = array(
-			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'.time()
+			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'
 		);
 
 		$result = $hd->deviceDetect($headers);
@@ -800,6 +847,27 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Detection test user-agent has been encoded with plus for space.
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectHTTPPlusForSpace() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0+(Linux;+Android+5.1.1;+SM-J110M+Build/LMY48B;+wv)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/47.0.2526.100+Mobile+Safari/537.36',
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		$this->assertTrue($result);
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('SM-J110M', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.1.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
 	 * iPhone 5s running Facebook 9.0 app (hence no general_browser set).
 	 * @depends test_fetchArchive
 	 * @group ultimate
@@ -894,7 +962,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_ultimate_deviceDetectBIiOS() {
 		$buildInfo = array (
 			'utsname.machine' => 'iphone4,1',
-			'utsname.brand' => 'Apple'
+			'utsname.brand' => 'Apple',
 		);
 
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
@@ -909,6 +977,29 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 	}
 
+	/**
+	 * Detection test iPhone 4S Native
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectBIiOSOverlayPlatform() {
+		$buildInfo = array (
+			'utsname.machine' => 'iphone4,1',
+			'utsname.brand' => 'Apple',
+			'uidevice.systemversion' => '5.1',
+			'uidevice.systemname' => 'iphone os'
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
 	//
 	/**
 	 * Windows Phone Native Nokia Lumia 1020
@@ -995,7 +1086,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	function test_ultimate_community_deviceDetectHTTPDesktopJunk() {
 		$hd = new HandsetDetection\HD4($this->ultimateConfig);
 		$headers = array(
-			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'.time()
+			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'
 		);
 
 		$result = $hd->deviceDetect($headers);
@@ -1171,6 +1262,27 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
 	}
 
+	/**
+	 * Detection test user-agent has been encoded with plus for space.
+	 * @depends test_ultimate_community_fetchArchive
+	 * @group community
+	 **/
+	function test_ultimate_community_deviceDetectHTTPPlusForSpace() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0+(Linux;+Android+5.1.1;+SM-J110M+Build/LMY48B;+wv)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/47.0.2526.100+Mobile+Safari/537.36',
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		$this->assertTrue($result);
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('SM-J110M', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.1.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('', $reply['hd_specs']['general_type']);
+	}
+	
 	/**
 	 * iPhone 5s running Facebook 9.0 app (hence no general_browser set).
 	 * @depends test_ultimate_community_fetchArchive
