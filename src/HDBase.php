@@ -70,7 +70,7 @@ class HDBase {
 									array('ro-build-id', 'ro-build-version-release'),
 								),
 								'ios' => array(
-									array('uidevice.systemName','uidevice.systemversion')
+									array('uidevice.systemname','uidevice.systemversion')
 								),
 								'windows phone' => array(
 									array('osname','osversion')

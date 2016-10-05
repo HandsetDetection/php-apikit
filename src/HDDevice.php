@@ -500,7 +500,7 @@ class HDDevice extends HDBase {
 		// Platform Detection
 		$this->platform = $this->v4MatchBIHelper($buildInfo, 'platform');
 		if (! empty($this->platform))
-			$this->specsOverlay('platform', $this->device, $this->platform);
+			$this->specsOverlay('platform', $this->device, $this->platform['Extra']);
 
 		$this->reply['hd_specs'] = $this->device['Device']['hd_specs'];
 		return $this->setError(0, "OK");
