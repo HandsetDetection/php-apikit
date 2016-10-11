@@ -287,9 +287,12 @@ class HDDevice extends HDBase {
 	function specsOverlay($specsField, &$device, $specs) {
 		switch ($specsField) {
 			case 'platform' : {
-				if (! empty($specs['hd_specs']['general_platform'])) {
+				if (! empty($specs['hd_specs']['general_platform']) && ! empty($specs['hd_specs']['general_platform_version'])) {
 					$device['Device']['hd_specs']['general_platform'] = $specs['hd_specs']['general_platform'];
 					$device['Device']['hd_specs']['general_platform_version'] = $specs['hd_specs']['general_platform_version'];
+				} elseif (! empty($specs['hd_specs']['general_platform']) && $specs['hd_specs']['general_platform'] != $device['Device']['hd_specs']['general_platform']) {
+					$device['Device']['hd_specs']['general_platform'] = $specs['hd_specs']['general_platform'];
+					$device['Device']['hd_specs']['general_platform_version'] = '';
 				}
 			} break;
 
@@ -521,11 +524,13 @@ class HDDevice extends HDBase {
 
 		$hints = array();
 		foreach($confBIKeys as $platform => $set) {
-			$value = '';
 			foreach($set as $tuple) {
 				$checking = true;
+				$value = '';
 				foreach($tuple as $item) {
-					if (! isset($buildInfo[$item])) {
+					if ($item == 'hd-platform') {
+						$value .= '|'.$platform;
+					} elseif (! isset($buildInfo[$item])) {
 						$checking = false;
 						break;
 					} else {

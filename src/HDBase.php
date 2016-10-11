@@ -66,14 +66,18 @@ class HDBase {
 							),
 		'platform-bi-order' => array(
 								'android' => array(
-									array('ro.build.id', 'ro.build.version.release'),
-									array('ro-build-id', 'ro-build-version-release'),
+									array('hd-platform', 'ro.build.version.release'),
+									array('hd-platform', 'ro-build-version-release'),
+									array('hd-platform', 'ro.build.id'),
+									array('hd-platform', 'ro-build-id')
 								),
 								'ios' => array(
-									array('uidevice.systemname','uidevice.systemversion')
+									array('uidevice.systemname','uidevice.systemversion'),
+									array('hd-platform','uidevice.systemversion')
 								),
 								'windows phone' => array(
-									array('osname','osversion')
+									array('osname','osversion'),
+									array('hd-platform','osversion')
 								)
 							),
 		'browser-bi-order' => array(),

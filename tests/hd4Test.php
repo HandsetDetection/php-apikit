@@ -465,7 +465,56 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
-		//$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
+	 * Detection test Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectBIAndroidUpdatedOs() {
+		$buildInfo = array (
+			'ro.build.id' => 'KOT49H',
+			'ro.build.version.release' => '5.2',
+			'ro.build.version.sdk' => '19',
+			'ro.product.brand' => 'samsung',
+			'ro.product.model' => 'GT-I9500',
+		);
+
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
+	 * Detection test Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectBIAndroidDefaultOs() {
+		$buildInfo = array (
+			'ro.product.brand' => 'samsung',
+			'ro.product.model' => 'GT-I9500',
+		);
+
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.2', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 	}
@@ -486,7 +535,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$reply = $hd->getReply();
 
 		//print_r(json_encode($reply));
-		
+
 		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
 		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
@@ -494,7 +543,34 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('5.0', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 	}
-	
+
+	/**
+	 * Detection test iPhone 4S Native
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectBIiOSUpdatedOs() {
+		$buildInfo = array (
+			'utsname.machine' => 'iphone4,1',
+			'utsname.brand' => 'Apple',
+			'uidevice.systemVersion' => '5.1',
+			'UIDEVICE.SYSTEMNAME' => 'iphone os' 
+		);
+
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		//print_r(json_encode($reply));
+		
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 4S', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		// Note : Default shipped version is 5.0
+		$this->assertEquals('5.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
 	/**
 	 * Detection test iPhone 4S Native
 	 * @depends test_cloudConfigExists
@@ -540,10 +616,37 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('8.0', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
 	}
 
+	/**
+	 * Detection test Windows Phone Native Nokia Lumia 1020
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectWindowsPhoneB() {
+		$buildInfo = array (
+			'devicemanufacturer' => 'nokia',
+			'devicename' => 'RM-875',
+			'osname' => 'windows phone',
+			'osversion' => '8.1'
+		);
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		//print_r(json_encode($reply));
+		
+		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('8.1', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+	}
+	
 	// ***************************************************************************************************
 	// ***************************************** Ultimate Tests ******************************************
 	// ***************************************************************************************************
@@ -948,12 +1051,60 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
-		//$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('4.4.2', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 	}
 
-	//
+	/**
+	 * Detection test Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectBIAndroidUpdatedOs() {
+		$buildInfo = array (
+			'ro.build.id' => 'KOT49H',
+			'ro.build.version.release' => '5.2',
+			'ro.build.version.sdk' => '19',
+			'ro.product.brand' => 'samsung',
+			'ro.product.model' => 'GT-I9500',
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('5.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
+	 * Detection test Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectBIAndroidDefaultOs() {
+		$buildInfo = array (
+			'ro.product.brand' => 'samsung',
+			'ro.product.model' => 'GT-I9500',
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Samsung Galaxy S4', $reply['hd_specs']['general_aliases'][0]);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+	
 	/**
 	 * iPhone 4S Native
 	 * @depends test_fetchArchive
@@ -1019,6 +1170,32 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
 		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('8.0', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+	}
+
+	/**
+	 * Windows Phone Native Nokia Lumia 1020
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectWindowsPhoneB() {
+		$buildInfo = array (
+			'devicemanufacturer' => 'nokia',
+			'devicename' => 'RM-875',
+			'osname' => 'windows phone',
+			'osversion' => '8.1'
+		);
+
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('8.1', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
 	}
