@@ -416,6 +416,27 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Android version is not supplied in UA & device base profile has more info than detected platform result
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectNoPlatformOverlay() {
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (Linux; U; Android; en-ca; GT-I9500 Build) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'
+		);
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+
+	/**
 	 * Detection test Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
 	 * @depends test_cloudConfigExists
 	 * @group cloud
@@ -1005,6 +1026,27 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('benchmark_max', $reply['hd_specs']);
 	}
 
+	/**
+	 * Android version is not supplied in UA & device base profile has more info than detected platform result
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/
+	function test_ultimate_deviceDetectNoPlatformOverlay() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$headers = array(
+			'user-agent' => 'Mozilla/5.0 (Linux; U; Android; en-ca; GT-I9500 Build) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'
+		);
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		//print_r($reply);
+		$this->assertTrue($result);
+		$this->assertEquals('Samsung', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('GT-I9500', $reply['hd_specs']['general_model']);
+		$this->assertEquals('Android', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('4.2.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+	
 	/**
 	 * Samsung GT-I9500 Native - Note : Device shipped with Android 4.2.2, so this device has been updated.
 	 * @depends test_fetchArchive
