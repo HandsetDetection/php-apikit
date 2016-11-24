@@ -67,7 +67,7 @@ class HD4 extends HDBase {
 		'retries' => 3,
 		'cache_requests' => false,
 		'geoip' => false,
-		'log_unknown' => true
+		'log_unknown' => false
 	);	
 	
 	var $tree = array();

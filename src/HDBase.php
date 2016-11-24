@@ -615,11 +615,14 @@ class HDBase {
 	 * @return void
 	 **/
 	function send_remote_syslog($headers) {
-		$headers['version'] = phpversion();
-		$headers['apikit'] = $this->apikit;
-		$sock = @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-		$message = json_encode($headers);
-		@socket_sendto($sock, '<22> '.$message, strlen($message), 0, $this->loggerHost, $this->loggerPort);
-		@socket_close($sock);
+		// Ensure sockets are installed.
+		if (function_exists('socket_create')) {
+			$headers['version'] = phpversion();
+			$headers['apikit'] = $this->apikit;
+			$sock = @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+			$message = json_encode($headers);
+			@socket_sendto($sock, '<22> '.$message, strlen($message), 0, $this->loggerHost, $this->loggerPort);
+			@socket_close($sock);
+		}
 	}
 }
