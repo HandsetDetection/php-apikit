@@ -635,11 +635,11 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		//print_r(json_encode($reply));
 		
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('RM-875', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
 		$this->assertEquals('8.0', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
-		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+		$this->assertEquals('326', $reply['hd_specs']['display_ppi']);
 	}
 
 	/**
@@ -661,13 +661,36 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		//print_r(json_encode($reply));
 		
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('RM-875', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
 		$this->assertEquals('8.1', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
-		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+		$this->assertEquals('326', $reply['hd_specs']['display_ppi']);
 	}
-	
+
+	/**
+	 * Detection test Windows Phone Native Nokia Lumia 1020
+	 * @depends test_cloudConfigExists
+	 * @group cloud
+	 **/
+	function test_deviceDetectBIiPhoneOverlay() {
+		$buildInfo = array (
+			'utsname.brand' => 'apple',
+			'utsname.machine' => 'iPhone7,2',
+			'UIDevice.systemVersion' => '9.2',
+			'UIDevice.systemName' => 'iPhone OS'
+		);
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		//print_r(json_encode($reply));
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 6', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('9.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
 	// ***************************************************************************************************
 	// ***************************************** Ultimate Tests ******************************************
 	// ***************************************************************************************************
@@ -1210,11 +1233,11 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$reply = $hd->getReply();
 
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('RM-875', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
 		$this->assertEquals('8.0', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
-		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+		$this->assertEquals('326', $reply['hd_specs']['display_ppi']);
 	}
 
 	/**
@@ -1235,13 +1258,37 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$reply = $hd->getReply();
 
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('RM-875', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
 		$this->assertEquals('8.1', $reply['hd_specs']['general_platform_version']);
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
-		$this->assertEquals('332', $reply['hd_specs']['display_ppi']);
+		$this->assertEquals('326', $reply['hd_specs']['display_ppi']);
 	}
 
+	/**
+	 * Detection test Windows Phone Native Nokia Lumia 1020
+	 * @depends test_fetchArchive
+	 * @group ultimate
+	 **/	
+	function test_ultimate_deviceDetectBIiPhoneOverlay() {
+		$buildInfo = array (
+			'utsname.brand' => 'apple',
+			'utsname.machine' => 'iPhone7,2',
+			'UIDevice.systemVersion' => '9.2',
+			'UIDevice.systemName' => 'iPhone OS'
+		);
+		$hd = new HandsetDetection\HD4($this->cloudConfig);
+		$result = $hd->deviceDetect($buildInfo);
+		$reply = $hd->getReply();
+
+		//print_r(json_encode($reply));
+		$this->assertEquals('Apple', $reply['hd_specs']['general_vendor']);
+		$this->assertEquals('iPhone 6', $reply['hd_specs']['general_model']);
+		$this->assertEquals('iOS', $reply['hd_specs']['general_platform']);
+		$this->assertEquals('9.2', $reply['hd_specs']['general_platform_version']);
+		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
+	}
+	
 	// ***************************************************************************************************
 	// *********************************** Ultimate Community Tests **************************************
 	// ***************************************************************************************************
@@ -1307,7 +1354,6 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$headers = array(
 			'User-Agent' => 'aksjakdjkjdaiwdidjkjdkawjdijwidawjdiajwdkawdjiwjdiawjdwidjwakdjajdkad'
 		);
-
 		$result = $hd->deviceDetect($headers);
 		$reply = $hd->getReply();
 		//print_r($reply);
@@ -1627,7 +1673,7 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$reply = $hd->getReply();
 
 		$this->assertEquals('Nokia', $reply['hd_specs']['general_vendor']);
-		$this->assertEquals('Lumia 1020', $reply['hd_specs']['general_model']);
+		$this->assertEquals('RM-875', $reply['hd_specs']['general_model']);
 		$this->assertEquals('Windows Phone', $reply['hd_specs']['general_platform']);
 		$this->assertEquals('', $reply['hd_specs']['general_type']);
 		$this->assertEquals(0, $reply['hd_specs']['display_ppi']);
