@@ -696,6 +696,21 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 	// ***************************************************************************************************
 
 	/**
+	 * Broken Archive Test
+	 * @group ultimate
+	 **/
+	function test_unzipBogusArchive() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+		$hd->setTimeout(500);
+
+		file_put_contents('/tmp/test.zip', 'testy mc testery fish fish fish');
+		$result = $hd->installArchive('/tmp/test.zip');
+		$data = $hd->getReply();
+		$this->assertFalse($result);
+		$this->assertEquals(299, $data['status']);
+	}
+	
+	/**
 	 * Fetch Archive Test
 	 * @group ultimate
 	 **/
@@ -710,6 +725,10 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$data = $hd->getRawReply();
 		$size = strlen($data);
 		echo "Downloaded $size bytes ";
+		if (! $result) {
+			$data = $hd->getReply();
+			print_r($data);
+		}
 		if ($size < 1000) {
 			$this->markTestSkipped($data);
 		} else {
