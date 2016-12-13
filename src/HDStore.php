@@ -35,19 +35,23 @@ namespace HandsetDetection;
 
 use HandsetDetection\HDCache;
 
-class HDStore {
+class HDStore implements \Iterator {
 	public $dirname = "hd40store";
 	var $path = "";
 	var $directory = "";
 	private $Cache = null;
 	private static $_instance = null;
 	private $config = array();
+	private $indexPosition = 0;
+	private $indexArray = array();
 	
 	/**
 	 * Constructor
 	 *
 	 **/
 	private function __construct() {
+		$this->indexPosition = 0;
+		$this->indexArray = array();
 	}
 
 	/**
@@ -200,4 +204,60 @@ class HDStore {
 		}
 		return $this->Cache->purge();
 	}
+
+	/**
+	 * Rewind - iterator for looping over the device list
+	 *
+	 * @param void
+	 * @return void
+	 **/
+    function rewind() {
+        $this->indexPosition = 0;
+		// Build the device list.
+		$this->indexArray = array();
+		foreach(glob($this->directory . DIRECTORY_SEPARATOR . 'Device*.json') as $file) {
+			$this->indexArray[] = preg_replace('/\.json$/', '', basename($file));
+		}
+    }
+
+	/**
+	 * Current - return current device pointer
+	 *
+	 * @param void
+	 * @return array device
+	 **/
+    function current() {
+		$file = $this->indexArray[$this->indexPosition];
+        return $this->fetch($file);
+    }
+
+	/**
+	 * Current - return current device key
+	 *
+	 * @param void
+	 * @return string device
+	 **/
+    function key() {
+        return $this->indexArray[$this->indexPosition];
+    }
+
+	/**
+	 * Next - move to the next device
+	 *
+	 * @param void
+	 * @return array device
+	 **/
+    function next() {
+        ++$this->indexPosition;
+    }
+
+	/**
+	 * Valid - Is the current entry valid
+	 *
+	 * @param void
+	 * @return array device
+	 **/	
+    function valid() {
+        return isset($this->indexArray[$this->indexPosition]);
+    }
 }

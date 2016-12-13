@@ -386,8 +386,36 @@ class HD4 extends HDBase {
 			return $this->setError(299, "Error : Failed to open ". $file." is the ZIP module installed ?");
 
 		$zip = new \ZipArchive();
-		if ($zip->open($file) === false)
-			return $this->setError(299, "Error : Failed to open ". $file);
+		$code = $zip->open($file);
+		if ($code !== true) {
+			switch($code) {
+				case \ZipArchive::ER_MULTIDISK : $msg = 'Multi-disk zip archives not supported.'; break;
+				case \ZipArchive::ER_RENAME : $msg = 'Renaming temporary file failed.'; break;
+				case \ZipArchive::ER_CLOSE : $msg = 'Closing zip archive failed.'; break;
+				case \ZipArchive::ER_SEEK : $msg = 'Seek error.'; break;
+				case \ZipArchive::ER_READ : $msg = 'Read error.'; break;
+				case \ZipArchive::ER_WRITE : $msg = 'Write error.'; break;
+				case \ZipArchive::ER_CRC : $msg = 'CRC error.'; break;
+				case \ZipArchive::ER_ZIPCLOSED : $msg = 'Containing zip archive was closed.'; break;
+				case \ZipArchive::ER_NOENT : $msg = 'No such file.'; break;
+				case \ZipArchive::ER_EXISTS : $msg = 'File already exists.'; break;
+				case \ZipArchive::ER_OPEN : $msg = 'Can\'t open file.'; break;
+				case \ZipArchive::ER_TMPOPEN : $msg = 'Failure to create temporary file.'; break;
+				case \ZipArchive::ER_ZLIB : $msg = 'Zlib error.'; break;
+				case \ZipArchive::ER_MEMORY : $msg = 'Memory allocation failure.'; break;
+				case \ZipArchive::ER_CHANGED : $msg = 'Entry has been changed.'; break;
+				case \ZipArchive::ER_COMPNOTSUPP : $msg = 'Compression method not supported.'; break;
+				case \ZipArchive::ER_EOF : $msg = 'Premature EOF.'; break;
+				case \ZipArchive::ER_INVAL : $msg = 'Invalid argument.'; break;
+				case \ZipArchive::ER_NOZIP : $msg = 'Not a zip archive.'; break;
+				case \ZipArchive::ER_INTERNAL : $msg = 'Internal error.'; break;
+				case \ZipArchive::ER_INCONS : $msg = 'Zip archive inconsistent.'; break;
+				case \ZipArchive::ER_REMOVE : $msg = 'Can\'t remove file.'; break;
+				case \ZipArchive::ER_DELETED : $msg = 'Entry has been deleted.'; break;
+				default : $msg = 'Unknown error.';
+			}
+			return $this->setError(299, "Error : Failed to open ". $file . ", Message : $msg, Code : $code");
+		}
 
 		for ($i = 0; $i < $zip->numFiles; $i++) {
 			$filename = $zip->getNameIndex($i);

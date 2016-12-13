@@ -1,9 +1,16 @@
 <?php
+/**
+ * API Kit Benchmarker - Quick check to ensure local (ultimate) detection is performant.
+ **/
 
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 120);
 ini_set('memory_limit', "128M");
 error_reporting(E_ALL | E_STRICT);
+
+// Use composer autoloader
+$loader = require '../vendor/autoload.php';
+$loader->add('HandsetDetection', __DIR__.'/../src/');
 
 //$configFile = 'hdconfig.php';
 $configFile = "../hd4UltimateConfig.php";
@@ -21,14 +28,13 @@ include($configFile);
 if (@$hdconfig['username'] == "your_api_username")
 	die('Please configure your username, secret and site_id');
 
-require_once('../HD4.php');
+// Note : After running once comment out deviceFetchArchive so you don't keep downloading the 40Mb specs file.
 $hd = new HandsetDetection\HD4($configFile);
-//$hd->deviceFetchArchive();
+$hd->deviceFetchArchive();
 
 class FileException extends Exception {};
 
 class Benchmark {
-
 	private $file;
 	private $time_start;
 	private $time;
@@ -56,13 +62,15 @@ class Benchmark {
 	}
 
 	function flyThrough($hd) {
-		$hd->setup();
 		$this->time_start = $this->getmicrotime();
 
 		foreach($this->headers as $key => $device) {
-			$hd->setDetectVar("User-Agent", $device[0]);
-			$hd->setDetectVar("x-wap-profile", $device[1]);
-			$result = $hd->deviceDetect();
+			$headers = array();
+			$headers['user-agent'] = $device[0];
+			if (isset($device[1]))
+				$headers['x-wap-profile'] = $device[1];
+
+			$result = $hd->deviceDetect($headers);
 
 			if ($this->verbose) {
 				echo "<tr>";
