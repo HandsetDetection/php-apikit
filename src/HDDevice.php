@@ -71,13 +71,10 @@ class HDDevice extends HDBase {
 	 */
 	function localVendors() {
 		$this->reply = array();
-		$data = $this->fetchDevices();
-		if (empty($data))
-			return false;
-
 		$tmp = array();
-		foreach($data['devices'] as $item) {
-			$tmp[] = $item['Device']['hd_specs']['general_vendor'];
+		$i = 0;
+		foreach($this->Store as $device) {
+			$tmp[] = $device['Device']['hd_specs']['general_vendor'];
 		}
 		$this->reply['vendor'] = array_unique($tmp);
 		sort($this->reply['vendor']);
@@ -92,20 +89,16 @@ class HDDevice extends HDBase {
 	 */
 	function localModels($vendor) {
 		$this->reply = array();
-		$data = $this->fetchDevices();
-		if (empty($data))
-			return false;
-
 		$vendor = strtolower($vendor);
 		$tmp = array();
 		$trim = '';
-		foreach($data['devices'] as $item) {
-			if ($vendor === strtolower($item['Device']['hd_specs']['general_vendor'])) {
-				$tmp[] = $item['Device']['hd_specs']['general_model'];
+		foreach($this->Store as $device) {
+			if ($vendor === strtolower($device['Device']['hd_specs']['general_vendor'])) {
+				$tmp[] = $device['Device']['hd_specs']['general_model'];
 			}
 			$key = $vendor." ";
-			if (! empty($item['Device']['hd_specs']['general_aliases'])) {
-				foreach($item['Device']['hd_specs']['general_aliases'] as $alias_item) {
+			if (! empty($device['Device']['hd_specs']['general_aliases'])) {
+				foreach($device['Device']['hd_specs']['general_aliases'] as $alias_item) {
 					// Note : Position is 0, at the start of the string, NOT False.
 					$result = stripos($alias_item, $key);
 					if ($result == 0 && $result !== false) {
@@ -128,15 +121,11 @@ class HDDevice extends HDBase {
 	 */
 	function localView($vendor, $model) {
 		$this->reply = array();
-		$data = $this->fetchDevices();
-		if (empty($data))
-			return false;
-
 		$vendor = strtolower($vendor);
 		$model = strtolower($model);
-		foreach($data['devices'] as $item) {
-			if ($vendor === strtolower($item['Device']['hd_specs']['general_vendor']) && $model === strtolower($item['Device']['hd_specs']['general_model'])) {
-				$this->reply['device'] = $item['Device']['hd_specs'];
+		foreach($this->Store as $device) {
+			if ($vendor === strtolower($device['Device']['hd_specs']['general_vendor']) && $model === strtolower($device['Device']['hd_specs']['general_model'])) {
+				$this->reply['device'] = $device['Device']['hd_specs'];
 				return $this->setError(0, 'OK');
 			}
 		}
@@ -152,32 +141,28 @@ class HDDevice extends HDBase {
 	 * @return bool true on success, false otherwise. Use getReply to inspect results on success.
 	 */
 	function localWhatHas($key, $value) {
-		$data = $this->fetchDevices();
-		if (empty($data))
-			return false;
-
 		$tmp = array();
 		$value = strtolower($value);
-		foreach($data['devices'] as $item) {
-			if (empty($item['Device']['hd_specs'][$key])) {
+		foreach($this->Store as $device) {
+			if (empty($device['Device']['hd_specs'][$key])) {
 				continue;
 			}
 
 			$match = false;
-			if (is_array($item['Device']['hd_specs'][$key])) {
-				foreach($item['Device']['hd_specs'][$key] as $check) {
+			if (is_array($device['Device']['hd_specs'][$key])) {
+				foreach($device['Device']['hd_specs'][$key] as $check) {
 					if (stristr($check, $value)) {
 						$match = true;
 					}
 				}
-			} elseif (stristr($item['Device']['hd_specs'][$key], $value)) {
+			} elseif (stristr($device['Device']['hd_specs'][$key], $value)) {
 				$match = true;
 			}
 
 			if ($match == true) {
-				$tmp[] = array('id' => $item['Device']['_id'],
-					'general_vendor' => $item['Device']['hd_specs']['general_vendor'],
-					'general_model' => $item['Device']['hd_specs']['general_model']);
+				$tmp[] = array('id' => $device['Device']['_id'],
+					'general_vendor' => $device['Device']['hd_specs']['general_vendor'],
+					'general_model' => $device['Device']['hd_specs']['general_model']);
 			}
 		}
 		$this->reply['devices'] = $tmp;
