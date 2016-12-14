@@ -33,7 +33,8 @@ use HandsetDetection\Cache\CacheInterface;
 class Memcached implements CacheInterface {
 
 	protected $memcached;
-
+	private $name = 'memcached';
+	
 	public function __construct($config=array()) {
 		$pool = @$config['cache']['memcached']['pool'];
 		$options = @$config['cache']['memcached']['options'];
@@ -77,5 +78,10 @@ class Memcached implements CacheInterface {
 	/** Flush Cache */
 	public function flush() {
 		return $this->memcached->flush();
+	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
 	}
 }

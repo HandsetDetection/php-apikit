@@ -72,4 +72,15 @@ class APCTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'apc' => true
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('apc', $cache->getName());
+	}
 }

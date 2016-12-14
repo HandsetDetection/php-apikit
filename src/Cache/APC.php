@@ -32,6 +32,8 @@ use HandsetDetection\Cache\CacheInterface;
 
 class APC implements CacheInterface {
 
+	private $name = 'apc';
+
 	public function __construct($config = array()) {
 		if (! function_exists('apc_store'))
 			throw new \RuntimeException('APC functions not available. Is the APC module installed ?');
@@ -56,5 +58,10 @@ class APC implements CacheInterface {
 	/** Flush Cache */
 	public function flush() {
 		return apc_clear_cache('user');
+	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
 	}
 }

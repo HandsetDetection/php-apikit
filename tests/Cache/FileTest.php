@@ -77,4 +77,15 @@ class FileTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'file' => true
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('file', $cache->getName());
+	}
 }

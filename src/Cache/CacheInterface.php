@@ -41,4 +41,7 @@ interface CacheInterface {
 
 	/** Flush cache */
 	public function flush();
+
+	/** Get cache name */
+	public function getName();
 }

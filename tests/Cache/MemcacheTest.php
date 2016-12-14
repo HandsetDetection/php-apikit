@@ -78,4 +78,20 @@ class MemcacheTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'memcache' => array(
+					'options' => 0,
+					'servers' => array(
+						'localhost' => '11211'
+					)
+				)
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('memcache', $cache->getName());
+	}
 }

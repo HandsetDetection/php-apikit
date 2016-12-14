@@ -105,7 +105,11 @@ class HDStore implements \Iterator {
 		if (! $this->store($key, $data))
 			return false;
 
-		return $this->Cache->write($key, $data);
+		if ($this->Cache->getName() != 'none') {
+			return $this->Cache->write($key, $data);
+		}
+		
+		return true;
 	}
 
 	/**
@@ -136,8 +140,11 @@ class HDStore implements \Iterator {
 		if (! $reply = $this->fetch($key))
 			return false;
 
-		if (! $this->Cache->write($key, $reply))
-			return false;
+		if ($this->Cache->getName() != 'none') {
+			if (! $this->Cache->write($key, $reply)) {
+				return false;
+			}
+		}
 
 		return $reply;
 	}

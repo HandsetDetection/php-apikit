@@ -34,6 +34,7 @@ class File implements CacheInterface {
 
 	/** @var string file system directory */
 	protected $dir;
+	private $name = 'file';
 
 	/**
 	 * Construct a new File cache object.
@@ -99,4 +100,9 @@ class File implements CacheInterface {
 	protected function getFilePath($key) {
 		return $this->dir . $key;
 	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
+	}	
 }

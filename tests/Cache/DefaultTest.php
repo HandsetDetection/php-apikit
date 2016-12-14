@@ -17,6 +17,12 @@ class DefaultTest extends PHPUnit_Framework_TestCase {
 		$cache = new HandsetDetection\HDCache();
 		$now = time();
 
+		// Skip tests if no cache installed
+		if ($cache->getName() == 'none') {
+            $this->markTestSkipped('No cache configured/installed');
+			return;
+		}
+		
 		// Test Write & Read
 		$cache->write($now, $this->testData);
 		$reply = $cache->read($now);
@@ -32,6 +38,12 @@ class DefaultTest extends PHPUnit_Framework_TestCase {
 	function testVolume() {
 		$cache = new HandsetDetection\HDCache();
 		$now = time();
+
+		// Skip tests if no cache installed
+		if ($cache->getName() == 'none') {
+            $this->markTestSkipped('No cache configured/installed');
+			return;
+		}
 
 		for($i=0; $i < $this->volumeTest; $i++) {
 			$key = 'test'.$now.$i;
@@ -54,5 +66,11 @@ class DefaultTest extends PHPUnit_Framework_TestCase {
 		}
 		$end = time();
 		$cache->purge();
+	}
+
+	function testGetName() {
+		$cache = new HandsetDetection\HDCache();
+		$cacheNames = array('apc', 'apcu', 'memcache', 'memcached', 'file', 'none');
+		$this->assertContains($cache->getName(), $cacheNames);
 	}
 }
