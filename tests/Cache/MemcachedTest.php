@@ -27,8 +27,6 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
 			)
 		);
 
-
-
 		$cache = new HandsetDetection\HDCache($config);
 		$now = time();
 
@@ -138,4 +136,21 @@ class MemcachedTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+	
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'memcached' => array(
+					'pool' => 'mypool',
+					'options' => '',
+					'servers' => array(
+						array('localhost', '11211'),
+					)
+				)
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('memcached', $cache->getName());
+	}	
 }

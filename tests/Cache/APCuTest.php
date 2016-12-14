@@ -72,4 +72,15 @@ class APCuTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'apcu' => true
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('apcu', $cache->getName());
+	}
 }

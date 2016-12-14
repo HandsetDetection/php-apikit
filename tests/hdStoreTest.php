@@ -23,7 +23,12 @@ class HDStoreTest extends PHPUnit_Framework_TestCase {
 
 		$cache = new HandsetDetection\HDCache();
 		$data = $cache->read($key);
-		$this->assertEquals($this->testData, $data);
+
+		if ($cache->getName() == 'none') {
+			$this->assertFalse($data);
+		} else {
+			$this->assertEquals($this->testData, $data);
+		}
 
 		$exists = is_file($store->directory . DIRECTORY_SEPARATOR . "$key.json");
 		$this->assertTrue($exists);

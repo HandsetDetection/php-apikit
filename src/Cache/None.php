@@ -32,6 +32,8 @@ use HandsetDetection\Cache\CacheInterface;
 
 class None implements CacheInterface {
 
+	private $name = 'none';
+
 	public function __construct($config = array()) {
 	}
 
@@ -53,5 +55,10 @@ class None implements CacheInterface {
 	/** Flush Cache */
 	public function flush() {
 		return false;
+	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
 	}
 }

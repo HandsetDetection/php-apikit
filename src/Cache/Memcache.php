@@ -34,6 +34,7 @@ class Memcache implements CacheInterface {
 
 	protected $memcache;
 	protected $options;
+	private $name = 'memcache';
 
 	public function __construct($config=array()) {
 		$this->options = isset($config['cache']['memcache']['options']) ? $config['cache']['memcache']['options'] : 0;
@@ -68,4 +69,9 @@ class Memcache implements CacheInterface {
 	public function flush() {
 		return $this->memcache->flush();
 	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
+	}	
 }

@@ -132,4 +132,15 @@ class HDCache {
 	function purge() {
 		return $this->cache->flush();
 	}
+
+	/**
+	 * Return the name of the cache provider
+	 *
+	 * @param void
+	 * @return string
+	 **/
+	function getName() {
+		return $this->cache->getName();
+	}
+
 }

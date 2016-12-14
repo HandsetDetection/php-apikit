@@ -32,6 +32,8 @@ use HandsetDetection\Cache\CacheInterface;
 
 class APCu implements CacheInterface {
 
+	private $name = 'apcu';
+
 	public function __construct($config = array()) {
 		if (! function_exists('apcu_store'))
 			throw new \RuntimeException('APCu functions not available. Is the APCu module installed ?');
@@ -57,4 +59,9 @@ class APCu implements CacheInterface {
 	public function flush() {
 		return apcu_clear_cache();
 	}
+	
+	/** Return cache name **/
+	public function getName() {
+		return $this->name;
+	}	
 }

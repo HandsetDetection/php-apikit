@@ -28,9 +28,13 @@ include($configFile);
 if (@$hdconfig['username'] == "your_api_username")
 	die('Please configure your username, secret and site_id');
 
-// Note : After running once comment out deviceFetchArchive so you don't keep downloading the 40Mb specs file.
+// Create a new detection object
 $hd = new HandsetDetection\HD4($configFile);
-$hd->deviceFetchArchive();
+
+// fetch the archive if it does not exist
+if (! file_exists('/tmp/hd40store/user-agent0.json')) {
+	$hd->deviceFetchArchive();
+}
 
 class FileException extends Exception {};
 
@@ -40,7 +44,7 @@ class Benchmark {
 	private $time;
 	private $headers;
 	var $count = 0;
-	private $verbose = false;
+	private $verbose = true;
 
 	function __construct($filename) {
 		try {

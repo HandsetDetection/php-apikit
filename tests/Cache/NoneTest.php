@@ -67,4 +67,15 @@ class NoneTest extends PHPUnit_Framework_TestCase {
 		$end = time();
 		$cache->purge();
 	}
+
+	function testGetName() {
+		$config = array(
+			'cache' => array(
+				'none' => true
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$this->assertEquals('none', $cache->getName());
+	}
 }
