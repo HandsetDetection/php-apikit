@@ -549,16 +549,13 @@ class HDBase {
 			$treetag = $header.$subtree;
 		}
 
-		if ($value == "") {
+		// Fetch branch before validating params to confirm local files are installed correctly.
+		$branch = $this->getBranch($treetag);
+		if (empty($branch)) {
 			return false;
 		}
 
 		if (strlen($value) < 4) {
-			return false;
-		}
-
-		$branch = $this->getBranch($treetag);
-		if (empty($branch)) {
 			return false;
 		}
 
