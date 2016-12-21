@@ -509,7 +509,6 @@ class HDDevice extends HDBase {
 		if (empty($confBIKeys) || empty($buildInfo))
 			return null;
 
-		$hints = array();
 		foreach($confBIKeys as $platform => $set) {
 			foreach($set as $tuple) {
 				$checking = true;
@@ -526,7 +525,6 @@ class HDDevice extends HDBase {
 				}
 				if ($checking) {
 					$value = trim($value, "| \t\n\r\0\x0B");
-					$hints[] = $value;
 					$subtree = ($category == 'device') ? DETECTIONV4_STANDARD : $category;
 					$_id = $this->getMatch('buildinfo', $value, $subtree, 'buildinfo', $category);
 					if (! empty($_id)) {
