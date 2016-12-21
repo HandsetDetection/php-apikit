@@ -709,6 +709,26 @@ class HD4Test extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($result);
 		$this->assertEquals(299, $data['status']);
 	}
+
+	/**
+	 * Empty Archive Test
+	 * @group ultimate
+	 **/
+	function test_detectionOnEmptyArchive() {
+		$hd = new HandsetDetection\HD4($this->ultimateConfig);
+
+		$store = HandsetDetection\HDStore::getInstance();
+		$store->purge();
+
+		$headers = array(
+			'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+		);
+
+		$result = $hd->deviceDetect($headers);
+		$reply = $hd->getReply();
+		$this->assertEquals(299, $reply['status']);
+		$this->assertEquals('Branch not found. Is it installed ?', $reply['message']);
+	}
 	
 	/**
 	 * Fetch Archive Test

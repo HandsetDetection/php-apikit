@@ -176,6 +176,16 @@ class HDDevice extends HDBase {
 	 * @return bool true on success, false otherwise
 	 */
 	function localDetect($headers) {
+		$this->device = null;
+		$this->platform = null;
+		$this->browser = null;
+		$this->app = null;
+		$this->ratingResult = null;
+		$this->detectedRuleKey = array();
+		$this->reply = array();
+		$this->reply['status'] = 0;
+		$this->reply['message'] = '';
+
 		// lowercase headers on the way in.
 		$headers = array_change_key_case($headers);
 		$hardwareInfo = @$headers['x-local-hardwareinfo'];
@@ -466,14 +476,6 @@ class HDDevice extends HDBase {
 	 * @return mixed device array on success, false otherwise
 	 */
 	function v4MatchBuildInfo($buildInfo) {
-		$this->device = null;
-		$this->platform = null;
-		$this->browser = null;
-		$this->app = null;
-		$this->detectedRuleKey = null;
-		$this->ratingResult = null;
-		$this->reply = null;
-
 		// Nothing to check		
 		if (empty($buildInfo))
 			return false;
@@ -560,13 +562,6 @@ class HDDevice extends HDBase {
 	 * @return array device specs. (device.hd_specs)
 	 **/
 	function v4MatchHttpHeaders($headers, $hardwareInfo=null) {
-		$this->device = null;
-		$this->platform = null;
-		$this->browser = null;
-		$this->app = null;
-		$this->ratingResult = null;
-		$this->detectedRuleKey = array();
-		$this->reply = null;
 		$hwProps = null;
 		
 		// Nothing to check		
@@ -601,8 +596,14 @@ class HDDevice extends HDBase {
 		}
 
 		$this->device = $this->matchDevice($this->deviceHeaders);
-		if (empty($this->device))
-			return $this->setError(301, "Not Found");
+		if (empty($this->device)) {
+			if (! isset($this->reply['status']) || $this->reply['status'] == 0) {
+				// If no downstream error set then return not found.
+				return $this->setError(301, "Not Found");
+			}
+			// Error is already set, so return false 
+			return false;
+		}
 
 		if (! empty($hardwareInfo))
 			$hwProps = $this->infoStringToArray($hardwareInfo);

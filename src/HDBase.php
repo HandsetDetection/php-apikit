@@ -603,7 +603,7 @@ class HDBase {
 			$this->tree[$branch] = $tmp;
 			return $tmp;
 		}
-		return false;
+		return $this->setError(299, 'Branch not found. Is it installed ?');
 	}
 
 	/**
