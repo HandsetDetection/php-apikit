@@ -526,6 +526,7 @@ class HDDevice extends HDBase {
 				if ($checking) {
 					$value = trim($value, "| \t\n\r\0\x0B");
 					$subtree = ($category == 'device') ? DETECTIONV4_STANDARD : $category;
+					$value = ($category == 'device') ? $value = $this->cleanStr($value) : $this->extraCleanStr($value);
 					$_id = $this->getMatch('buildinfo', $value, $subtree, 'buildinfo', $category);
 					if (! empty($_id)) {
 						return ($category == 'device') ? $this->findById($_id) : $this->Extra->findById($_id);
@@ -540,6 +541,7 @@ class HDDevice extends HDBase {
 			$try = array("generic|{$platform}", "{$platform}|generic");
 			foreach($try as $value) {
 				$subtree = ($category == 'device') ? DETECTIONV4_GENERIC : $category;
+				$value = ($category == 'device') ? $value = $this->cleanStr($value) : $this->extraCleanStr($value);
 				$_id = $this->getMatch('buildinfo', $value, $subtree, 'buildinfo', $category);
 				if (! empty($_id)) {
 					return ($category == 'device') ? $this->findById($_id) : $this->Extra->findById($_id);
