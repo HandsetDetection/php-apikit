@@ -534,31 +534,30 @@ class HDBase {
 	 * The heart of the detection process
 	 *
 	 * @param string $header The type of header we're matching against - user-agent type headers use a sieve matching, all others are hash matching.
-	 * @param string $newvalue The http header's value (could be a user-agent or some other x- header value)
-	 * @param string $treetag The branch name eg : user-agent0, user-agent1, user-agentplatform, user-agentbrowser
+	 * @param string $value The http header's sanitised value (could be a user-agent or some other x- header value)
+	 * @param string $subtree The 0 or 1 for devices (isGeneric), category name for extras ('platform', 'browser', 'app')
+	 * @param string $actualHeader Unused (optimized away)
+	 * @param string $category : One of 'device', 'platform', 'browser' or 'app'
 	 * @return int node (which is an id) on success, false otherwise
 	 */
-	function getMatch($header, $value, $subtree="0", $actualHeader='', $class='device') {
+	function getMatch($header, $value, $subtree="0", $actualHeader='', $category='device') {
 		$f = 0;
 		$r = 0;
-		if ($class == 'device') {
-			$value = $this->cleanStr($value);
+		if ($category == 'device') {
+			//$value = $this->cleanStr($value);
 			$treetag = $header.$subtree;
 		} else {
-			$value = $this->extraCleanStr($value);
+			//$value = $this->extraCleanStr($value);
 			$treetag = $header.$subtree;
 		}
 
-		if ($value == "") {
+		// Fetch branch before validating params to confirm local files are installed correctly.
+		$branch = $this->getBranch($treetag);
+		if (empty($branch)) {
 			return false;
 		}
 
 		if (strlen($value) < 4) {
-			return false;
-		}
-
-		$branch = $this->getBranch($treetag);
-		if (empty($branch)) {
 			return false;
 		}
 
@@ -571,7 +570,7 @@ class HDBase {
 						foreach((array) $matches as $match => $node) {
 							++$r;
 							if (strpos($value, (string) $match) !== false) {
-								$this->detectedRuleKey[$class] = $this->cleanStr(@$header).':'.$this->cleanStr(@$filter).':'.$this->cleanStr(@$match);
+								$this->detectedRuleKey[$category] = $this->cleanStr(@$header).':'.$this->cleanStr(@$filter).':'.$this->cleanStr(@$match);
 								return $node;
 							}
 						}
