@@ -128,7 +128,7 @@ Note : Increase the default timeout before downloading the archive.
 
 ## Flexible Caching Options
 
-Version 4.1.* includes APC(u), Memcache and Memcached caching options. For backwards compatibility if no option
+Version 4.1.* includes APC(u), Memcache, Memcached and Redis caching options. For backwards compatibility if no option
 is set in the config file then it defaults to APC.
 
 ### Using Memcache
@@ -171,6 +171,21 @@ If you're using cache connection pooling then pass the pool name as follows :
 			)
 		)
 	);
+
+### Using Redis
+
+From version 4.1.11 we also have Redis as a caching option. Redis caching use
+Predis, which you should include via composer. Use a caching config as follows:
+
+
+	$hdconfig['cache'] = array (
+		'redis' => array (
+			'scheme' => 'tcp',
+			'host'   => '127.0.0.1',
+			'port'   => 6379
+		)
+	);
+
 
 ## Extra Examples ##
 
