@@ -13,10 +13,7 @@
 		do { count++; tt= +new Date(); } while (t === tt)
 		if ((tt-t) === 1) { bd[bd.length] = count; }
 	} while ((bd.length < 20) && (t < bmt))
-
-	var sum = 0, n = bd.length || 1;
-	while (bd.length) { sum += bd.pop(); }
-	b.m = ~~sum/n;
+	if (bd.length == 0) b.m = 0; else b.m = Math.max.apply(Math, bd);
 	var d = new Date(); d.setTime(d.getTime() + (7 * 24 * 60 * 60 * 1000));
 	var str = serialize(b);
 	document.cookie = ("hd41=" + str + ";path=/;expires=" + d.toGMTString());
