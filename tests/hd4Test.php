@@ -4,7 +4,12 @@
 
 error_reporting(E_ALL | E_STRICT);
 
-class HD4Test extends PHPUnit_Framework_TestCase {
+// phpunit 6.0 backward compatibility with phpunit 4.0
+if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Framework_TestCase')) {
+    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
+}
+
+class HD4Test extends \PHPUnit\Framework\TestCase {
 
 	var $cloudConfig = 'hd4CloudConfig.php';
 	var $ultimateConfig = 'hd4UltimateConfig.php';

@@ -172,9 +172,9 @@ If you're using cache connection pooling then pass the pool name as follows :
 		)
 	);
 
-### Using Redis
+### Using Predis
 
-From version 4.1.11 we also have Redis as a caching option. Redis caching use
+From version 4.1.11 we also have Redis as a caching option. Redis caching uses
 Predis, which you should include via composer. Use a caching config as follows:
 
 
@@ -183,6 +183,25 @@ Predis, which you should include via composer. Use a caching config as follows:
 			'scheme' => 'tcp',
 			'host'   => '127.0.0.1',
 			'port'   => 6379
+		)
+	);
+
+### Using PHPRedis
+
+From version 4.1.12 we also have PhpRedis as a caching option, which uses the
+redis.so extension from https://github.com/phpredis/phpredis . connect_method can
+be connect or pconnect. pconnect connections also support a peristent_id.
+
+Use a caching config as follows:
+
+
+	$hdconfig['cache'] = array (
+		'phpredis' => array (
+			'connect_method' => 'pconnect',
+			'host'   => '127.0.0.1',
+			'port'   => 6379,
+			'timeout' => 2.5,
+			'persistent_id' => 'x'
 		)
 	);
 

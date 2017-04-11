@@ -5,8 +5,7 @@ if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Frame
     class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
 }
 
-class MemcachedTest extends \PHPUnit\Framework\TestCase {
-
+class PhpRedisTest extends \PHPUnit\Framework\TestCase {
 	var $volumeTest = 10000;
 	var $testData = array(
 			'roses' => 'red',
@@ -16,18 +15,44 @@ class MemcachedTest extends \PHPUnit\Framework\TestCase {
 		);
 
 	function setup() {
-        if (! extension_loaded('memcached') || ! class_exists('\Memcached'))
-            $this->markTestSkipped('Memcached extension is not available.');
+		if (! extension_loaded('redis')) {
+			$this->markTestSkipped('redis extension not loaded or available. Please install extension.');
+		}
 	}
 
-	function testBasic() {
+	function testConnectBasic() {
 		$config = array(
 			'cache' => array(
-				'memcached' => array(
-					'options' => '',
-					'servers' => array(
-						array('localhost', '11211'),
-					)
+				'phpredis' => array(
+					'connect_method' => 'connect',
+					'host'   => '127.0.0.1',
+					'port'   => 6379
+				)
+			)
+		);
+
+		$cache = new HandsetDetection\HDCache($config);
+		$now = time();
+
+		// Test Write & Read
+		$cache->write($now, $this->testData);
+		$reply = $cache->read($now);
+		$this->assertEquals($this->testData, $reply);
+
+		// Test Flush
+		$reply = $cache->purge();
+		$this->assertTrue($reply);
+		$reply = $cache->read($now);
+		$this->assertNull($reply);
+	}
+
+	function testPConnectBasic() {
+		$config = array(
+			'cache' => array(
+				'phpredis' => array(
+					'connect_method' => 'pconnect',
+					'host'   => '127.0.0.1',
+					'port'   => 6379
 				)
 			)
 		);
@@ -50,14 +75,14 @@ class MemcachedTest extends \PHPUnit\Framework\TestCase {
 	function testVolume() {
 		$config = array(
 			'cache' => array(
-				'memcached' => array(
-					'options' => '',
-					'servers' => array(
-						array('localhost', '11211'),
-					)
+				'phpredis' => array(
+					'connect_method' => 'connect',
+					'host'   => '127.0.0.1',
+					'port'   => 6379
 				)
 			)
 		);
+
 		$cache = new HandsetDetection\HDCache($config);
 		$now = time();
 
@@ -84,38 +109,17 @@ class MemcachedTest extends \PHPUnit\Framework\TestCase {
 		$cache->purge();
 	}
 
-	function testPoolBasic() {
+	function testPConnectVolume() {
 		$config = array(
 			'cache' => array(
-				'memcached' => array(
-					'pool' => 'mypool',
-					'options' => '',
-					'servers' => array(
-						array('localhost', '11211'),
-					)
+				'phpredis' => array(
+					'connect_method' => 'pconnect',
+					'host'   => '127.0.0.1',
+					'port'   => 6379
 				)
 			)
 		);
 
-		$cache = new HandsetDetection\HDCache($config);
-		$now = time();
-		$cache->write($now, $this->testData);
-		$reply = $cache->read($now);
-		$this->assertEquals($this->testData, $reply);
-	}
-
-	function testPoolVolume() {
-		$config = array(
-			'cache' => array(
-				'memcached' => array(
-					'pool' => 'mypool',
-					'options' => '',
-					'servers' => array(
-						array('localhost', '11211'),
-					)
-				)
-			)
-		);
 		$cache = new HandsetDetection\HDCache($config);
 		$now = time();
 
@@ -141,21 +145,18 @@ class MemcachedTest extends \PHPUnit\Framework\TestCase {
 		$end = time();
 		$cache->purge();
 	}
-	
+
 	function testGetName() {
 		$config = array(
 			'cache' => array(
-				'memcached' => array(
-					'pool' => 'mypool',
-					'options' => '',
-					'servers' => array(
-						array('localhost', '11211'),
-					)
+				'phpredis' => array(
+					'connect_method' => 'pconnect',
+					'host'   => '127.0.0.1',
+					'port'   => 6379
 				)
 			)
 		);
-
 		$cache = new HandsetDetection\HDCache($config);
-		$this->assertEquals('memcached', $cache->getName());
-	}	
+		$this->assertEquals('phpredis', $cache->getName());
+	}
 }

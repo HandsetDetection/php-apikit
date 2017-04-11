@@ -1,6 +1,11 @@
 <?php
 
-class MemcacheTest extends PHPUnit_Framework_TestCase {
+// phpunit 6.0 backward compatibility with phpunit 4.0
+if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Framework_TestCase')) {
+    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
+}
+
+class MemcacheTest extends \PHPUnit\Framework\TestCase {
 	var $volumeTest = 10000;
 	var $testData = array(
 			'roses' => 'red',

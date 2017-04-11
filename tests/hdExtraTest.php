@@ -2,7 +2,12 @@
 
 error_reporting(E_ALL | E_STRICT);
 
-class HDExtraTest extends PHPUnit_Framework_TestCase {
+// phpunit 6.0 backward compatibility with phpunit 4.0
+if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Framework_TestCase')) {
+    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
+}
+
+class HDExtraTest extends \PHPUnit\Framework\TestCase {
 
 	public function test_comparePlatformVersionsA() {
 		$extra = new HandsetDetection\HDExtra();
