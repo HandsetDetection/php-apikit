@@ -7,7 +7,12 @@ error_reporting(E_ALL | E_STRICT);
 // To perform tests we need to setup the environment by populating the the Storage layer with device specs.
 // So install the latest community edition so there is something to work with.
 
-class HDDeviceTest extends PHPUnit_Framework_TestCase {
+// phpunit 6.0 backward compatibility with phpunit 4.0
+if (!class_exists('\PHPUnit\Framework\TestCase') && class_exists('\PHPUnit_Framework_TestCase')) {
+    class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
+}
+
+class HDDeviceTest extends \PHPUnit\Framework\TestCase {
 	var $hd4 = null;
 
 	// Setup community edition for tests. Takes 60s or so to download and install.
