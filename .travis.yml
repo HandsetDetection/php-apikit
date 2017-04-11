@@ -22,7 +22,7 @@ before_install:
   - if [[ $TRAVIS_PHP_VERSION =~ 5.* ]] ; then printf "\nextension=memcache.so\n" >> ./tests/travis_php.ini; fi;
   - if [[ $TRAVIS_PHP_VERSION = 7.* ]] ; then echo yes | pecl install apcu-5.1.3; fi;
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
-  - echo yes | pecl install phpredis
+  - echo yes | pecl install phpredis-3.1.2
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source
   - travis_retry composer require predis/predis:^1.1
