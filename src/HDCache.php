@@ -45,6 +45,7 @@ use HandsetDetection\Cache\Memcached;
 use HandsetDetection\Cache\File;
 use HandsetDetection\Cache\None;
 use HandsetDetection\Cache\Redis;
+use HandsetDetection\Cache\PhpRedis;
 
 class HDCache {
 	var $prefix;
@@ -82,6 +83,8 @@ class HDCache {
 			$this->cache = new APCu($config);
 		elseif (isset($config['cache']['redis']))
 			$this->cache = new Redis($config);
+		elseif (isset($config['cache']['phpredis']))
+			$this->cache = new PhpRedis($config);
 		elseif (! isset($config['cache'])) {
 			// The legacy option was to use apc/apc by default - so use apcu/apc if 'cache' is not set
 			if (function_exists('apcu_store'))
