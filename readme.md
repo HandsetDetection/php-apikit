@@ -172,7 +172,7 @@ If you're using cache connection pooling then pass the pool name as follows :
 		)
 	);
 
-### Using Redis
+### Using Predis
 
 From version 4.1.11 we also have Redis as a caching option. Redis caching uses
 Predis, which you should include via composer. Use a caching config as follows:
@@ -186,7 +186,7 @@ Predis, which you should include via composer. Use a caching config as follows:
 		)
 	);
 
-### Using Redis
+### Using PHPRedis
 
 From version 4.1.12 we also have PhpRedis as a caching option, which uses the
 redis.so extension from https://github.com/phpredis/phpredis . connect_method can
