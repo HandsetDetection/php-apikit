@@ -191,7 +191,11 @@ class HDStore implements \Iterator {
 	 * @return boolean true on success, false otherwise
 	 */
 	function moveIn($srcAbsName, $destName) {
-		return rename($srcAbsName, $this->directory . DIRECTORY_SEPARATOR . $destName);
+		if (! copy($srcAbsName, $this->directory . DIRECTORY_SEPARATOR . $destName))
+			return false;
+		if (! unlink($srcAbsName))
+			return false;
+		return true;
 	}
 
 	/**
