@@ -132,7 +132,7 @@ Version 4.1.* includes APC(u), Memcache, Memcached and Redis caching options. Fo
 is set in the config file then it defaults to APC.
 
 Note : **Memcached** and **Memcached** both have a default maximum object size of 1Mb which is too low. We recommend
-increasing this limit to at least 5Mb with the -I or --max-item-size= options.
+increasing this limit to at least 5Mb with the -I or --max-item-size= options. 
 
 ### Using Memcache
 
