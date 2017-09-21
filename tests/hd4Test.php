@@ -411,8 +411,8 @@ class HD4Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 		$this->assertEquals('Facebook', $reply['hd_specs']['general_app']);
 		$this->assertEquals('9.0', $reply['hd_specs']['general_app_version']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser_version']);
+		$this->assertEquals('Safari Webview', $reply['hd_specs']['general_browser']);
+		$this->assertEquals('537.51', $reply['hd_specs']['general_browser_version']);
 		
 		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
 		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
@@ -1104,8 +1104,8 @@ class HD4Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals('Mobile', $reply['hd_specs']['general_type']);
 		$this->assertEquals('Facebook', $reply['hd_specs']['general_app']);
 		$this->assertEquals('9.0', $reply['hd_specs']['general_app_version']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser_version']);
+		$this->assertEquals('Safari Webview', $reply['hd_specs']['general_browser']);
+		$this->assertEquals('537.51', $reply['hd_specs']['general_browser_version']);
 
 		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
 		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
@@ -1638,8 +1638,8 @@ class HD4Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals('', $reply['hd_specs']['general_type']);
 		$this->assertEquals('Facebook', $reply['hd_specs']['general_app']);
 		$this->assertEquals('9.0', $reply['hd_specs']['general_app_version']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser']);
-		$this->assertEquals('', $reply['hd_specs']['general_browser_version']);
+		$this->assertEquals('Safari Webview', $reply['hd_specs']['general_browser']);
+		$this->assertEquals('537.51', $reply['hd_specs']['general_browser_version']);
 
 		$this->assertArrayHasKey('display_pixel_ratio', $reply['hd_specs']);
 		$this->assertArrayHasKey('display_ppi', $reply['hd_specs']);
