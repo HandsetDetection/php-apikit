@@ -22,10 +22,10 @@ before_install:
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
   - if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then printf "\nhhvm.php7.all=1\n" > ./tests/travis_php.ini; fi;  
   - if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then phpenv config-add ./tests/travis_php.ini; fi;
+  - if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then travis_retry composer require --dev --no-update phpunit/phpunit 5.7; fi  
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source
   - travis_retry composer require predis/predis:^1.1
-  - if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then travis_retry composer require --dev --no-update phpunit/phpunit 5.7; fi
   
 # Setup test run config files
 before_script:
