@@ -131,6 +131,9 @@ Note : Increase the default timeout before downloading the archive.
 Version 4.1.* includes APC(u), Memcache, Memcached and Redis caching options. For backwards compatibility if no option
 is set in the config file then it defaults to APC.
 
+Note : **Memcached** and **Memcached** both have a default maximum object size of 1Mb which is too low. We recommend
+increasing this limit to at least 5Mb with the -I or --max-item-size= options.
+
 ### Using Memcache
 
 Include a the following cache configuration in your config file.
